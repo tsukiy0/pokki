@@ -1,10 +1,6 @@
 import { BaseError, Serializer } from "@tsukiy0/tscore";
 import { Person, PersonId, PersonJson, PersonSerializer } from "./Person";
-import {
-  NonEmptySet,
-  NonEmptySetJson,
-  NonEmptySetSerializer,
-} from "./NonEmptySet";
+import { NonEmptySet } from "./NonEmptySet";
 
 export class DuplicatePersonError extends BaseError {}
 export class EmptyPersonSetError extends BaseError {}
@@ -30,12 +26,17 @@ export class PersonSet extends NonEmptySet<Person> {
   };
 }
 
-export type PersonSetJson = NonEmptySetJson<PersonJson>;
+export type PersonSetJson = {
+  items: PersonJson[];
+};
 
-export const PersonSetSerializer: Serializer<
-  PersonSet,
-  PersonSetJson
-> = new NonEmptySetSerializer(
-  PersonSerializer,
-  (input) => new PersonSet(input),
-);
+export const PersonSetSerializer: Serializer<PersonSet, PersonSetJson> = {
+  serialize: (input: PersonSet) => {
+    return {
+      items: input.items.map(PersonSerializer.serialize),
+    };
+  },
+  deserialize: (input: PersonSetJson) => {
+    return new PersonSet(input.items.map(PersonSerializer.deserialize));
+  },
+};

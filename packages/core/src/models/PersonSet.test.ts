@@ -1,7 +1,21 @@
+import { testSerializer } from "@tsukiy0/tscore/dist/index.testTemplate";
 import { Person, PersonId, PersonIdRandomizer } from "./Person";
-import { PersonSet, PersonNotFoundError } from "./PersonSet";
+import {
+  PersonSet,
+  PersonNotFoundError,
+  PersonSetSerializer,
+} from "./PersonSet";
 
 describe("PersonSet", () => {
+  testSerializer(
+    PersonSetSerializer,
+    () =>
+      new PersonSet([
+        new Person(PersonIdRandomizer.random(), "bob"),
+        new Person(PersonIdRandomizer.random(), "jim"),
+      ]),
+  );
+
   describe("getPersonById", () => {
     it("get existing", () => {
       const id = PersonIdRandomizer.random();

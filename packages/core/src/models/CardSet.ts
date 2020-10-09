@@ -1,10 +1,6 @@
 import { BaseError, Serializer } from "@tsukiy0/tscore";
 import { Card, CardId, CardJson, CardSerializer } from "./Card";
-import {
-  NonEmptySet,
-  NonEmptySetJson,
-  NonEmptySetSerializer,
-} from "./NonEmptySet";
+import { NonEmptySet } from "./NonEmptySet";
 
 export class DuplicateCardError extends BaseError {}
 export class EmptyCardSetError extends BaseError {}
@@ -30,9 +26,17 @@ export class CardSet extends NonEmptySet<Card> {
   };
 }
 
-export type CardSetJson = NonEmptySetJson<CardJson>;
+export type CardSetJson = {
+  items: CardJson[];
+};
 
-export const CardSetSerializer: Serializer<
-  CardSet,
-  CardSetJson
-> = new NonEmptySetSerializer(CardSerializer, (input) => new CardSet(input));
+export const CardSetSerializer: Serializer<CardSet, CardSetJson> = {
+  serialize: (input: CardSet) => {
+    return {
+      items: input.items.map(CardSerializer.serialize),
+    };
+  },
+  deserialize: (input: CardSetJson) => {
+    return new CardSet(input.items.map(CardSerializer.deserialize));
+  },
+};

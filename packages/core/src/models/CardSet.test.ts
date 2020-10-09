@@ -1,7 +1,17 @@
+import { testSerializer } from "@tsukiy0/tscore/dist/index.testTemplate";
 import { Card, CardId, CardIdRandomizer } from "./Card";
-import { CardSet, CardNotFoundError } from "./CardSet";
+import { CardSet, CardNotFoundError, CardSetSerializer } from "./CardSet";
 
 describe("CardSet", () => {
+  testSerializer(
+    CardSetSerializer,
+    () =>
+      new CardSet([
+        new Card(CardIdRandomizer.random(), "S"),
+        new Card(CardIdRandomizer.random(), "M"),
+      ]),
+  );
+
   describe("getCardById", () => {
     it("get existing", () => {
       const id = CardIdRandomizer.random();
