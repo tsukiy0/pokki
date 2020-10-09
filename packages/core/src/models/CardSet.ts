@@ -1,10 +1,10 @@
-import {
-  BaseError,
-  Comparable,
-  isArrayEqual,
-  Serializer,
-} from "@tsukiy0/tscore";
+import { BaseError, Serializer } from "@tsukiy0/tscore";
 import { Card, CardId, CardJson, CardSerializer } from "./Card";
+import {
+  NonEmptySet,
+  NonEmptySetJson,
+  NonEmptySetSerializer,
+} from "./NonEmptySet";
 
 export class DuplicateCardError extends BaseError {}
 export class EmptyCardSetError extends BaseError {}
@@ -14,20 +14,9 @@ export class CardNotFoundError extends BaseError {
   }
 }
 
-export class CardSet implements Comparable {
+export class CardSet extends NonEmptySet<Card> {
   constructor(public readonly items: readonly Card[]) {
-    if (items.length === 0) {
-      throw new EmptyCardSetError();
-    }
-
-    const duplicates = items.filter((item, index) => {
-      const duplicateIndex = items.findIndex((_) => item.equals(_));
-      return duplicateIndex !== index;
-    });
-
-    if (duplicates.length !== 0) {
-      throw new DuplicateCardError();
-    }
+    super(items, (a, b) => a.equals(b));
   }
 
   public readonly getCardById = (id: CardId): Card => {
@@ -39,23 +28,11 @@ export class CardSet implements Comparable {
 
     return found;
   };
-
-  public readonly equals = (input: this): boolean => {
-    return isArrayEqual(this.items, input.items, (a, b) => a.equals(b));
-  };
 }
 
-export type CardSetJson = {
-  items: readonly CardJson[];
-};
+export type CardSetJson = NonEmptySetJson<CardJson>;
 
-export const CardSetSerializer: Serializer<CardSet, CardSetJson> = {
-  serialize: (input) => {
-    return {
-      items: input.items.map(CardSerializer.serialize),
-    };
-  },
-  deserialize: (input) => {
-    return new CardSet(input.items.map(CardSerializer.deserialize));
-  },
-};
+export const CardSetSerializer: Serializer<
+  CardSet,
+  CardSetJson
+> = new NonEmptySetSerializer(CardSerializer, (input) => new CardSet(input));

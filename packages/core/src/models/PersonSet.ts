@@ -1,10 +1,10 @@
-import {
-  BaseError,
-  Comparable,
-  isArrayEqual,
-  Serializer,
-} from "@tsukiy0/tscore";
+import { BaseError, Serializer } from "@tsukiy0/tscore";
 import { Person, PersonId, PersonJson, PersonSerializer } from "./Person";
+import {
+  NonEmptySet,
+  NonEmptySetJson,
+  NonEmptySetSerializer,
+} from "./NonEmptySet";
 
 export class DuplicatePersonError extends BaseError {}
 export class EmptyPersonSetError extends BaseError {}
@@ -14,20 +14,9 @@ export class PersonNotFoundError extends BaseError {
   }
 }
 
-export class PersonSet implements Comparable {
+export class PersonSet extends NonEmptySet<Person> {
   constructor(public readonly items: readonly Person[]) {
-    if (items.length === 0) {
-      throw new EmptyPersonSetError();
-    }
-
-    const duplicates = items.filter((item, index) => {
-      const duplicateIndex = items.findIndex((_) => item.equals(_));
-      return duplicateIndex !== index;
-    });
-
-    if (duplicates.length !== 0) {
-      throw new DuplicatePersonError();
-    }
+    super(items, (a, b) => a.equals(b));
   }
 
   public readonly getPersonById = (id: PersonId): Person => {
@@ -39,23 +28,14 @@ export class PersonSet implements Comparable {
 
     return found;
   };
-
-  public readonly equals = (input: this): boolean => {
-    return isArrayEqual(this.items, input.items, (a, b) => a.equals(b));
-  };
 }
 
-export type PersonSetJson = {
-  items: readonly PersonJson[];
-};
+export type PersonSetJson = NonEmptySetJson<PersonJson>;
 
-export const PersonSetSerializer: Serializer<PersonSet, PersonSetJson> = {
-  serialize: (input) => {
-    return {
-      items: input.items.map(PersonSerializer.serialize),
-    };
-  },
-  deserialize: (input) => {
-    return new PersonSet(input.items.map(PersonSerializer.deserialize));
-  },
-};
+export const PersonSetSerializer: Serializer<
+  PersonSet,
+  PersonSetJson
+> = new NonEmptySetSerializer(
+  PersonSerializer,
+  (input) => new PersonSet(input),
+);

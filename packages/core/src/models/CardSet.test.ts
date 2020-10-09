@@ -1,46 +1,7 @@
-import {
-  testComparable,
-  testSerializer,
-} from "@tsukiy0/tscore/dist/index.testTemplate";
 import { Card, CardId, CardIdRandomizer } from "./Card";
-import {
-  DuplicateCardError,
-  EmptyCardSetError,
-  CardSet,
-  CardSetSerializer,
-  CardNotFoundError,
-} from "./CardSet";
+import { CardSet, CardNotFoundError } from "./CardSet";
 
 describe("CardSet", () => {
-  testComparable(
-    () =>
-      new CardSet([
-        new Card(CardIdRandomizer.random(), "S"),
-        new Card(CardIdRandomizer.random(), "M"),
-      ]),
-  );
-  testSerializer(
-    CardSetSerializer,
-    () =>
-      new CardSet([
-        new Card(CardIdRandomizer.random(), "S"),
-        new Card(CardIdRandomizer.random(), "M"),
-      ]),
-  );
-
-  it("throws when has duplicate", () => {
-    expect(() => {
-      const id = CardIdRandomizer.random();
-      new CardSet([new Card(id, "S"), new Card(id, "M")]);
-    }).toThrowError(DuplicateCardError);
-  });
-
-  it("throws when empty", () => {
-    expect(() => {
-      new CardSet([]);
-    }).toThrowError(EmptyCardSetError);
-  });
-
   describe("getCardById", () => {
     it("get existing", () => {
       const id = CardIdRandomizer.random();

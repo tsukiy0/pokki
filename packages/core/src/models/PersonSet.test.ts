@@ -1,46 +1,7 @@
-import {
-  testComparable,
-  testSerializer,
-} from "@tsukiy0/tscore/dist/index.testTemplate";
 import { Person, PersonId, PersonIdRandomizer } from "./Person";
-import {
-  DuplicatePersonError,
-  EmptyPersonSetError,
-  PersonSet,
-  PersonSetSerializer,
-  PersonNotFoundError,
-} from "./PersonSet";
+import { PersonSet, PersonNotFoundError } from "./PersonSet";
 
 describe("PersonSet", () => {
-  testComparable(
-    () =>
-      new PersonSet([
-        new Person(PersonIdRandomizer.random(), "bob"),
-        new Person(PersonIdRandomizer.random(), "jim"),
-      ]),
-  );
-  testSerializer(
-    PersonSetSerializer,
-    () =>
-      new PersonSet([
-        new Person(PersonIdRandomizer.random(), "bob"),
-        new Person(PersonIdRandomizer.random(), "jim"),
-      ]),
-  );
-
-  it("throws when has person with duplicate id", () => {
-    expect(() => {
-      const id = PersonIdRandomizer.random();
-      new PersonSet([new Person(id, "bob"), new Person(id, "jim")]);
-    }).toThrowError(DuplicatePersonError);
-  });
-
-  it("throws when empty", () => {
-    expect(() => {
-      new PersonSet([]);
-    }).toThrowError(EmptyPersonSetError);
-  });
-
   describe("getPersonById", () => {
     it("get existing", () => {
       const id = PersonIdRandomizer.random();
