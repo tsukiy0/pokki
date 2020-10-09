@@ -1,0 +1,22 @@
+version: '3'
+services:
+  integration:
+    build:
+      context: .
+      dockerfile: integration.Dockerfile
+    volumes: 
+      - ..:/app
+    working_dir: /app
+    networks: 
+      - integration
+    depends_on: 
+      - dynamodb
+    environment:
+      DYNAMODB_URL: http://dynamodb:8000
+    command: ./tasks/integration.sh
+  dynamodb:
+    image: amazon/dynamodb-local
+    networks:
+      - integration
+networks:
+    integration:

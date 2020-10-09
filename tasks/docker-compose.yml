@@ -1,0 +1,26 @@
+version: '3'
+services:
+  build:
+    build:
+      context: .
+      dockerfile: build.Dockerfile
+    volumes: 
+      - ..:/app
+    working_dir: /app
+    environment:
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
+    command: ./tasks/build.sh
+  deploy:
+    build:
+      context: .
+      dockerfile: deploy.Dockerfile
+    volumes:
+      - ..:/app
+    working_dir: /app
+    environment:
+      NOTIFICATION_EMAIL: ${NOTIFICATION_EMAIL}
+      CFN_STACK_NAME: ${CFN_STACK_NAME}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
+    command: ./tasks/deploy.sh
