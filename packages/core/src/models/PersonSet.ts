@@ -1,8 +1,6 @@
 import { BaseError, Serializer, NonEmptySet } from "@tsukiy0/tscore";
 import { Person, PersonId, PersonJson, PersonSerializer } from "./Person";
 
-export class DuplicatePersonError extends BaseError {}
-export class EmptyPersonSetError extends BaseError {}
 export class PersonNotFoundError extends BaseError {
   constructor(public readonly id: PersonId) {
     super();
@@ -26,7 +24,7 @@ export class PersonSet extends NonEmptySet<Person> {
 }
 
 export type PersonSetJson = {
-  items: PersonJson[];
+  items: readonly PersonJson[];
 };
 
 export const PersonSetSerializer: Serializer<PersonSet, PersonSetJson> = {
