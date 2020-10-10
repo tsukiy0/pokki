@@ -1,6 +1,5 @@
-import { BaseError, Serializer } from "@tsukiy0/tscore";
+import { BaseError, Serializer, NonEmptySet } from "@tsukiy0/tscore";
 import { Card, CardId, CardJson, CardSerializer } from "./Card";
-import { NonEmptySet } from "./NonEmptySet";
 
 export class DuplicateCardError extends BaseError {}
 export class EmptyCardSetError extends BaseError {}

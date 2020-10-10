@@ -1,6 +1,5 @@
-import { Serializer } from "@tsukiy0/tscore";
+import { Serializer, Set } from "@tsukiy0/tscore";
 import { PersonCard, PersonCardJson, PersonCardSerializer } from "./PersonCard";
-import { Set } from "./Set";
 
 export class PersonCardSet extends Set<PersonCard> {
   constructor(public readonly items: readonly PersonCard[]) {

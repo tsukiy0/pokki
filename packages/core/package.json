@@ -9,7 +9,7 @@
     "@pokki/tools": "*"
   },
   "dependencies": {
-    "@tsukiy0/tscore": "1.1.1"
+    "@tsukiy0/tscore": "1.3.0"
   },
   "scripts": {
     "typecheck": "tsc",

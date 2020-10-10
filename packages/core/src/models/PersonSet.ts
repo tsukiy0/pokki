@@ -1,6 +1,5 @@
-import { BaseError, Serializer } from "@tsukiy0/tscore";
+import { BaseError, Serializer, NonEmptySet } from "@tsukiy0/tscore";
 import { Person, PersonId, PersonJson, PersonSerializer } from "./Person";
-import { NonEmptySet } from "./NonEmptySet";
 
 export class DuplicatePersonError extends BaseError {}
 export class EmptyPersonSetError extends BaseError {}

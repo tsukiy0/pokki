@@ -1412,10 +1412,10 @@
     eslint-plugin-prettier "3.1.4"
     prettier "2.1.2"
 
-"@tsukiy0/tscore@1.1.1":
-  version "1.1.1"
-  resolved "https://npm.pkg.github.com/download/@tsukiy0/tscore/1.1.1/cb9e7f8bd9953942ab30c160f84ced4fef2ca6265e78b270780db290da07fa6b#e3ac8d1a3788f8e5e1d1aef210a149c41feec253"
-  integrity sha512-elxxnucblTOqfcatTARRENiXAPZB/Cr1uYd7zCkYrX3Z9miLmpGahuoLbP1TXLXY7iTCLjFY1D+QIoR6FC19qA==
+"@tsukiy0/tscore@1.3.0":
+  version "1.3.0"
+  resolved "https://npm.pkg.github.com/download/@tsukiy0/tscore/1.3.0/68b65a8a17a9e4e3a039324c6c3c9a897eaabdc351621e9b83ee90563ae17f61#2d19d3ebf0f8d101ffb15b1d50362077c95f0eb3"
+  integrity sha512-qUoa/2HS/99qSTLuujOrV2XgKiAQXoYYFDM5LwAgu1EPJM4wnVSAuBoptgd/2ufX6MvBYX9vgfdqcprtfuj+Nw==
   dependencies:
     date-fns "2.16.1"
     uuid "8.3.1"
