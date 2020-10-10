@@ -6,8 +6,8 @@ import { CardIdRandomizer } from "./Card";
 import {
   CompletedRound,
   CompletedRoundSerializer,
-  NewRound,
-  NewRoundSerializer,
+  ActiveRound,
+  ActiveRoundSerializer,
   RoundIdRandomizer,
 } from "./Round";
 import { PersonIdRandomizer } from "./Person";
@@ -45,10 +45,10 @@ describe("CompletedRound", () => {
   );
 });
 
-describe("NewRound", () => {
+describe("ActiveRound", () => {
   testComparable(
     () =>
-      new NewRound(
+      new ActiveRound(
         RoundIdRandomizer.random(),
         new PersonCardSet([
           new PersonCard(
@@ -60,9 +60,9 @@ describe("NewRound", () => {
   );
 
   testSerializer(
-    NewRoundSerializer,
+    ActiveRoundSerializer,
     () =>
-      new NewRound(
+      new ActiveRound(
         RoundIdRandomizer.random(),
         new PersonCardSet([
           new PersonCard(

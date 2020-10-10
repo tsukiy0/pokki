@@ -35,7 +35,7 @@ export const RoundIdRandomizer: Randomizer<RoundId> = {
   },
 };
 
-export class NewRound implements Comparable {
+export class ActiveRound implements Comparable {
   constructor(
     public readonly id: RoundId,
     public readonly personCards: PersonCardSet,
@@ -48,20 +48,20 @@ export class NewRound implements Comparable {
   };
 }
 
-export type NewRoundJson = {
+export type ActiveRoundJson = {
   id: string;
   personCards: PersonCardSetJson;
 };
 
-export const NewRoundSerializer: Serializer<NewRound, NewRoundJson> = {
-  serialize: (input: NewRound) => {
+export const ActiveRoundSerializer: Serializer<ActiveRound, ActiveRoundJson> = {
+  serialize: (input: ActiveRound) => {
     return {
       id: input.id.toString(),
       personCards: PersonCardSetSerializer.serialize(input.personCards),
     };
   },
-  deserialize: (input: NewRoundJson) => {
-    return new NewRound(
+  deserialize: (input: ActiveRoundJson) => {
+    return new ActiveRound(
       RoundId.fromString(input.id),
       PersonCardSetSerializer.deserialize(input.personCards),
     );
