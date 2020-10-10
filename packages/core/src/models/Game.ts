@@ -38,6 +38,8 @@ export const GameIdRandomizer: Randomizer<GameId> = {
   },
 };
 
+export class CompletedRoundMissingPersonError extends Error {}
+
 export class Game implements Comparable {
   constructor(
     public readonly id: GameId,
@@ -45,7 +47,25 @@ export class Game implements Comparable {
     public readonly cards: CardSet,
     public readonly activeRound: ActiveRound,
     public readonly completedRounds: CompletedRoundSet,
-  ) {}
+  ) {
+    for (const item of activeRound.personCards.items) {
+      people.getPersonById(item.personId);
+      cards.getCardById(item.cardId);
+    }
+
+    for (const round of completedRounds.items) {
+      if (round.personCards.items.length !== people.items.length) {
+        throw new CompletedRoundMissingPersonError();
+      }
+
+      cards.getCardById(round.resultCardId);
+
+      for (const item of round.personCards.items) {
+        people.getPersonById(item.personId);
+        cards.getCardById(item.cardId);
+      }
+    }
+  }
 
   public readonly equals = (input: this): boolean => {
     return (
