@@ -13,7 +13,15 @@ import {
 } from "./CompletedRoundSet";
 import { CardSet, CardSetJson, CardSetSerializer } from "./CardSet";
 import { PersonSet, PersonSetJson, PersonSetSerializer } from "./PersonSet";
-import { ActiveRound, ActiveRoundJson, ActiveRoundSerializer } from "./Round";
+import {
+  ActiveRound,
+  ActiveRoundJson,
+  ActiveRoundSerializer,
+  CompletedRound,
+  RoundIdRandomizer,
+} from "./Round";
+import { PersonCardSet } from "./PersonCardSet";
+import { CardId } from "./Card";
 
 export class GameId extends Guid {}
 
@@ -38,7 +46,7 @@ export const GameIdRandomizer: Randomizer<GameId> = {
   },
 };
 
-export class CompletedRoundMissingPersonError extends Error {}
+export class RoundMissingPersonError extends Error {}
 
 export class Game implements Comparable {
   constructor(
@@ -55,7 +63,7 @@ export class Game implements Comparable {
 
     for (const round of completedRounds.items) {
       if (round.personCards.items.length !== people.items.length) {
-        throw new CompletedRoundMissingPersonError();
+        throw new RoundMissingPersonError();
       }
 
       cards.getCardById(round.resultCardId);
@@ -66,6 +74,23 @@ export class Game implements Comparable {
       }
     }
   }
+
+  public readonly completeRound = (resultCardId: CardId): Game => {
+    return new Game(
+      this.id,
+      this.people,
+      this.cards,
+      new ActiveRound(RoundIdRandomizer.random(), new PersonCardSet([])),
+      new CompletedRoundSet([
+        ...this.completedRounds.items,
+        new CompletedRound(
+          this.activeRound.id,
+          this.activeRound.personCards,
+          resultCardId,
+        ),
+      ]),
+    );
+  };
 
   public readonly equals = (input: this): boolean => {
     return (

@@ -6,7 +6,7 @@ import { Card, CardIdRandomizer } from "./Card";
 import { CardNotFoundError, CardSet } from "./CardSet";
 import { CompletedRoundSet } from "./CompletedRoundSet";
 import {
-  CompletedRoundMissingPersonError,
+  RoundMissingPersonError,
   Game,
   GameIdRandomizer,
   GameSerializer,
@@ -113,7 +113,7 @@ describe("Game", () => {
           ),
         ]),
       );
-    }).toThrowError(CompletedRoundMissingPersonError);
+    }).toThrowError(RoundMissingPersonError);
   });
 
   it("throws when completed round result references card that does not exist", () => {
@@ -140,5 +140,97 @@ describe("Game", () => {
         ]),
       );
     }).toThrowError(CardNotFoundError);
+  });
+
+  describe("completeRound", () => {
+    it("throws when result card does not exist", () => {
+      expect(() => {
+        const person1 = new Person(PersonIdRandomizer.random(), "bob");
+        const person2 = new Person(PersonIdRandomizer.random(), "john");
+        const card1 = new Card(CardIdRandomizer.random(), "M");
+        const card2 = new Card(CardIdRandomizer.random(), "L");
+
+        const game = new Game(
+          GameIdRandomizer.random(),
+          new PersonSet([person1, person2]),
+          new CardSet([card1, card2]),
+          new ActiveRound(
+            RoundIdRandomizer.random(),
+            new PersonCardSet([
+              new PersonCard(person1.id, card1.id),
+              new PersonCard(person2.id, card2.id),
+            ]),
+          ),
+          new CompletedRoundSet([]),
+        );
+
+        game.completeRound(CardIdRandomizer.random());
+      }).toThrowError(CardNotFoundError);
+    });
+
+    it("throws when person missing", () => {
+      expect(() => {
+        const person1 = new Person(PersonIdRandomizer.random(), "bob");
+        const person2 = new Person(PersonIdRandomizer.random(), "john");
+        const card1 = new Card(CardIdRandomizer.random(), "M");
+        const card2 = new Card(CardIdRandomizer.random(), "L");
+
+        const game = new Game(
+          GameIdRandomizer.random(),
+          new PersonSet([person1, person2]),
+          new CardSet([card1, card2]),
+          new ActiveRound(
+            RoundIdRandomizer.random(),
+            new PersonCardSet([new PersonCard(person1.id, card1.id)]),
+          ),
+          new CompletedRoundSet([]),
+        );
+
+        game.completeRound(card1.id);
+      }).toThrowError(RoundMissingPersonError);
+    });
+
+    it("complets active round", () => {
+      const person1 = new Person(PersonIdRandomizer.random(), "bob");
+      const person2 = new Person(PersonIdRandomizer.random(), "john");
+      const card1 = new Card(CardIdRandomizer.random(), "M");
+      const card2 = new Card(CardIdRandomizer.random(), "L");
+      const game = new Game(
+        GameIdRandomizer.random(),
+        new PersonSet([person1, person2]),
+        new CardSet([card1, card2]),
+        new ActiveRound(
+          RoundIdRandomizer.random(),
+          new PersonCardSet([
+            new PersonCard(person1.id, card1.id),
+            new PersonCard(person2.id, card2.id),
+          ]),
+        ),
+        new CompletedRoundSet([
+          new CompletedRound(
+            RoundIdRandomizer.random(),
+            new PersonCardSet([
+              new PersonCard(person1.id, card2.id),
+              new PersonCard(person2.id, card1.id),
+            ]),
+            card1.id,
+          ),
+        ]),
+      );
+
+      const actual = game.completeRound(card2.id);
+
+      expect(actual.completedRounds.items).toHaveLength(2);
+      expect(
+        actual.completedRounds.items[1].equals(
+          new CompletedRound(
+            game.activeRound.id,
+            game.activeRound.personCards,
+            card2.id,
+          ),
+        ),
+      );
+      expect(actual.activeRound.personCards.items).toHaveLength(0);
+    });
   });
 });
