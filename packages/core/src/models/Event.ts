@@ -44,7 +44,6 @@ export enum EventType {
   NEW_ROUND = "NEW_ROUND",
   PERSON_SELECT_CARD = "PERSON_SELECT_CARD",
   DECIDE_RESULT = "DECIDE_RESULT",
-  CLOSE = "CLOSE",
 }
 
 export const EventTypeEnumHelper = new EnumHelper(EventType);
@@ -75,12 +74,19 @@ type EventJson = {
 };
 
 export class NewGameEvent extends Event {
-  constructor(id: EventId, created: DateTime, gameId: GameId) {
+  constructor(
+    id: EventId,
+    created: DateTime,
+    gameId: GameId,
+    public readonly person: Person,
+  ) {
     super(id, EventType.NEW_GAME, created, gameId);
   }
 }
 
-export type NewGameEventJson = EventJson;
+export type NewGameEventJson = EventJson & {
+  person: PersonJson;
+};
 
 export const NewGameEventSerializer: Serializer<
   NewGameEvent,
@@ -92,6 +98,7 @@ export const NewGameEventSerializer: Serializer<
       type: input.type,
       created: input.created.toString(),
       gameId: input.gameId.toString(),
+      person: PersonSerializer.serialize(input.person),
     };
   },
   deserialize: (input: NewGameEventJson) => {
@@ -99,6 +106,7 @@ export const NewGameEventSerializer: Serializer<
       EventId.fromString(input.id),
       DateTime.fromISOString(input.created),
       GameId.fromString(input.gameId),
+      PersonSerializer.deserialize(input.person),
     );
   },
 };
@@ -325,32 +333,6 @@ export const DecideResultEventSerializer: Serializer<
       GameId.fromString(input.gameId),
       RoundId.fromString(input.roundId),
       CardId.fromString(input.cardId),
-    );
-  },
-};
-
-export class CloseEvent extends Event {
-  constructor(id: EventId, created: DateTime, gameId: GameId) {
-    super(id, EventType.CLOSE, created, gameId);
-  }
-}
-
-export type CloseEventJson = EventJson;
-
-export const CloseEventSerializer: Serializer<CloseEvent, CloseEventJson> = {
-  serialize: (input: CloseEvent) => {
-    return {
-      id: input.id.toString(),
-      type: input.type,
-      created: input.created.toString(),
-      gameId: input.gameId.toString(),
-    };
-  },
-  deserialize: (input: CloseEventJson) => {
-    return new CloseEvent(
-      EventId.fromString(input.id),
-      DateTime.fromISOString(input.created),
-      GameId.fromString(input.gameId),
     );
   },
 };

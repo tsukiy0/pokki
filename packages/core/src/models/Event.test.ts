@@ -10,8 +10,6 @@ import {
   AddCardsEventSerializer,
   AddPersonEvent,
   AddPersonEventSerializer,
-  CloseEvent,
-  CloseEventSerializer,
   DecideResultEvent,
   DecideResultEventSerializer,
   EventIdRandomizer,
@@ -34,6 +32,7 @@ describe("NewGameEvent", () => {
         EventIdRandomizer.random(),
         DateTimeRandomizer.random(),
         GameIdRandomizer.random(),
+        new Person(PersonIdRandomizer.random(), "bill"),
       ),
   );
   testSerializer(
@@ -43,6 +42,7 @@ describe("NewGameEvent", () => {
         EventIdRandomizer.random(),
         DateTimeRandomizer.random(),
         GameIdRandomizer.random(),
+        new Person(PersonIdRandomizer.random(), "bill"),
       ),
   );
 });
@@ -163,26 +163,6 @@ describe("DecideResultEvent", () => {
         GameIdRandomizer.random(),
         RoundIdRandomizer.random(),
         CardIdRandomizer.random(),
-      ),
-  );
-});
-
-describe("CloseEvent", () => {
-  testComparable(
-    () =>
-      new CloseEvent(
-        EventIdRandomizer.random(),
-        DateTimeRandomizer.random(),
-        GameIdRandomizer.random(),
-      ),
-  );
-  testSerializer(
-    CloseEventSerializer,
-    () =>
-      new CloseEvent(
-        EventIdRandomizer.random(),
-        DateTimeRandomizer.random(),
-        GameIdRandomizer.random(),
       ),
   );
 });
