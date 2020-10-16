@@ -70,4 +70,16 @@ namespace Core
             Cards = cards;
         }
     }
+
+    public struct NewRoundEvent
+    {
+        public readonly Event Event;
+        public readonly RoundId RoundId;
+
+        public NewRoundEvent(Event @event, RoundId roundId)
+        {
+            Event = @event;
+            RoundId = roundId;
+        }
+    }
 }
