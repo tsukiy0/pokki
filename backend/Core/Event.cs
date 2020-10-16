@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Core
 {
@@ -12,7 +13,7 @@ namespace Core
         }
     }
 
-    public struct Event
+    public abstract class Event
     {
         public readonly GameId GameId;
         public readonly EventVersion Version;
@@ -22,76 +23,76 @@ namespace Core
             GameId = gameId;
             Version = version;
         }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Event @event &&
+                   EqualityComparer<GameId>.Default.Equals(GameId, @event.GameId) &&
+                   EqualityComparer<EventVersion>.Default.Equals(Version, @event.Version);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(GameId, Version);
+        }
     }
 
-    public struct NewGameEvent
+    public class NewGameEvent : Event
     {
-        public readonly Event Event;
         public readonly Person Admin;
 
-        public NewGameEvent(Event @event, Person admin)
+        public NewGameEvent(GameId gameId, EventVersion version, Person admin) : base(gameId, version)
         {
-            Event = @event;
             Admin = admin;
         }
     }
 
-    public struct AddPersonEvent
+    public class AddPersonEvent : Event
     {
-        public readonly Event Event;
         public readonly Person Person;
 
-        public AddPersonEvent(Event @event, Person person)
+        public AddPersonEvent(GameId gameId, EventVersion version, Person person) : base(gameId, version)
         {
-            Event = @event;
             Person = person;
         }
     }
 
-    public struct AddCardsEvent
+    public class AddCardsEvent : Event
     {
-        public readonly Event Event;
         public readonly NonEmptySet<Card> Cards;
 
-        public AddCardsEvent(Event @event, NonEmptySet<Card> cards)
+        public AddCardsEvent(GameId gameId, EventVersion version, NonEmptySet<Card> cards) : base(gameId, version)
         {
-            Event = @event;
             Cards = cards;
         }
     }
 
-    public struct NewRoundEvent
+    public class NewRoundEvent : Event
     {
-        public readonly Event Event;
         public readonly RoundId RoundId;
 
-        public NewRoundEvent(Event @event, RoundId roundId)
+        public NewRoundEvent(GameId gameId, EventVersion version, RoundId roundId) : base(gameId, version)
         {
-            Event = @event;
             RoundId = roundId;
         }
     }
 
-    public struct SelectCardEvent
+    public class SelectCardEvent : Event
     {
-        public readonly Event Event;
         public readonly PersonCard PersonCard;
 
-        public SelectCardEvent(Event @event, PersonCard personCard)
+        public SelectCardEvent(GameId gameId, EventVersion version, PersonCard personCard) : base(gameId, version)
         {
-            Event = @event;
             PersonCard = personCard;
         }
     }
 
-    public struct EndRoundEvent
+    public class EndRoundEvent : Event
     {
-        public readonly Event Event;
         public readonly Card Card;
 
-        public EndRoundEvent(Event @event, Card card)
+        public EndRoundEvent(GameId gameId, EventVersion version, Card card) : base(gameId, version)
         {
-            Event = @event;
             Card = card;
         }
     }
