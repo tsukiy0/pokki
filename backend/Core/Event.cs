@@ -69,11 +69,11 @@ namespace Core
 
     public class NewRoundEvent : Event
     {
-        public readonly RoundId RoundId;
+        public readonly Round Round;
 
-        public NewRoundEvent(GameId gameId, EventVersion version, RoundId roundId) : base(gameId, version)
+        public NewRoundEvent(GameId gameId, EventVersion version, Round round) : base(gameId, version)
         {
-            RoundId = roundId;
+            Round = round;
         }
     }
 
