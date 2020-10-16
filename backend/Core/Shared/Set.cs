@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Core
+namespace Core.Shared
 {
     public class DuplicateException : Exception
     { }

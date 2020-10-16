@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Core;
+using Core.Shared;
 using Xunit;
 
-namespace CoreTests
+namespace CoreTests.Shared
 {
     public class NonEmptySetTest
     {
