@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace Core
 {
@@ -29,9 +28,9 @@ namespace Core
     {
         public readonly RoundId Id;
         public readonly string Name;
-        public readonly IList<PersonCard> PersonCards;
+        public readonly Set<PersonCard> PersonCards;
 
-        public Round(RoundId id, string name, IList<PersonCard> personCards)
+        public Round(RoundId id, string name, Set<PersonCard> personCards)
         {
             Id = id;
             Name = name;

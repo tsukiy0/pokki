@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Core
 {
@@ -62,9 +61,9 @@ namespace Core
     public struct AddCardsEvent
     {
         public readonly Event Event;
-        public readonly IList<Card> Cards;
+        public readonly NonEmptySet<Card> Cards;
 
-        public AddCardsEvent(Event @event, IList<Card> cards)
+        public AddCardsEvent(Event @event, NonEmptySet<Card> cards)
         {
             Event = @event;
             Cards = cards;
