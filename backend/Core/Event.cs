@@ -2,16 +2,6 @@
 
 namespace Core
 {
-    public struct GameId
-    {
-        public readonly Guid Value;
-
-        public GameId(Guid value)
-        {
-            Value = value;
-        }
-    }
-
     public struct EventVersion
     {
         public readonly int Value;
