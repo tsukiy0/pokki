@@ -10,6 +10,14 @@ services:
     environment:
       GITHUB_TOKEN: ${GITHUB_TOKEN}
     command: ./tasks/build.sh
+  backend_build:
+    build:
+      context: .
+      dockerfile: backend_build.Dockerfile
+    volumes: 
+      - ..:/app
+    working_dir: /app
+    command: ./tasks/backend_build.sh
   deploy:
     build:
       context: .
