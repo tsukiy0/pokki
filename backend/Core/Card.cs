@@ -2,22 +2,22 @@
 
 namespace Core
 {
-    public struct PersonId
+    public struct CardId
     {
         public readonly Guid Value;
 
-        public PersonId(Guid value)
+        public CardId(Guid value)
         {
             Value = value;
         }
     }
 
-    public struct Person
+    public struct Card
     {
-        public readonly PersonId Id;
+        public readonly CardId Id;
         public readonly string Name;
 
-        public Person(PersonId id, string name)
+        public Card(CardId id, string name)
         {
             Id = id;
             Name = name;

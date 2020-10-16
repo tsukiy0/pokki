@@ -1,25 +1,29 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Core
 {
-    public class GameId : Guid { }
-
-    public class EventVersion
+    public struct GameId
     {
-        private readonly int _value;
+        public readonly Guid Value;
 
-        public EventVersion(int value)
+        public GameId(Guid value)
         {
-            _value = value;
-        }
-
-        public readonly int ToInt()
-        {
-            return _value;
+            Value = value;
         }
     }
 
-    public sealed abstract class Event
+    public struct EventVersion
+    {
+        public readonly int Value;
+
+        public EventVersion(int value)
+        {
+            Value = value;
+        }
+    }
+
+    public struct Event
     {
         public readonly GameId GameId;
         public readonly EventVersion Version;
@@ -31,13 +35,39 @@ namespace Core
         }
     }
 
-    public class NewGameEvent : Event
+    public struct NewGameEvent
     {
+        public readonly Event Event;
         public readonly Person Admin;
 
-        public NewGameEvent(GameId gameId, EventVersion version, Person admin) : base(gameId, version)
+        public NewGameEvent(Event @event, Person admin)
         {
+            Event = @event;
             Admin = admin;
+        }
+    }
+
+    public struct AddPersonEvent
+    {
+        public readonly Event Event;
+        public readonly Person Person;
+
+        public AddPersonEvent(Event @event, Person person)
+        {
+            Event = @event;
+            Person = person;
+        }
+    }
+
+    public struct AddCardsEvent
+    {
+        public readonly Event Event;
+        public readonly IList<Card> Cards;
+
+        public AddCardsEvent(Event @event, IList<Card> cards)
+        {
+            Event = @event;
+            Cards = cards;
         }
     }
 }
