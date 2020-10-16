@@ -13,7 +13,6 @@ namespace Core.Game
         }
     }
 
-
     public struct Game
     {
         public readonly Lobby Lobby;
