@@ -82,4 +82,28 @@ namespace Core
             RoundId = roundId;
         }
     }
+
+    public struct SelectCardEvent
+    {
+        public readonly Event Event;
+        public readonly PersonCard PersonCard;
+
+        public SelectCardEvent(Event @event, PersonCard personCard)
+        {
+            Event = @event;
+            PersonCard = personCard;
+        }
+    }
+
+    public struct EndRoundEvent
+    {
+        public readonly Event Event;
+        public readonly Card Card;
+
+        public EndRoundEvent(Event @event, Card card)
+        {
+            Event = @event;
+            Card = card;
+        }
+    }
 }
