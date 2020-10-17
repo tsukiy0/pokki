@@ -1,5 +1,6 @@
 using System;
 using Core.Shared;
+using Core.User;
 
 namespace Core.Game
 {
@@ -15,13 +16,21 @@ namespace Core.Game
 
     public struct Game
     {
-        public readonly Lobby Lobby;
+        public readonly GameId Id;
+        public readonly GameEventVersion Version;
+        public readonly UserId AdminId;
+        public readonly NonEmptySet<UserId> PlayerIds;
+        public readonly NonEmptySet<Card> Cards;
         public readonly Round? ActiveRound;
         public readonly Set<CompletedRound> CompletedRounds;
 
-        public Game(Lobby lobby, Round? activeRound, Set<CompletedRound> completedRounds)
+        public Game(GameId id, GameEventVersion version, UserId adminId, NonEmptySet<UserId> playerIds, NonEmptySet<Card> cards, Round? activeRound, Set<CompletedRound> completedRounds)
         {
-            Lobby = lobby;
+            Id = id;
+            Version = version;
+            AdminId = adminId;
+            PlayerIds = playerIds;
+            Cards = cards;
             ActiveRound = activeRound;
             CompletedRounds = completedRounds;
         }

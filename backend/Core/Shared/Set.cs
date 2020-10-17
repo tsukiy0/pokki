@@ -20,5 +20,16 @@ namespace Core.Shared
 
             Value = value;
         }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Set<T> set &&
+                Value.SequenceEqual(set.Value);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Value);
+        }
     }
 }
