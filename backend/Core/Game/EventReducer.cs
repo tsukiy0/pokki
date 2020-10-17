@@ -40,65 +40,53 @@ namespace Core.Game
                             throw new NotAscendingEventOrderException();
                         }
 
-                        if (@event is AddPlayerEvent addPlayerEvent)
+                        switch (@event)
                         {
-                            return new Game(
-                                acc.Id,
-                                @event.Version,
-                                new NonEmptySet<PlayerRole>(
-                                    acc.PlayerRoles.Value.Concat(new PlayerRole[]{
+                            case AddPlayerEvent addPlayerEvent:
+                                return new Game(
+                                    acc.Id,
+                                    @event.Version,
+                                    new NonEmptySet<PlayerRole>(
+                                        acc.PlayerRoles.Value.Concat(new PlayerRole[]{
                                         new PlayerRole(
                                             addPlayerEvent.PlayerId,
                                             Role.Player
                                         )
-                                    }).ToList()
-                                ),
-                                acc.Cards,
-                                acc.ActiveRound,
-                                acc.CompletedRounds
-                            );
-                        }
-
-                        if (@event is NewRoundEvent newRoundEvent)
-                        {
-                            // @TODO check round already started
-
-                            return new Game(
-                                acc.Id,
-                                @event.Version,
-                                acc.PlayerRoles,
-                                acc.Cards,
-                                newRoundEvent.Round,
-                                acc.CompletedRounds
-                            );
-                        }
-
-                        if (@event is SelectCardEvent selectCardEvent)
-                        {
-                            // @TODO check valid player
-                            // @TODO check valid card
-
-                            if (!acc.ActiveRound.HasValue)
-                            {
-                                throw new NoActiveRoundException();
-                            }
-
-                            return new Game(
-                                acc.Id,
-                                @event.Version,
-                                acc.PlayerRoles,
-                                acc.Cards,
-                                new Round(
-                                    acc.ActiveRound.Value.Id,
-                                    acc.ActiveRound.Value.Name,
-                                    new Set<PlayerCard>(
-                                        acc.ActiveRound.Value.PlayerCards.Value.Concat(new PlayerCard[] {
-                                            selectCardEvent.PlayerCard
                                         }).ToList()
-                                    )
-                                ),
-                                acc.CompletedRounds
-                            );
+                                    ),
+                                    acc.Cards,
+                                    acc.ActiveRound,
+                                    acc.CompletedRounds
+                                );
+                            case NewRoundEvent newRoundEvent:
+                                // @TODO check round already started
+                                return new Game(
+                                    acc.Id,
+                                    @event.Version,
+                                    acc.PlayerRoles,
+                                    acc.Cards,
+                                    newRoundEvent.Round,
+                                    acc.CompletedRounds
+                                );
+                            case SelectCardEvent selectCardEvent when !acc.ActiveRound.HasValue:
+                                throw new NoActiveRoundException();
+                            case SelectCardEvent selectCardEvent:
+                                return new Game(
+                                    acc.Id,
+                                    @event.Version,
+                                    acc.PlayerRoles,
+                                    acc.Cards,
+                                    new Round(
+                                        acc.ActiveRound.Value.Id,
+                                        acc.ActiveRound.Value.Name,
+                                        new Set<PlayerCard>(
+                                            acc.ActiveRound.Value.PlayerCards.Value.Concat(new PlayerCard[] {
+                                            selectCardEvent.PlayerCard
+                                            }).ToList()
+                                        )
+                                    ),
+                                    acc.CompletedRounds
+                                );
                         }
 
                         return new Game(
