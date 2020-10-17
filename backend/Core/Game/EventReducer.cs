@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using Core.Shared;
-using Core.User;
 
 namespace Core.Game
 {
@@ -9,22 +8,22 @@ namespace Core.Game
     public class MultipleNewGameException : Exception { }
     public class EventOrderException : Exception { }
 
-    public class GameEventReducer
+    public class EventReducer
     {
-        public Game Reduce(NonEmptySet<GameEvent> events)
+        public Game Reduce(NonEmptySet<Event> events)
         {
-            if (events.Value.First() is NewGameEvent newGameEvent)
+            if (events.Value.First() is NewEvent newEvent)
             {
                 return new Game(
-                    newGameEvent.GameId,
-                    newGameEvent.Version,
+                    newEvent.GameId,
+                    newEvent.Version,
                     new NonEmptySet<PlayerRole>(new PlayerRole[] {
                         new PlayerRole(
-                            newGameEvent.AdminId,
+                            newEvent.AdminId,
                             Role.Admin
                         )
                     }),
-                    newGameEvent.Cards,
+                    newEvent.Cards,
                     null,
                     new Set<CompletedRound>(Array.Empty<CompletedRound>())
                 );

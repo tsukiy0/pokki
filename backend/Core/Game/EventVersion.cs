@@ -1,10 +1,10 @@
 ﻿namespace Core.Game
 {
-    public struct GameEventVersion
+    public struct EventVersion
     {
         public readonly int Value;
 
-        public GameEventVersion(int value)
+        public EventVersion(int value)
         {
             Value = value;
         }

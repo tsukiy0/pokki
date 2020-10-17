@@ -17,13 +17,13 @@ namespace Core.Game
     public struct Game
     {
         public readonly GameId Id;
-        public readonly GameEventVersion Version;
+        public readonly EventVersion Version;
         public readonly NonEmptySet<PlayerRole> PlayerRoles;
         public readonly NonEmptySet<Card> Cards;
         public readonly Round? ActiveRound;
         public readonly Set<CompletedRound> CompletedRounds;
 
-        public Game(GameId id, GameEventVersion version, NonEmptySet<PlayerRole> playerRoles, NonEmptySet<Card> cards, Round? activeRound, Set<CompletedRound> completedRounds)
+        public Game(GameId id, EventVersion version, NonEmptySet<PlayerRole> playerRoles, NonEmptySet<Card> cards, Round? activeRound, Set<CompletedRound> completedRounds)
         {
             Id = id;
             Version = version;
