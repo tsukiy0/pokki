@@ -39,6 +39,25 @@ namespace Core.Game
                             throw new NotAscendingEventOrderException();
                         }
 
+                        if (@event is AddPlayerEvent addPlayerEvent)
+                        {
+                            return new Game(
+                                acc.Id,
+                                @event.Version,
+                                new NonEmptySet<PlayerRole>(
+                                    acc.PlayerRoles.Value.Concat(new PlayerRole[]{
+                                        new PlayerRole(
+                                            addPlayerEvent.PlayerId,
+                                            Role.Player
+                                        )
+                                    }).ToList()
+                                ),
+                                acc.Cards,
+                                acc.ActiveRound,
+                                acc.CompletedRounds
+                            );
+                        }
+
                         return new Game(
                             acc.Id,
                             @event.Version,

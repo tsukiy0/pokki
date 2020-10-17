@@ -93,7 +93,7 @@ namespace CoreTests
         }
 
         [Fact]
-        public void NewGame()
+        public void NewEvent()
         {
             var newEvent = new NewEvent(
                 new GameId(Guid.NewGuid()),
@@ -129,6 +129,109 @@ namespace CoreTests
             ), actual);
         }
 
+        [Fact]
+        public void AddOnePlayerEvent()
+        {
+            var newEvent = new NewEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(1),
+                new UserId(Guid.NewGuid()),
+                new NonEmptySet<Card>(new Card[] {
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "M"
+                    ),
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "L"
+                    )
+                })
+            );
+            var addPlayerEvent = new AddPlayerEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(2),
+                new UserId(Guid.NewGuid())
+            );
+            var actual = new EventReducer().Reduce(new NonEmptySet<Event>(new Event[]{
+                newEvent,
+                addPlayerEvent
+            }));
+
+            Assert.Equal(new Game(
+                newEvent.GameId,
+                addPlayerEvent.Version,
+                new NonEmptySet<PlayerRole>(new PlayerRole[] {
+                    new PlayerRole(
+                        newEvent.AdminId,
+                        Role.Admin
+                    ),
+                    new PlayerRole(
+                        addPlayerEvent.PlayerId,
+                        Role.Player
+                    )
+                }),
+                newEvent.Cards,
+                null,
+                new Set<CompletedRound>(new CompletedRound[] { })
+            ), actual);
+        }
+
+        [Fact]
+        public void AddMultiplePlayerEvent()
+        {
+            var newEvent = new NewEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(1),
+                new UserId(Guid.NewGuid()),
+                new NonEmptySet<Card>(new Card[] {
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "M"
+                    ),
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "L"
+                    )
+                })
+            );
+            var addPlayerEvent1 = new AddPlayerEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(2),
+                new UserId(Guid.NewGuid())
+            );
+            var addPlayerEvent2 = new AddPlayerEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(3),
+                new UserId(Guid.NewGuid())
+            );
+            var actual = new EventReducer().Reduce(new NonEmptySet<Event>(new Event[]{
+                newEvent,
+                addPlayerEvent1,
+                addPlayerEvent2
+            }));
+
+            Assert.Equal(new Game(
+                newEvent.GameId,
+                addPlayerEvent2.Version,
+                new NonEmptySet<PlayerRole>(new PlayerRole[] {
+                    new PlayerRole(
+                        newEvent.AdminId,
+                        Role.Admin
+                    ),
+                    new PlayerRole(
+                        addPlayerEvent1.PlayerId,
+                        Role.Player
+                    ),
+                    new PlayerRole(
+                        addPlayerEvent2.PlayerId,
+                        Role.Player
+                    )
+                }),
+                newEvent.Cards,
+                null,
+                new Set<CompletedRound>(new CompletedRound[] { })
+            ), actual);
+        }
         // [Fact]
         // public void ThrowWhenCardsAlreadyExist()
         // {
