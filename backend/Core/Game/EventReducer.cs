@@ -4,11 +4,6 @@ using Core.Shared;
 
 namespace Core.Game
 {
-    public class NoNewException : Exception { }
-    public class MultipleNewException : Exception { }
-    public class NotAscendingEventOrderException : Exception { }
-    public class NotSupportedEventException : Exception { }
-
     public class EventReducer
     {
         public Game Reduce(NonEmptySet<Event> events)
