@@ -68,9 +68,14 @@ namespace Core.Game
                                     newRoundEvent.Round,
                                     acc.CompletedRounds
                                 );
-                            case SelectCardEvent selectCardEvent when !acc.ActiveRound.HasValue:
-                                throw new NoActiveRoundException();
                             case SelectCardEvent selectCardEvent:
+                                // @TODO check valid person
+                                // @TODO check valid card
+                                if (!acc.ActiveRound.HasValue)
+                                {
+                                    throw new NoActiveRoundException();
+                                }
+
                                 return new Game(
                                     acc.Id,
                                     @event.Version,
@@ -86,6 +91,31 @@ namespace Core.Game
                                         )
                                     ),
                                     acc.CompletedRounds
+                                );
+                            case EndRoundEvent endRoundEvent:
+                                // @TODO ensure everyone selected a card
+                                // @TODO check if is valid card
+                                if (!acc.ActiveRound.HasValue)
+                                {
+                                    throw new NoActiveRoundException();
+                                }
+
+                                return new Game(
+                                    acc.Id,
+                                    @event.Version,
+                                    acc.PlayerRoles,
+                                    acc.Cards,
+                                    null,
+                                    new Set<CompletedRound>(
+                                        acc.CompletedRounds.Value.Concat(new CompletedRound[]{
+                                            new CompletedRound(
+                                                acc.ActiveRound.Value.Id,
+                                                acc.ActiveRound.Value.Name,
+                                                new NonEmptySet<PlayerCard>(acc.ActiveRound.Value.PlayerCards.Value),
+                                                endRoundEvent.ResultCardId
+                                            )
+                                        }).ToList()
+                                    )
                                 );
                         }
 
