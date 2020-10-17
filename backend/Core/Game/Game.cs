@@ -15,6 +15,13 @@ namespace Core.Game
         }
     }
 
+    public class NoActiveRoundException : Exception { }
+    public class PlayerConflictException : Exception { }
+    public class ActiveRoundConflictException : Exception { }
+    public class NoPlayerException : Exception { }
+    public class NoCardException : Exception { }
+    public class NotAllPlayersSelected : Exception { }
+
     public struct Game
     {
         public readonly GameId Id;
@@ -34,35 +41,136 @@ namespace Core.Game
             CompletedRounds = completedRounds;
         }
 
-        public UserId GetAdminId()
+        public Game AddNewPlayer(AddPlayerEvent @event)
+        {
+            if (HasPlayer(@event.PlayerId))
+            {
+                throw new PlayerConflictException();
+            }
+
+            return new Game(
+                Id,
+                @event.Version,
+                PlayerRoles.ConcatOne(
+                    new PlayerRole(
+                        @event.PlayerId,
+                        Role.Player
+                    )
+                ),
+                Cards,
+                ActiveRound,
+                CompletedRounds
+            );
+        }
+
+        public Game NewRound(NewRoundEvent @event)
+        {
+            if (ActiveRound != null)
+            {
+                throw new ActiveRoundConflictException();
+            }
+
+            return new Game(
+                Id,
+                @event.Version,
+                PlayerRoles,
+                Cards,
+                @event.Round,
+                CompletedRounds
+            );
+        }
+
+        public Game SelectCard(SelectCardEvent @event)
+        {
+            if (ActiveRound == null)
+            {
+                throw new NoActiveRoundException();
+            }
+
+            if (!HasCard(@event.PlayerCard.CardId))
+            {
+                throw new NoCardException();
+            }
+
+            if (!HasPlayer(@event.PlayerCard.PlayerId))
+            {
+                throw new NoPlayerException();
+            }
+
+            // @TODO check user has already selected card
+
+            return new Game(
+                Id,
+                @event.Version,
+                PlayerRoles,
+                Cards,
+                new Round(
+                    ActiveRound.Value.Id,
+                    ActiveRound.Value.Name,
+                    ActiveRound.Value.PlayerCards.ConcatOne(@event.PlayerCard)
+                ),
+                CompletedRounds
+            );
+        }
+
+        public Game EndRound(EndRoundEvent @event)
+        {
+            if (ActiveRound == null)
+            {
+                throw new NoActiveRoundException();
+            }
+
+            if (!HasCard(@event.ResultCardId))
+            {
+                throw new NoCardException();
+            }
+
+            if (!HasAllPlayersSelected())
+            {
+                throw new NotAllPlayersSelected();
+            }
+
+            return new Game(
+                Id,
+                @event.Version,
+                PlayerRoles,
+                Cards,
+                null,
+                CompletedRounds.ConcatOne(
+                    new CompletedRound(
+                        ActiveRound.Value.Id,
+                        ActiveRound.Value.Name,
+                        new NonEmptySet<PlayerCard>(ActiveRound.Value.PlayerCards.Value),
+                        @event.ResultCardId
+                    )
+                )
+            );
+        }
+
+        private UserId GetAdminId()
         {
             return PlayerRoles.Value
                 .Where(_ => _.Role == Role.Admin)
                 .Single().PlayerId;
         }
 
-        public bool HasPlayer(UserId playerId)
+        private bool HasPlayer(UserId playerId)
         {
             return PlayerRoles.Value
                 .Where(_ => _.PlayerId.Equals(playerId))
                 .Count() == 1;
         }
 
-        public bool HasCard(CardId cardId)
+        private bool HasCard(CardId cardId)
         {
             return Cards.Value
                 .Where(_ => _.Id.Equals(cardId))
                 .Count() == 1;
         }
 
-        public bool HasActiveRound()
+        private bool HasAllPlayersSelected()
         {
-            return ActiveRound != null;
-        }
-
-        public bool HasAllPlayersSelected()
-        {
-            if (!HasActiveRound())
+            if (ActiveRound == null)
             {
                 return false;
             }
