@@ -43,16 +43,15 @@ namespace CoreTests
                 newGameEvent
             }));
 
-            Assert.Equal(newGameEvent.GameId, actual.Id);
-            Assert.Equal(new GameEventVersion(1), actual.Version);
-            Assert.Equal(newGameEvent.AdminId, actual.AdminId);
-            Assert.Equal(newGameEvent.Cards, actual.Cards);
-
             Assert.Equal(new Game(
                 newGameEvent.GameId,
                 newGameEvent.Version,
-                newGameEvent.AdminId,
-                new NonEmptySet<UserId>(new UserId[] { newGameEvent.AdminId }),
+                new NonEmptySet<PlayerRole>(new PlayerRole[] {
+                    new PlayerRole(
+                        newGameEvent.AdminId,
+                        Role.Admin
+                    )
+                }),
                 newGameEvent.Cards,
                 null,
                 new Set<CompletedRound>(new CompletedRound[] { })

@@ -18,18 +18,16 @@ namespace Core.Game
     {
         public readonly GameId Id;
         public readonly GameEventVersion Version;
-        public readonly UserId AdminId;
-        public readonly NonEmptySet<UserId> PlayerIds;
+        public readonly NonEmptySet<PlayerRole> PlayerRoles;
         public readonly NonEmptySet<Card> Cards;
         public readonly Round? ActiveRound;
         public readonly Set<CompletedRound> CompletedRounds;
 
-        public Game(GameId id, GameEventVersion version, UserId adminId, NonEmptySet<UserId> playerIds, NonEmptySet<Card> cards, Round? activeRound, Set<CompletedRound> completedRounds)
+        public Game(GameId id, GameEventVersion version, NonEmptySet<PlayerRole> playerRoles, NonEmptySet<Card> cards, Round? activeRound, Set<CompletedRound> completedRounds)
         {
             Id = id;
             Version = version;
-            AdminId = adminId;
-            PlayerIds = playerIds;
+            PlayerRoles = playerRoles;
             Cards = cards;
             ActiveRound = activeRound;
             CompletedRounds = completedRounds;

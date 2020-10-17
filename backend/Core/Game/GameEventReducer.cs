@@ -18,8 +18,12 @@ namespace Core.Game
                 return new Game(
                     newGameEvent.GameId,
                     newGameEvent.Version,
-                    newGameEvent.AdminId,
-                    new NonEmptySet<UserId>(new UserId[] { newGameEvent.AdminId }),
+                    new NonEmptySet<PlayerRole>(new PlayerRole[] {
+                        new PlayerRole(
+                            newGameEvent.AdminId,
+                            Role.Admin
+                        )
+                    }),
                     newGameEvent.Cards,
                     null,
                     new Set<CompletedRound>(Array.Empty<CompletedRound>())
