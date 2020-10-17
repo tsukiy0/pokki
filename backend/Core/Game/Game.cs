@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Core.Shared;
 using Core.User;
 
@@ -31,6 +32,13 @@ namespace Core.Game
             Cards = cards;
             ActiveRound = activeRound;
             CompletedRounds = completedRounds;
+        }
+
+        public UserId GetAdminId()
+        {
+            return PlayerRoles.Value
+                .Where(_ => _.Role == Role.Admin)
+                .Single().PlayerId;
         }
     }
 }

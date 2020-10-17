@@ -9,7 +9,7 @@ namespace CoreTests
     public class EventReducerTest
     {
         [Fact]
-        public void ThrowWhenNoNewGame()
+        public void ThrowWhenNoNew()
         {
             Assert.Throws<NoNewGameException>(() => new EventReducer().Reduce(new NonEmptySet<Event>(new Event[] {
                 new AddPlayerEvent(
@@ -21,13 +21,53 @@ namespace CoreTests
         }
 
         [Fact]
+        public void ThrowWhenMultipleNew()
+        {
+            var newEvent1 = new NewEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(1),
+                new UserId(Guid.NewGuid()),
+                new NonEmptySet<Card>(new Card[] {
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "M"
+                    ),
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "L"
+                    )
+                })
+            );
+
+            var newEvent2 = new NewEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(2),
+                new UserId(Guid.NewGuid()),
+                new NonEmptySet<Card>(new Card[] {
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "M"
+                    ),
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "L"
+                    )
+                })
+            );
+
+            Assert.Throws<MultipleNewException>(() => new EventReducer().Reduce(new NonEmptySet<Event>(new Event[]{
+                newEvent1,
+                newEvent2
+            })));
+        }
+
+        [Fact]
         public void NewGame()
         {
-            var adminId = new UserId(Guid.NewGuid());
             var newEvent = new NewEvent(
                 new GameId(Guid.NewGuid()),
                 new EventVersion(1),
-                adminId,
+                new UserId(Guid.NewGuid()),
                 new NonEmptySet<Card>(new Card[] {
                     new Card(
                         new CardId(Guid.NewGuid()),
