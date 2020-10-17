@@ -409,6 +409,102 @@ namespace CoreTests
         }
 
         [Fact]
+        public void ThrowWhenSelectCardWithNoPlayer()
+        {
+            var newEvent = new NewEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(1),
+                new UserId(Guid.NewGuid()),
+                new NonEmptySet<Card>(new Card[] {
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "M"
+                    ),
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "L"
+                    )
+                })
+            );
+            var addPlayerEvent = new AddPlayerEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(2),
+                new UserId(Guid.NewGuid())
+            );
+            var newRoundEvent = new NewRoundEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(3),
+                new Round(
+                    new RoundId(Guid.NewGuid()),
+                    "SM-123",
+                    new Set<PlayerCard>(new PlayerCard[] { })
+                )
+            );
+            var selectCardEvent = new SelectCardEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(4),
+                new PlayerCard(
+                    new UserId(Guid.NewGuid()),
+                    newEvent.Cards.Value[0].Id
+                )
+            );
+            Assert.Throws<NoPlayerException>(() => new EventReducer().Reduce(new NonEmptySet<Event>(new Event[]{
+                newEvent,
+                addPlayerEvent,
+                newRoundEvent,
+                selectCardEvent
+            })));
+        }
+
+        [Fact]
+        public void ThrowWhenSelectCardWithNoCard()
+        {
+            var newEvent = new NewEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(1),
+                new UserId(Guid.NewGuid()),
+                new NonEmptySet<Card>(new Card[] {
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "M"
+                    ),
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "L"
+                    )
+                })
+            );
+            var addPlayerEvent = new AddPlayerEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(2),
+                new UserId(Guid.NewGuid())
+            );
+            var newRoundEvent = new NewRoundEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(3),
+                new Round(
+                    new RoundId(Guid.NewGuid()),
+                    "SM-123",
+                    new Set<PlayerCard>(new PlayerCard[] { })
+                )
+            );
+            var selectCardEvent = new SelectCardEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(4),
+                new PlayerCard(
+                    addPlayerEvent.PlayerId,
+                    new CardId(Guid.NewGuid())
+                )
+            );
+            Assert.Throws<NoCardException>(() => new EventReducer().Reduce(new NonEmptySet<Event>(new Event[]{
+                newEvent,
+                addPlayerEvent,
+                newRoundEvent,
+                selectCardEvent
+            })));
+        }
+
+        [Fact]
         public void SelectCardEvent()
         {
             var newEvent = new NewEvent(
@@ -478,6 +574,124 @@ namespace CoreTests
                 ),
                 new Set<CompletedRound>(new CompletedRound[] { })
             ), actual);
+        }
+
+        [Fact]
+        public void ThrowWhenEndRoundWithNoCard()
+        {
+            var newEvent = new NewEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(1),
+                new UserId(Guid.NewGuid()),
+                new NonEmptySet<Card>(new Card[] {
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "M"
+                    ),
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "L"
+                    )
+                })
+            );
+            var addPlayerEvent = new AddPlayerEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(2),
+                new UserId(Guid.NewGuid())
+            );
+            var newRoundEvent = new NewRoundEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(3),
+                new Round(
+                    new RoundId(Guid.NewGuid()),
+                    "SM-123",
+                    new Set<PlayerCard>(new PlayerCard[] { })
+                )
+            );
+            var selectCardEvent1 = new SelectCardEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(4),
+                new PlayerCard(
+                    addPlayerEvent.PlayerId,
+                    newEvent.Cards.Value[0].Id
+                )
+            );
+            var selectCardEvent2 = new SelectCardEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(5),
+                new PlayerCard(
+                    newEvent.AdminId,
+                    newEvent.Cards.Value[0].Id
+                )
+            );
+            var endRoundEvent = new EndRoundEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(6),
+                new CardId(Guid.NewGuid())
+            );
+            Assert.Throws<NoCardException>(() => new EventReducer().Reduce(new NonEmptySet<Event>(new Event[]{
+                newEvent,
+                addPlayerEvent,
+                newRoundEvent,
+                selectCardEvent1,
+                selectCardEvent2,
+                endRoundEvent
+            })));
+        }
+
+        [Fact]
+        public void ThrowWhenNotAllPlayersSelected()
+        {
+            var newEvent = new NewEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(1),
+                new UserId(Guid.NewGuid()),
+                new NonEmptySet<Card>(new Card[] {
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "M"
+                    ),
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "L"
+                    )
+                })
+            );
+            var addPlayerEvent = new AddPlayerEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(2),
+                new UserId(Guid.NewGuid())
+            );
+            var newRoundEvent = new NewRoundEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(3),
+                new Round(
+                    new RoundId(Guid.NewGuid()),
+                    "SM-123",
+                    new Set<PlayerCard>(new PlayerCard[] { })
+                )
+            );
+            var selectCardEvent = new SelectCardEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(4),
+                new PlayerCard(
+                    addPlayerEvent.PlayerId,
+                    newEvent.Cards.Value[0].Id
+                )
+            );
+            var endRoundEvent = new EndRoundEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(5),
+                newEvent.Cards.Value[0].Id
+            );
+
+            Assert.Throws<NotAllPlayersSelected>(() => new EventReducer().Reduce(new NonEmptySet<Event>(new Event[]{
+                newEvent,
+                addPlayerEvent,
+                newRoundEvent,
+                selectCardEvent,
+                endRoundEvent
+            })));
         }
 
         [Fact]

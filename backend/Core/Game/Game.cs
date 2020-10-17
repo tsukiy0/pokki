@@ -48,9 +48,29 @@ namespace Core.Game
                 .Count() == 1;
         }
 
+        public bool HasCard(CardId cardId)
+        {
+            return Cards.Value
+                .Where(_ => _.Id.Equals(cardId))
+                .Count() == 1;
+        }
+
         public bool HasActiveRound()
         {
             return ActiveRound != null;
+        }
+
+        public bool HasAllPlayersSelected()
+        {
+            if (!HasActiveRound())
+            {
+                return false;
+            }
+
+            return !PlayerRoles.Value
+                .Select(_ => _.PlayerId)
+                .Except(ActiveRound.Value.PlayerCards.Value.Select(_ => _.PlayerId))
+                .Any();
         }
     }
 }

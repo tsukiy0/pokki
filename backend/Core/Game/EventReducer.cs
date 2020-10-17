@@ -11,6 +11,9 @@ namespace Core.Game
     public class NotSupportedEventException : Exception { }
     public class PlayerConflictException : Exception { }
     public class ActiveRoundConflictException : Exception { }
+    public class NoPlayerException : Exception { }
+    public class NoCardException : Exception { }
+    public class NotAllPlayersSelected : Exception { }
 
     public class EventReducer
     {
@@ -81,8 +84,16 @@ namespace Core.Game
                                     acc.CompletedRounds
                                 );
                             case SelectCardEvent selectCardEvent:
-                                // @TODO check valid person
-                                // @TODO check valid card
+                                if (!acc.HasCard(selectCardEvent.PlayerCard.CardId))
+                                {
+                                    throw new NoCardException();
+                                }
+
+                                if (!acc.HasPlayer(selectCardEvent.PlayerCard.PlayerId))
+                                {
+                                    throw new NoPlayerException();
+                                }
+
                                 if (!acc.HasActiveRound())
                                 {
                                     throw new NoActiveRoundException();
@@ -105,11 +116,19 @@ namespace Core.Game
                                     acc.CompletedRounds
                                 );
                             case EndRoundEvent endRoundEvent:
-                                // @TODO ensure everyone selected a card
-                                // @TODO check if is valid card
+                                if (!acc.HasCard(endRoundEvent.ResultCardId))
+                                {
+                                    throw new NoCardException();
+                                }
+
                                 if (!acc.HasActiveRound())
                                 {
                                     throw new NoActiveRoundException();
+                                }
+
+                                if (!acc.HasAllPlayersSelected())
+                                {
+                                    throw new NotAllPlayersSelected();
                                 }
 
                                 return new Game(

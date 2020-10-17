@@ -16,12 +16,12 @@ namespace Core.Game
 
     public struct PlayerCard
     {
-        public readonly UserId UserId;
+        public readonly UserId PlayerId;
         public readonly CardId CardId;
 
         public PlayerCard(UserId userId, CardId cardId)
         {
-            UserId = userId;
+            PlayerId = userId;
             CardId = cardId;
         }
     }
