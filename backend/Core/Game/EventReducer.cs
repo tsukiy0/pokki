@@ -10,6 +10,7 @@ namespace Core.Game
     public class NoActiveRoundException : Exception { }
     public class NotSupportedEventException : Exception { }
     public class PlayerConflictException : Exception { }
+    public class ActiveRoundConflictException : Exception { }
 
     public class EventReducer
     {
@@ -66,7 +67,11 @@ namespace Core.Game
                                     acc.CompletedRounds
                                 );
                             case NewRoundEvent newRoundEvent:
-                                // @TODO check round already started
+                                if (acc.HasActiveRound())
+                                {
+                                    throw new ActiveRoundConflictException();
+                                }
+
                                 return new Game(
                                     acc.Id,
                                     @event.Version,
@@ -78,7 +83,7 @@ namespace Core.Game
                             case SelectCardEvent selectCardEvent:
                                 // @TODO check valid person
                                 // @TODO check valid card
-                                if (!acc.ActiveRound.HasValue)
+                                if (!acc.HasActiveRound())
                                 {
                                     throw new NoActiveRoundException();
                                 }
@@ -102,7 +107,7 @@ namespace Core.Game
                             case EndRoundEvent endRoundEvent:
                                 // @TODO ensure everyone selected a card
                                 // @TODO check if is valid card
-                                if (!acc.ActiveRound.HasValue)
+                                if (!acc.HasActiveRound())
                                 {
                                     throw new NoActiveRoundException();
                                 }

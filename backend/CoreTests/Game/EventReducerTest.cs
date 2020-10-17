@@ -326,6 +326,50 @@ namespace CoreTests
         }
 
         [Fact]
+        public void ThrowWhenRoundAlreadyStarted()
+        {
+            var newEvent = new NewEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(1),
+                new UserId(Guid.NewGuid()),
+                new NonEmptySet<Card>(new Card[] {
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "M"
+                    ),
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "L"
+                    )
+                })
+            );
+            var newRoundEvent1 = new NewRoundEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(2),
+                new Round(
+                    new RoundId(Guid.NewGuid()),
+                    "SM-123",
+                    new Set<PlayerCard>(new PlayerCard[] { })
+                )
+            );
+            var newRoundEvent2 = new NewRoundEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(3),
+                new Round(
+                    new RoundId(Guid.NewGuid()),
+                    "SM-124",
+                    new Set<PlayerCard>(new PlayerCard[] { })
+                )
+            );
+            Assert.Throws<ActiveRoundConflictException>(() => new EventReducer().Reduce(new NonEmptySet<Event>(new Event[]{
+                newEvent,
+                newRoundEvent1,
+                newRoundEvent2
+            })));
+        }
+
+
+        [Fact]
         public void ThrowWhenSelectCardBeforeNewRound()
         {
             var newEvent = new NewEvent(

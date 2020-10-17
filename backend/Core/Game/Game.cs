@@ -47,5 +47,10 @@ namespace Core.Game
                 .Where(_ => _.PlayerId.Equals(playerId))
                 .Count() == 1;
         }
+
+        public bool HasActiveRound()
+        {
+            return ActiveRound != null;
+        }
     }
 }
