@@ -232,58 +232,66 @@ namespace CoreTests
                 new Set<CompletedRound>(new CompletedRound[] { })
             ), actual);
         }
-        // [Fact]
-        // public void ThrowWhenCardsAlreadyExist()
-        // {
-        //     var gameId = new GameId(Guid.NewGuid());
 
-        //     Assert.Throws<CardsAlreadyExistException>(() => new GameEventReducer().Reduce(new NonEmptySet<Event>(new List<Event> {
-        //         new NewGameGameEvent(
-        //             gameId,
-        //             new GameEventVersion(1),
-        //             new Person(
-        //                 new PersonId(Guid.NewGuid()),
-        //                 "bob"
-        //             )
-        //         ),
-        //         new AddCardsGameEvent(
-        //             gameId,
-        //             new GameEventVersion(2),
-        //             new NonEmptySet<Card>(new List<Card>{ new Card(new CardId(Guid.NewGuid()), "card1"), new Card(new CardId(Guid.NewGuid()), "card2")})
-        //         ),
-        //         new AddCardsGameEvent(
-        //             gameId,
-        //             new GameEventVersion(3),
-        //             new NonEmptySet<Card>(new List<Card>{ new Card(new CardId(Guid.NewGuid()), "card1"), new Card(new CardId(Guid.NewGuid()), "card2")})
-        //         )
-        //     })));
-        // }
+        [Fact]
+        public void StartEvent()
+        {
+            var newEvent = new NewEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(1),
+                new UserId(Guid.NewGuid()),
+                new NonEmptySet<Card>(new Card[] {
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "M"
+                    ),
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "L"
+                    )
+                })
+            );
+            var addPlayerEvent = new AddPlayerEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(2),
+                new UserId(Guid.NewGuid())
+            );
+            var newRoundEvent = new NewRoundEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(3),
+                new Round(
+                    new RoundId(Guid.NewGuid()),
+                    "SM-123",
+                    new Set<PlayerCard>(new PlayerCard[] { })
+                )
+            );
+            var actual = new EventReducer().Reduce(new NonEmptySet<Event>(new Event[]{
+                newEvent,
+                addPlayerEvent,
+                newRoundEvent
+            }));
 
-        // [Fact]
-        // public void ThrowWhenRoundAlreadyStarted()
-        // {
-        //     var gameId = new GameId(Guid.NewGuid());
-
-        //     Assert.Throws<CardsAlreadyExistException>(() => new GameEventReducer().Reduce(new NonEmptySet<Event>(new List<Event> {
-        //         new NewGameGameEvent(
-        //             gameId,
-        //             new GameEventVersion(1),
-        //             new Person(
-        //                 new PersonId(Guid.NewGuid()),
-        //                 "bob"
-        //             )
-        //         ),
-        //         new AddCardsGameEvent(
-        //             gameId,
-        //             new GameEventVersion(2),
-        //             new NonEmptySet<Card>(new List<Card>{ new Card(new CardId(Guid.NewGuid()), "card1"), new Card(new CardId(Guid.NewGuid()), "card2")})
-        //         ),
-        //         new AddCardsGameEvent(
-        //             gameId,
-        //             new GameEventVersion(3),
-        //             new NonEmptySet<Card>(new List<Card>{ new Card(new CardId(Guid.NewGuid()), "card1"), new Card(new CardId(Guid.NewGuid()), "card2")})
-        //         )
-        //     })));
-        // }
+            Assert.Equal(new Game(
+                newEvent.GameId,
+                newRoundEvent.Version,
+                new NonEmptySet<PlayerRole>(new PlayerRole[] {
+                    new PlayerRole(
+                        newEvent.AdminId,
+                        Role.Admin
+                    ),
+                    new PlayerRole(
+                        addPlayerEvent.PlayerId,
+                        Role.Player
+                    )
+                }),
+                newEvent.Cards,
+                new Round(
+                    newRoundEvent.Round.Id,
+                    newRoundEvent.Round.Name,
+                    newRoundEvent.Round.PlayerCards
+                ),
+                new Set<CompletedRound>(new CompletedRound[] { })
+            ), actual);
+        }
     }
 }

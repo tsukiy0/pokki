@@ -58,6 +58,18 @@ namespace Core.Game
                             );
                         }
 
+                        if (@event is NewRoundEvent newRoundEvent)
+                        {
+                            return new Game(
+                                acc.Id,
+                                @event.Version,
+                                acc.PlayerRoles,
+                                acc.Cards,
+                                newRoundEvent.Round,
+                                acc.CompletedRounds
+                            );
+                        }
+
                         return new Game(
                             acc.Id,
                             @event.Version,

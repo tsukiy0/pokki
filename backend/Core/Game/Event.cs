@@ -51,12 +51,6 @@ namespace Core.Game
         }
     }
 
-    public class StartEvent : Event
-    {
-        public StartEvent(GameId gameId, EventVersion version) : base(gameId, version)
-        { }
-    }
-
     public class NewRoundEvent : Event
     {
         public readonly Round Round;
