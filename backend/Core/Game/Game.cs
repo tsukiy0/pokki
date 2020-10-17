@@ -20,7 +20,8 @@ namespace Core.Game
     public class ActiveRoundConflictException : Exception { }
     public class NoPlayerException : Exception { }
     public class NoCardException : Exception { }
-    public class NotAllPlayersSelected : Exception { }
+    public class NotAllPlayersSelectedException : Exception { }
+    public class PlayerCardConflictException : Exception { }
 
     public struct Game
     {
@@ -39,6 +40,23 @@ namespace Core.Game
             Cards = cards;
             ActiveRound = activeRound;
             CompletedRounds = completedRounds;
+        }
+
+        public static Game New(NewEvent @event)
+        {
+            return new Game(
+                @event.GameId,
+                @event.Version,
+                new NonEmptySet<PlayerRole>(new PlayerRole[] {
+                    new PlayerRole(
+                        @event.AdminId,
+                        Role.Admin
+                    )
+                }),
+                @event.Cards,
+                null,
+                new Set<CompletedRound>(Array.Empty<CompletedRound>())
+            );
         }
 
         public Game AddNewPlayer(AddPlayerEvent @event)
@@ -75,7 +93,11 @@ namespace Core.Game
                 @event.Version,
                 PlayerRoles,
                 Cards,
-                @event.Round,
+                new Round(
+                    @event.RoundId,
+                    @event.RoundName,
+                    new Set<PlayerCard>(Array.Empty<PlayerCard>())
+                ),
                 CompletedRounds
             );
         }
@@ -97,7 +119,11 @@ namespace Core.Game
                 throw new NoPlayerException();
             }
 
-            // @TODO check user has already selected card
+            if (HasPlayerCard(@event.PlayerCard.PlayerId))
+            {
+                throw new PlayerCardConflictException();
+            }
+
 
             return new Game(
                 Id,
@@ -127,7 +153,7 @@ namespace Core.Game
 
             if (!HasAllPlayersSelected())
             {
-                throw new NotAllPlayersSelected();
+                throw new NotAllPlayersSelectedException();
             }
 
             return new Game(
@@ -147,7 +173,7 @@ namespace Core.Game
             );
         }
 
-        private UserId GetAdminId()
+        public UserId GetAdminId()
         {
             return PlayerRoles.Value
                 .Where(_ => _.Role == Role.Admin)
@@ -157,6 +183,19 @@ namespace Core.Game
         private bool HasPlayer(UserId playerId)
         {
             return PlayerRoles.Value
+                .Where(_ => _.PlayerId.Equals(playerId))
+                .Count() == 1;
+        }
+
+        private bool HasPlayerCard(UserId playerId)
+        {
+            if (ActiveRound == null)
+            {
+                return false;
+            }
+
+            return ActiveRound.Value
+                .PlayerCards.Value
                 .Where(_ => _.PlayerId.Equals(playerId))
                 .Count() == 1;
         }

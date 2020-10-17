@@ -21,19 +21,8 @@ namespace Core.Game
             if (events.Value.First() is NewEvent newEvent)
             {
                 return events.Value.Skip(1).Aggregate(
-                    new Game(
-                        newEvent.GameId,
-                        newEvent.Version,
-                        new NonEmptySet<PlayerRole>(new PlayerRole[] {
-                            new PlayerRole(
-                                newEvent.AdminId,
-                                Role.Admin
-                            )
-                        }),
-                        newEvent.Cards,
-                        null,
-                        new Set<CompletedRound>(Array.Empty<CompletedRound>())
-                    ), (acc, @event) =>
+                    Game.New(newEvent),
+                    (acc, @event) =>
                     {
                         if (@event.Version.Value <= acc.Version.Value)
                         {

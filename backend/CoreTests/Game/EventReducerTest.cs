@@ -290,11 +290,8 @@ namespace CoreTests
             var newRoundEvent = new NewRoundEvent(
                 new GameId(Guid.NewGuid()),
                 new EventVersion(3),
-                new Round(
-                    new RoundId(Guid.NewGuid()),
-                    "SM-123",
-                    new Set<PlayerCard>(new PlayerCard[] { })
-                )
+                new RoundId(Guid.NewGuid()),
+                "SM-123"
             );
             var actual = new EventReducer().Reduce(new NonEmptySet<Event>(new Event[]{
                 newEvent,
@@ -317,9 +314,9 @@ namespace CoreTests
                 }),
                 newEvent.Cards,
                 new Round(
-                    newRoundEvent.Round.Id,
-                    newRoundEvent.Round.Name,
-                    newRoundEvent.Round.PlayerCards
+                    newRoundEvent.RoundId,
+                    newRoundEvent.RoundName,
+                    new Set<PlayerCard>(Array.Empty<PlayerCard>())
                 ),
                 new Set<CompletedRound>(new CompletedRound[] { })
             ), actual);
@@ -346,20 +343,14 @@ namespace CoreTests
             var newRoundEvent1 = new NewRoundEvent(
                 new GameId(Guid.NewGuid()),
                 new EventVersion(2),
-                new Round(
-                    new RoundId(Guid.NewGuid()),
-                    "SM-123",
-                    new Set<PlayerCard>(new PlayerCard[] { })
-                )
+                new RoundId(Guid.NewGuid()),
+                "SM-123"
             );
             var newRoundEvent2 = new NewRoundEvent(
                 new GameId(Guid.NewGuid()),
                 new EventVersion(3),
-                new Round(
-                    new RoundId(Guid.NewGuid()),
-                    "SM-124",
-                    new Set<PlayerCard>(new PlayerCard[] { })
-                )
+                new RoundId(Guid.NewGuid()),
+                "SM-124"
             );
             Assert.Throws<ActiveRoundConflictException>(() => new EventReducer().Reduce(new NonEmptySet<Event>(new Event[]{
                 newEvent,
@@ -434,11 +425,8 @@ namespace CoreTests
             var newRoundEvent = new NewRoundEvent(
                 new GameId(Guid.NewGuid()),
                 new EventVersion(3),
-                new Round(
-                    new RoundId(Guid.NewGuid()),
-                    "SM-123",
-                    new Set<PlayerCard>(new PlayerCard[] { })
-                )
+                new RoundId(Guid.NewGuid()),
+                "SM-123"
             );
             var selectCardEvent = new SelectCardEvent(
                 new GameId(Guid.NewGuid()),
@@ -482,11 +470,8 @@ namespace CoreTests
             var newRoundEvent = new NewRoundEvent(
                 new GameId(Guid.NewGuid()),
                 new EventVersion(3),
-                new Round(
-                    new RoundId(Guid.NewGuid()),
-                    "SM-123",
-                    new Set<PlayerCard>(new PlayerCard[] { })
-                )
+                new RoundId(Guid.NewGuid()),
+                "SM-123"
             );
             var selectCardEvent = new SelectCardEvent(
                 new GameId(Guid.NewGuid()),
@@ -530,11 +515,8 @@ namespace CoreTests
             var newRoundEvent = new NewRoundEvent(
                 new GameId(Guid.NewGuid()),
                 new EventVersion(3),
-                new Round(
-                    new RoundId(Guid.NewGuid()),
-                    "SM-123",
-                    new Set<PlayerCard>(new PlayerCard[] { })
-                )
+                new RoundId(Guid.NewGuid()),
+                "SM-123"
             );
             var selectCardEvent = new SelectCardEvent(
                 new GameId(Guid.NewGuid()),
@@ -566,8 +548,8 @@ namespace CoreTests
                 }),
                 newEvent.Cards,
                 new Round(
-                    newRoundEvent.Round.Id,
-                    newRoundEvent.Round.Name,
+                    newRoundEvent.RoundId,
+                    newRoundEvent.RoundName,
                     new Set<PlayerCard>(new PlayerCard[]{
                         selectCardEvent.PlayerCard
                     })
@@ -602,11 +584,8 @@ namespace CoreTests
             var newRoundEvent = new NewRoundEvent(
                 new GameId(Guid.NewGuid()),
                 new EventVersion(3),
-                new Round(
-                    new RoundId(Guid.NewGuid()),
-                    "SM-123",
-                    new Set<PlayerCard>(new PlayerCard[] { })
-                )
+                new RoundId(Guid.NewGuid()),
+                "SM-123"
             );
             var selectCardEvent1 = new SelectCardEvent(
                 new GameId(Guid.NewGuid()),
@@ -665,11 +644,8 @@ namespace CoreTests
             var newRoundEvent = new NewRoundEvent(
                 new GameId(Guid.NewGuid()),
                 new EventVersion(3),
-                new Round(
-                    new RoundId(Guid.NewGuid()),
-                    "SM-123",
-                    new Set<PlayerCard>(new PlayerCard[] { })
-                )
+                new RoundId(Guid.NewGuid()),
+                "SM-123"
             );
             var selectCardEvent = new SelectCardEvent(
                 new GameId(Guid.NewGuid()),
@@ -685,7 +661,7 @@ namespace CoreTests
                 newEvent.Cards.Value[0].Id
             );
 
-            Assert.Throws<NotAllPlayersSelected>(() => new EventReducer().Reduce(new NonEmptySet<Event>(new Event[]{
+            Assert.Throws<NotAllPlayersSelectedException>(() => new EventReducer().Reduce(new NonEmptySet<Event>(new Event[]{
                 newEvent,
                 addPlayerEvent,
                 newRoundEvent,
@@ -720,11 +696,8 @@ namespace CoreTests
             var newRoundEvent = new NewRoundEvent(
                 new GameId(Guid.NewGuid()),
                 new EventVersion(3),
-                new Round(
-                    new RoundId(Guid.NewGuid()),
-                    "SM-123",
-                    new Set<PlayerCard>(new PlayerCard[] { })
-                )
+                new RoundId(Guid.NewGuid()),
+                "SM-123"
             );
             var selectCardEvent1 = new SelectCardEvent(
                 new GameId(Guid.NewGuid()),
@@ -773,8 +746,8 @@ namespace CoreTests
                 null,
                 new Set<CompletedRound>(new CompletedRound[] {
                     new CompletedRound(
-                        newRoundEvent.Round.Id,
-                        newRoundEvent.Round.Name,
+                        newRoundEvent.RoundId,
+                        newRoundEvent.RoundName,
                         new NonEmptySet<PlayerCard>(new PlayerCard[]{
                             selectCardEvent1.PlayerCard,
                             selectCardEvent2.PlayerCard
