@@ -57,13 +57,11 @@ namespace Core.Game
                                 return new Game(
                                     acc.Id,
                                     @event.Version,
-                                    new NonEmptySet<PlayerRole>(
-                                        acc.PlayerRoles.Value.Concat(new PlayerRole[]{
+                                    acc.PlayerRoles.ConcatOne(
                                         new PlayerRole(
                                             addPlayerEvent.PlayerId,
                                             Role.Player
                                         )
-                                        }).ToList()
                                     ),
                                     acc.Cards,
                                     acc.ActiveRound,
@@ -107,11 +105,7 @@ namespace Core.Game
                                     new Round(
                                         acc.ActiveRound.Value.Id,
                                         acc.ActiveRound.Value.Name,
-                                        new Set<PlayerCard>(
-                                            acc.ActiveRound.Value.PlayerCards.Value.Concat(new PlayerCard[] {
-                                            selectCardEvent.PlayerCard
-                                            }).ToList()
-                                        )
+                                        acc.ActiveRound.Value.PlayerCards.ConcatOne(selectCardEvent.PlayerCard)
                                     ),
                                     acc.CompletedRounds
                                 );
@@ -137,15 +131,13 @@ namespace Core.Game
                                     acc.PlayerRoles,
                                     acc.Cards,
                                     null,
-                                    new Set<CompletedRound>(
-                                        acc.CompletedRounds.Value.Concat(new CompletedRound[]{
-                                            new CompletedRound(
-                                                acc.ActiveRound.Value.Id,
-                                                acc.ActiveRound.Value.Name,
-                                                new NonEmptySet<PlayerCard>(acc.ActiveRound.Value.PlayerCards.Value),
-                                                endRoundEvent.ResultCardId
-                                            )
-                                        }).ToList()
+                                    acc.CompletedRounds.ConcatOne(
+                                        new CompletedRound(
+                                            acc.ActiveRound.Value.Id,
+                                            acc.ActiveRound.Value.Name,
+                                            new NonEmptySet<PlayerCard>(acc.ActiveRound.Value.PlayerCards.Value),
+                                            endRoundEvent.ResultCardId
+                                        )
                                     )
                                 );
                             default:

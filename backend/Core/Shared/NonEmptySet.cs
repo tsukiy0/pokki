@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Core.Shared
 {
@@ -14,6 +15,13 @@ namespace Core.Shared
             {
                 throw new NotEmptyException();
             }
+        }
+
+        public new NonEmptySet<T> ConcatOne(T item)
+        {
+            return new NonEmptySet<T>(
+                Value.Concat(new T[] { item }).ToList()
+            );
         }
     }
 }

@@ -21,6 +21,13 @@ namespace Core.Shared
             Value = value;
         }
 
+        public Set<T> ConcatOne(T item)
+        {
+            return new Set<T>(
+                Value.Concat(new T[] { item }).ToList()
+            );
+        }
+
         public override bool Equals(object? obj)
         {
             return obj is Set<T> set &&
