@@ -234,7 +234,7 @@ namespace CoreTests
         }
 
         [Fact]
-        public void StartEvent()
+        public void StartNewRound()
         {
             var newEvent = new NewEvent(
                 new GameId(Guid.NewGuid()),
@@ -289,6 +289,117 @@ namespace CoreTests
                     newRoundEvent.Round.Id,
                     newRoundEvent.Round.Name,
                     newRoundEvent.Round.PlayerCards
+                ),
+                new Set<CompletedRound>(new CompletedRound[] { })
+            ), actual);
+        }
+
+        [Fact]
+        public void ThrowWhenSelectCardBeforeNewRound()
+        {
+            var newEvent = new NewEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(1),
+                new UserId(Guid.NewGuid()),
+                new NonEmptySet<Card>(new Card[] {
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "M"
+                    ),
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "L"
+                    )
+                })
+            );
+            var addPlayerEvent = new AddPlayerEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(2),
+                new UserId(Guid.NewGuid())
+            );
+            var selectCardEvent = new SelectCardEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(3),
+                new PlayerCard(
+                    addPlayerEvent.PlayerId,
+                    newEvent.Cards.Value[0].Id
+                )
+            );
+
+            Assert.Throws<NoActiveRoundException>(() => new EventReducer().Reduce(new NonEmptySet<Event>(new Event[]{
+                newEvent,
+                addPlayerEvent,
+                selectCardEvent
+            })));
+        }
+
+        [Fact]
+        public void SelectCardEvent()
+        {
+            var newEvent = new NewEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(1),
+                new UserId(Guid.NewGuid()),
+                new NonEmptySet<Card>(new Card[] {
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "M"
+                    ),
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "L"
+                    )
+                })
+            );
+            var addPlayerEvent = new AddPlayerEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(2),
+                new UserId(Guid.NewGuid())
+            );
+            var newRoundEvent = new NewRoundEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(3),
+                new Round(
+                    new RoundId(Guid.NewGuid()),
+                    "SM-123",
+                    new Set<PlayerCard>(new PlayerCard[] { })
+                )
+            );
+            var selectCardEvent = new SelectCardEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(4),
+                new PlayerCard(
+                    addPlayerEvent.PlayerId,
+                    newEvent.Cards.Value[0].Id
+                )
+            );
+            var actual = new EventReducer().Reduce(new NonEmptySet<Event>(new Event[]{
+                newEvent,
+                addPlayerEvent,
+                newRoundEvent,
+                selectCardEvent
+            }));
+
+            Assert.Equal(new Game(
+                newEvent.GameId,
+                selectCardEvent.Version,
+                new NonEmptySet<PlayerRole>(new PlayerRole[] {
+                    new PlayerRole(
+                        newEvent.AdminId,
+                        Role.Admin
+                    ),
+                    new PlayerRole(
+                        addPlayerEvent.PlayerId,
+                        Role.Player
+                    )
+                }),
+                newEvent.Cards,
+                new Round(
+                    newRoundEvent.Round.Id,
+                    newRoundEvent.Round.Name,
+                    new Set<PlayerCard>(new PlayerCard[]{
+                        selectCardEvent.PlayerCard
+                    })
                 ),
                 new Set<CompletedRound>(new CompletedRound[] { })
             ), actual);

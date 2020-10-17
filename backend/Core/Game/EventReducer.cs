@@ -7,6 +7,7 @@ namespace Core.Game
     public class NoNewGameException : Exception { }
     public class MultipleNewException : Exception { }
     public class NotAscendingEventOrderException : Exception { }
+    public class NoActiveRoundException : Exception { }
 
     public class EventReducer
     {
@@ -60,12 +61,42 @@ namespace Core.Game
 
                         if (@event is NewRoundEvent newRoundEvent)
                         {
+                            // @TODO check round already started
+
                             return new Game(
                                 acc.Id,
                                 @event.Version,
                                 acc.PlayerRoles,
                                 acc.Cards,
                                 newRoundEvent.Round,
+                                acc.CompletedRounds
+                            );
+                        }
+
+                        if (@event is SelectCardEvent selectCardEvent)
+                        {
+                            // @TODO check valid player
+                            // @TODO check valid card
+
+                            if (!acc.ActiveRound.HasValue)
+                            {
+                                throw new NoActiveRoundException();
+                            }
+
+                            return new Game(
+                                acc.Id,
+                                @event.Version,
+                                acc.PlayerRoles,
+                                acc.Cards,
+                                new Round(
+                                    acc.ActiveRound.Value.Id,
+                                    acc.ActiveRound.Value.Name,
+                                    new Set<PlayerCard>(
+                                        acc.ActiveRound.Value.PlayerCards.Value.Concat(new PlayerCard[] {
+                                            selectCardEvent.PlayerCard
+                                        }).ToList()
+                                    )
+                                ),
                                 acc.CompletedRounds
                             );
                         }
