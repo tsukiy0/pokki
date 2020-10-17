@@ -40,5 +40,12 @@ namespace Core.Game
                 .Where(_ => _.Role == Role.Admin)
                 .Single().PlayerId;
         }
+
+        public bool HasPlayer(UserId playerId)
+        {
+            return PlayerRoles.Value
+                .Where(_ => _.PlayerId.Equals(playerId))
+                .Count() == 1;
+        }
     }
 }

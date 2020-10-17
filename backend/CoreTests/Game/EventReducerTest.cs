@@ -234,6 +234,37 @@ namespace CoreTests
         }
 
         [Fact]
+        public void ThrowWhenAddPlayerThatExists()
+        {
+            var newEvent = new NewEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(1),
+                new UserId(Guid.NewGuid()),
+                new NonEmptySet<Card>(new Card[] {
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "M"
+                    ),
+                    new Card(
+                        new CardId(Guid.NewGuid()),
+                        "L"
+                    )
+                })
+            );
+            var addPlayerEvent = new AddPlayerEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(2),
+                newEvent.AdminId
+            );
+
+            Assert.Throws<PlayerConflictException>(() => new EventReducer().Reduce(new NonEmptySet<Event>(new Event[]{
+                newEvent,
+                addPlayerEvent,
+            })));
+        }
+
+
+        [Fact]
         public void StartNewRound()
         {
             var newEvent = new NewEvent(

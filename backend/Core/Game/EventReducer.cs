@@ -9,7 +9,7 @@ namespace Core.Game
     public class NotAscendingEventOrderException : Exception { }
     public class NoActiveRoundException : Exception { }
     public class NotSupportedEventException : Exception { }
-
+    public class PlayerConflictException : Exception { }
 
     public class EventReducer
     {
@@ -45,6 +45,11 @@ namespace Core.Game
                         switch (@event)
                         {
                             case AddPlayerEvent addPlayerEvent:
+                                if (acc.HasPlayer(addPlayerEvent.PlayerId))
+                                {
+                                    throw new PlayerConflictException();
+                                }
+
                                 return new Game(
                                     acc.Id,
                                     @event.Version,
