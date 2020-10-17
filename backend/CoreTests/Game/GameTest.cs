@@ -77,6 +77,19 @@ namespace CoreTests
         }
 
         [Fact]
+        public void AddNewPlayer_ThrowWhenNotNextVersion()
+        {
+            var game = GetNewGame();
+            var addPlayerEvent = new AddPlayerEvent(
+                game.Id,
+                new EventVersion(1),
+                game.GetAdminId()
+            );
+
+            Assert.Throws<NotNextVersionException>(() => game.AddNewPlayer(addPlayerEvent));
+        }
+
+        [Fact]
         public void NewRound()
         {
             var game = GetNewGameWithPlayers();
@@ -114,12 +127,26 @@ namespace CoreTests
         }
 
         [Fact]
+        public void NewRound_ThrowWhenNotNextVersion()
+        {
+            var game = GetNewGameWithPlayers();
+            var newRoundEvent = new NewRoundEvent(
+                game.Id,
+                new EventVersion(2),
+                new RoundId(Guid.NewGuid()),
+                "SM-123"
+            );
+
+            Assert.Throws<NotNextVersionException>(() => game.NewRound(newRoundEvent));
+        }
+
+        [Fact]
         public void SelectCard()
         {
             var game = GetNewGameWithActiveRound();
             var selectCardEvent = new SelectCardEvent(
                 game.Id,
-                new EventVersion(3),
+                new EventVersion(4),
                 new PlayerCard(
                     game.GetAdminId(),
                     game.Cards.Value[0].Id
@@ -144,7 +171,7 @@ namespace CoreTests
             var game = GetNewGame();
             var selectCardEvent = new SelectCardEvent(
                 game.Id,
-                new EventVersion(3),
+                new EventVersion(2),
                 new PlayerCard(
                     game.GetAdminId(),
                     game.Cards.Value[0].Id
@@ -157,10 +184,10 @@ namespace CoreTests
         [Fact]
         public void SelectCard_ThrowWhenNoPlayer()
         {
-            var game = GetNewGame();
+            var game = GetNewGameWithActiveRound();
             var selectCardEvent = new SelectCardEvent(
                 game.Id,
-                new EventVersion(3),
+                new EventVersion(4),
                 new PlayerCard(
                     new UserId(Guid.NewGuid()),
                     game.Cards.Value[0].Id
@@ -184,6 +211,22 @@ namespace CoreTests
             );
 
             Assert.Throws<NoCardException>(() => game.SelectCard(selectCardEvent));
+        }
+
+        [Fact]
+        public void SelectCard_ThrowWhenNotNextVersion()
+        {
+            var game = GetNewGameWithActiveRound();
+            var selectCardEvent = new SelectCardEvent(
+                game.Id,
+                new EventVersion(3),
+                new PlayerCard(
+                    game.GetAdminId(),
+                    game.Cards.Value[0].Id
+                )
+            );
+
+            Assert.Throws<NotNextVersionException>(() => game.SelectCard(selectCardEvent));
         }
 
         [Fact]
@@ -244,6 +287,19 @@ namespace CoreTests
         }
 
         [Fact]
+        public void EndRound_ThrowWhenNotNextVersion()
+        {
+            var game = GetNewGameWithSelectedCards();
+            var endRoundEvent = new EndRoundEvent(
+                game.Id,
+                new EventVersion(5),
+                new CardId(Guid.NewGuid())
+            );
+
+            Assert.Throws<NotNextVersionException>(() => game.EndRound(endRoundEvent));
+        }
+
+        [Fact]
         public void EndRound_ThrowWhenNoActiveRound()
         {
             var game = GetNewGameWithPlayers();
@@ -260,21 +316,21 @@ namespace CoreTests
         public void EndRound_ThrowWhenNotAllPlayersSelected()
         {
             var game = GetNewGameWithActiveRound();
-            game.SelectCard(new SelectCardEvent(
+            var selectCardEvent = new SelectCardEvent(
                 game.Id,
                 new EventVersion(4),
                 new PlayerCard(
                     game.GetAdminId(),
                     game.Cards.Value[0].Id
                 )
-            ));
+            );
             var endRoundEvent = new EndRoundEvent(
                 game.Id,
                 new EventVersion(5),
                 game.Cards.Value[0].Id
             );
 
-            Assert.Throws<NotAllPlayersSelectedException>(() => game.EndRound(endRoundEvent));
+            Assert.Throws<NotAllPlayersSelectedException>(() => game.SelectCard(selectCardEvent).EndRound(endRoundEvent));
         }
 
         private Game GetNewGame()

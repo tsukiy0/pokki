@@ -22,6 +22,7 @@ namespace Core.Game
     public class NoCardException : Exception { }
     public class NotAllPlayersSelectedException : Exception { }
     public class PlayerCardConflictException : Exception { }
+    public class NotNextVersionException : Exception { }
 
     public struct Game
     {
@@ -61,6 +62,11 @@ namespace Core.Game
 
         public Game AddNewPlayer(AddPlayerEvent @event)
         {
+            if (!IsNextVersion(@event.Version))
+            {
+                throw new NotNextVersionException();
+            }
+
             if (HasPlayer(@event.PlayerId))
             {
                 throw new PlayerConflictException();
@@ -83,6 +89,11 @@ namespace Core.Game
 
         public Game NewRound(NewRoundEvent @event)
         {
+            if (!IsNextVersion(@event.Version))
+            {
+                throw new NotNextVersionException();
+            }
+
             if (ActiveRound != null)
             {
                 throw new ActiveRoundConflictException();
@@ -104,6 +115,11 @@ namespace Core.Game
 
         public Game SelectCard(SelectCardEvent @event)
         {
+            if (!IsNextVersion(@event.Version))
+            {
+                throw new NotNextVersionException();
+            }
+
             if (ActiveRound == null)
             {
                 throw new NoActiveRoundException();
@@ -141,6 +157,11 @@ namespace Core.Game
 
         public Game EndRound(EndRoundEvent @event)
         {
+            if (!IsNextVersion(@event.Version))
+            {
+                throw new NotNextVersionException();
+            }
+
             if (ActiveRound == null)
             {
                 throw new NoActiveRoundException();
@@ -218,6 +239,11 @@ namespace Core.Game
                 .Select(_ => _.PlayerId)
                 .Except(ActiveRound.Value.PlayerCards.Value.Select(_ => _.PlayerId))
                 .Any();
+        }
+
+        private bool IsNextVersion(EventVersion version)
+        {
+            return version.Value == Version.Value + 1;
         }
     }
 }
