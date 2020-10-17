@@ -11,7 +11,7 @@ namespace CoreTests
         [Fact]
         public void ThrowWhenNoNew()
         {
-            Assert.Throws<NoNewGameException>(() => new EventReducer().Reduce(new NonEmptySet<Event>(new Event[] {
+            Assert.Throws<NoNewException>(() => new EventReducer().Reduce(new NonEmptySet<Event>(new Event[] {
                 new AddPlayerEvent(
                     new GameId(Guid.NewGuid()),
                     new EventVersion(1),

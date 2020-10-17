@@ -4,7 +4,7 @@ using Core.Shared;
 
 namespace Core.Game
 {
-    public class NoNewGameException : Exception { }
+    public class NoNewException : Exception { }
     public class MultipleNewException : Exception { }
     public class NotAscendingEventOrderException : Exception { }
     public class NotSupportedEventException : Exception { }
@@ -13,11 +13,6 @@ namespace Core.Game
     {
         public Game Reduce(NonEmptySet<Event> events)
         {
-            if (events.Value.Where(_ => _ is NewEvent).Count() > 1)
-            {
-                throw new MultipleNewException();
-            }
-
             if (events.Value.First() is NewEvent newEvent)
             {
                 return events.Value.Skip(1).Aggregate(
@@ -47,7 +42,7 @@ namespace Core.Game
             }
             else
             {
-                throw new NoNewGameException();
+                throw new NoNewException();
             }
         }
     }
