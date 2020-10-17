@@ -8,6 +8,8 @@ namespace Core.Game
     public class MultipleNewException : Exception { }
     public class NotAscendingEventOrderException : Exception { }
     public class NoActiveRoundException : Exception { }
+    public class NotSupportedEventException : Exception { }
+
 
     public class EventReducer
     {
@@ -117,16 +119,9 @@ namespace Core.Game
                                         }).ToList()
                                     )
                                 );
+                            default:
+                                throw new NotSupportedEventException();
                         }
-
-                        return new Game(
-                            acc.Id,
-                            @event.Version,
-                            acc.PlayerRoles,
-                            acc.Cards,
-                            acc.ActiveRound,
-                            acc.CompletedRounds
-                        );
                     }
                 );
             }
