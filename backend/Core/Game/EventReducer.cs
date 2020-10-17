@@ -6,7 +6,7 @@ namespace Core.Game
 {
     public class NoNewGameException : Exception { }
     public class MultipleNewException : Exception { }
-    public class EventOrderException : Exception { }
+    public class NotAscendingEventOrderException : Exception { }
 
     public class EventReducer
     {
@@ -19,18 +19,35 @@ namespace Core.Game
 
             if (events.Value.First() is NewEvent newEvent)
             {
-                return new Game(
-                    newEvent.GameId,
-                    newEvent.Version,
-                    new NonEmptySet<PlayerRole>(new PlayerRole[] {
-                        new PlayerRole(
-                            newEvent.AdminId,
-                            Role.Admin
-                        )
-                    }),
-                    newEvent.Cards,
-                    null,
-                    new Set<CompletedRound>(Array.Empty<CompletedRound>())
+                return events.Value.Skip(1).Aggregate(
+                    new Game(
+                        newEvent.GameId,
+                        newEvent.Version,
+                        new NonEmptySet<PlayerRole>(new PlayerRole[] {
+                            new PlayerRole(
+                                newEvent.AdminId,
+                                Role.Admin
+                            )
+                        }),
+                        newEvent.Cards,
+                        null,
+                        new Set<CompletedRound>(Array.Empty<CompletedRound>())
+                    ), (acc, @event) =>
+                    {
+                        if (@event.Version.Value <= acc.Version.Value)
+                        {
+                            throw new NotAscendingEventOrderException();
+                        }
+
+                        return new Game(
+                            acc.Id,
+                            @event.Version,
+                            acc.PlayerRoles,
+                            acc.Cards,
+                            acc.ActiveRound,
+                            acc.CompletedRounds
+                        );
+                    }
                 );
             }
             else
