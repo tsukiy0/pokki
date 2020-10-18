@@ -1,7 +1,7 @@
-using System;
-using System.Linq;
 using Core.Shared;
 using Core.User;
+using System;
+using System.Linq;
 
 namespace Core.Game
 {

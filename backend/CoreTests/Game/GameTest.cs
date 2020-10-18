@@ -1,7 +1,7 @@
-using System;
 using Core.Game;
 using Core.Shared;
 using Core.User;
+using System;
 using Xunit;
 
 namespace CoreTests

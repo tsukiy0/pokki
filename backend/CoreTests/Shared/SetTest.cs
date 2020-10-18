@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using Core.Shared;
+using System.Collections.Generic;
 using Xunit;
 
 namespace CoreTests.Shared

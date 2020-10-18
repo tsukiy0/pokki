@@ -29,28 +29,21 @@ namespace Core.Game
 
         public Game Reduce()
         {
-            var newEvent = _value.First() as NewEvent;
-
-            if (newEvent == null)
+            if (!(_value.First() is NewEvent newEvent))
             {
                 throw new NoNewException();
             }
 
             return _value.Skip(1).Aggregate(Game.New(newEvent), (acc, @event) =>
             {
-                switch (@event)
+                return @event switch
                 {
-                    case AddPlayerEvent addPlayerEvent:
-                        return acc.AddNewPlayer(addPlayerEvent);
-                    case NewRoundEvent newRoundEvent:
-                        return acc.NewRound(newRoundEvent);
-                    case SelectCardEvent selectCardEvent:
-                        return acc.SelectCard(selectCardEvent);
-                    case EndRoundEvent endRoundEvent:
-                        return acc.EndRound(endRoundEvent);
-                    default:
-                        throw new NotSupportedEventException();
-                }
+                    AddPlayerEvent addPlayerEvent => acc.AddNewPlayer(addPlayerEvent),
+                    NewRoundEvent newRoundEvent => acc.NewRound(newRoundEvent),
+                    SelectCardEvent selectCardEvent => acc.SelectCard(selectCardEvent),
+                    EndRoundEvent endRoundEvent => acc.EndRound(endRoundEvent),
+                    _ => throw new NotSupportedEventException(),
+                };
             });
         }
     }

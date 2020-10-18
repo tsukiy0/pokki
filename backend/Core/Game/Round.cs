@@ -1,6 +1,6 @@
-using System;
 using Core.Shared;
 using Core.User;
+using System;
 
 namespace Core.Game
 {

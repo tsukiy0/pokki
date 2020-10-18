@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Core.Shared;
+﻿using Core.Shared;
 using Core.User;
+using System;
+using System.Collections.Generic;
 
 namespace Core.Game
 {
