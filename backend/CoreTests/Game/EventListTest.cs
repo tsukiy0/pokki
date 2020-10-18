@@ -7,6 +7,7 @@ using Xunit;
 
 namespace CoreTests
 {
+    [Trait("Category", "Unit")]
     public class EventListTest
     {
         [Fact]

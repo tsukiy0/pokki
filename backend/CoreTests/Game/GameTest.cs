@@ -6,6 +6,7 @@ using Xunit;
 
 namespace CoreTests
 {
+    [Trait("Category", "Unit")]
     public class GameTest
     {
         [Fact]

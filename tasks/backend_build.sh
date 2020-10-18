@@ -5,5 +5,5 @@ set -euxo pipefail
 pushd backend
 dotnet restore
 dotnet build
-dotnet test
+dotnet test --filter Category=Unit
 popd
