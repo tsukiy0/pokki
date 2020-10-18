@@ -1,5 +1,6 @@
-using System.Threading.Tasks;
 using Core.Game;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Infrastructure.EventRepository
 {
@@ -9,6 +10,6 @@ namespace Infrastructure.EventRepository
         Task AppendAddPlayerEvent(AddPlayerEvent @event);
         Task AppendSelectCardEvent(SelectCardEvent @event);
         Task AppendEndRoundEvent(EndRoundEvent @event);
-        Task<EventList> GetEvents(GameId gameId);
+        Task<IList<Event>> ListEvents(GameId gameId);
     }
 }

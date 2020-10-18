@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using Amazon.Runtime;
 using Infrastructure.EventRepository;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace InfrastructureTests
 {
@@ -24,7 +24,8 @@ namespace InfrastructureTests
             var tableName = Guid.NewGuid().ToString();
             var client = new AmazonDynamoDBClient(new BasicAWSCredentials("test", "test"), new AmazonDynamoDBConfig
             {
-                ServiceURL = serviceUrl
+                ServiceURL = serviceUrl,
+                // Timeout = TimeSpan.FromSeconds(2)
             });
 
             await client.CreateTableAsync(new CreateTableRequest
@@ -44,7 +45,7 @@ namespace InfrastructureTests
             return new DynamoEventRepositoryFixture(client, tableName);
         }
 
-        public DynamoEventRepository GetEventRepository()
+        public IEventRepository GetEventRepository()
         {
             return new DynamoEventRepository(client, tableName);
         }
