@@ -4,6 +4,7 @@ using Xunit;
 
 namespace CoreTests.Shared
 {
+    [Trait("Category", "Unit")]
     public class NonEmptySetTest
     {
         [Fact]
