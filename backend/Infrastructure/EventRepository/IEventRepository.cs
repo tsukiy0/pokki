@@ -1,4 +1,7 @@
-namespace Infrastructure
+using System.Threading.Tasks;
+using Core.Game;
+
+namespace Infrastructure.EventRepository
 {
     public interface IEventRepository
     {
