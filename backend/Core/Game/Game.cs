@@ -33,7 +33,7 @@ namespace Core.Game
         public readonly Round? ActiveRound;
         public readonly Set<CompletedRound> CompletedRounds;
 
-        public Game(GameId id, EventVersion version, NonEmptySet<PlayerRole> playerRoles, NonEmptySet<Card> cards, Round? activeRound, Set<CompletedRound> completedRounds)
+        private Game(GameId id, EventVersion version, NonEmptySet<PlayerRole> playerRoles, NonEmptySet<Card> cards, Round? activeRound, Set<CompletedRound> completedRounds)
         {
             Id = id;
             Version = version;

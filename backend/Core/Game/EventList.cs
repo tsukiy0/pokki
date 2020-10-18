@@ -6,7 +6,6 @@ namespace Core.Game
 {
     public class NoNewException : Exception { }
     public class MultipleNewException : Exception { }
-    public class NotAscendingEventOrderException : Exception { }
     public class NotSupportedEventException : Exception { }
 
     public struct EventList
