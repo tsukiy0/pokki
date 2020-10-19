@@ -1,4 +1,4 @@
-using Core.Game.Models;
+using Core.GameDomain;
 using Core.Shared;
 using Core.User;
 using System;

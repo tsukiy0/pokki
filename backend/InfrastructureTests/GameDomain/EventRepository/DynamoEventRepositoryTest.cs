@@ -1,7 +1,7 @@
-using Core.Game.Models;
+using Core.GameDomain;
 using Core.Shared;
 using Core.User;
-using Infrastructure.Game.EventRepository;
+using Infrastructure.GameDomain.EventRepository;
 using System;
 using System.Threading.Tasks;
 using Xunit;

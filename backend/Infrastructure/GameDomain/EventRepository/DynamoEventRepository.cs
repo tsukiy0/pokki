@@ -1,6 +1,6 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
-using Core.Game.Models;
+using Core.GameDomain;
 using Core.Shared;
 using Core.User;
 using System;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Game.EventRepository
+namespace Infrastructure.GameDomain.EventRepository
 {
     public class DynamoEventRepository : IEventRepository
     {

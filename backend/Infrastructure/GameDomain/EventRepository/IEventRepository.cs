@@ -1,8 +1,8 @@
-using Core.Game.Models;
+using Core.GameDomain;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Game.EventRepository
+namespace Infrastructure.GameDomain.EventRepository
 {
     public interface IEventRepository
     {

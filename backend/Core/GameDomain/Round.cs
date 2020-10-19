@@ -2,7 +2,7 @@ using Core.Shared;
 using Core.User;
 using System;
 
-namespace Core.Game.Models
+namespace Core.GameDomain
 {
     public struct RoundId
     {

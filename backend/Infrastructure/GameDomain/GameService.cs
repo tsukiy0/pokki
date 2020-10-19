@@ -1,9 +1,8 @@
 using System.Threading.Tasks;
-using Core.Game;
-using Core.Game.Models;
-using Infrastructure.Game.EventRepository;
+using Core.GameDomain;
+using Infrastructure.GameDomain.EventRepository;
 
-namespace Infrastructure.Game
+namespace Infrastructure.GameDomain
 {
     public class GameService : IGameService
     {
@@ -14,13 +13,13 @@ namespace Infrastructure.Game
             this.eventRepository = eventRepository;
         }
 
-        private async Task<Core.Game.Models.Game> GetGame(GameId gameId)
+        private async Task<Game> GetGame(GameId gameId)
         {
             var events = await eventRepository.ListEvents(gameId);
-            return Core.Game.Models.Game.FromEvent(events);
+            return Game.FromEvent(events);
         }
 
-        public async Task<Core.Game.Models.Game> AddPlayer(AddPlayerEvent @event)
+        public async Task<Game> AddPlayer(AddPlayerEvent @event)
         {
             var game = await GetGame(@event.GameId);
 
@@ -30,7 +29,7 @@ namespace Infrastructure.Game
             return newGame;
         }
 
-        public async Task<Core.Game.Models.Game> EndRound(EndRoundEvent @event)
+        public async Task<Game> EndRound(EndRoundEvent @event)
         {
             var game = await GetGame(@event.GameId);
 
@@ -40,14 +39,14 @@ namespace Infrastructure.Game
             return newGame;
         }
 
-        public async Task<Core.Game.Models.Game> New(NewEvent @event)
+        public async Task<Game> New(NewEvent @event)
         {
-            var game = Core.Game.Models.Game.New(@event);
+            var game = Game.New(@event);
             await eventRepository.AppendEvent(@event);
             return game;
         }
 
-        public async Task<Core.Game.Models.Game> SelectCard(SelectCardEvent @event)
+        public async Task<Game> SelectCard(SelectCardEvent @event)
         {
             var game = await GetGame(@event.GameId);
 
@@ -57,7 +56,7 @@ namespace Infrastructure.Game
             return newGame;
         }
 
-        public async Task<Core.Game.Models.Game> NewRound(NewRoundEvent @event)
+        public async Task<Game> NewRound(NewRoundEvent @event)
         {
             var game = await GetGame(@event.GameId);
 

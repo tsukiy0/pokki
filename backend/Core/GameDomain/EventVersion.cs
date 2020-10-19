@@ -1,4 +1,4 @@
-﻿namespace Core.Game.Models
+﻿namespace Core.GameDomain
 {
     public struct EventVersion
     {
