@@ -21,7 +21,7 @@ namespace Infrastructure.EventRepository
             EndRound
         }
 
-        public class BadEventTypeException : Exception { }
+        public class ConflictingVersionException : Exception { }
 
         private readonly AmazonDynamoDBClient client;
         private readonly string tableName;
@@ -32,40 +32,94 @@ namespace Infrastructure.EventRepository
             this.tableName = tableName;
         }
 
-        public Task AppendAddPlayerEvent(AddPlayerEvent @event)
+        public async Task AppendEvent(Event @event)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public Task AppendEndRoundEvent(EndRoundEvent @event)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public async Task AppendNewEvent(NewEvent @event)
-        {
-            await client.PutItemAsync(new PutItemRequest
+            try
             {
-                TableName = tableName,
-                Item = new Dictionary<string, AttributeValue>{
-                    {"id", new AttributeValue {S = @event.GameId.Value.ToString()}},
-                    {"version", new AttributeValue {N = @event.Version.Value.ToString()}},
-                    {"type", new AttributeValue{S = EventType.New.ToString("G")}},
-                    {"admin_id", new AttributeValue {S = @event.AdminId.Value.ToString()}},
-                    {"cards", new AttributeValue {L = @event.Cards.Value.Select(_ => {
-                        return new AttributeValue{M = new Dictionary<string, AttributeValue> {
-                            {"id", new AttributeValue{S = _.Id.Value.ToString()}},
-                            {"name", new AttributeValue{S = _.Name}}
-                        }};
-                    }).ToList()
-                    }}
+                switch (@event)
+                {
+                    case NewEvent newEvent:
+                        await client.PutItemAsync(new PutItemRequest
+                        {
+                            TableName = tableName,
+                            ConditionExpression = "attribute_not_exists(version)",
+                            Item = new Dictionary<string, AttributeValue>{
+                                {"id", new AttributeValue {S = @event.GameId.Value.ToString()}},
+                                {"version", new AttributeValue {N = @event.Version.Value.ToString()}},
+                                {"type", new AttributeValue{S = EventType.New.ToString("G")}},
+                                {"admin_id", new AttributeValue {S = newEvent.AdminId.Value.ToString()}},
+                                {"cards", new AttributeValue {L = newEvent.Cards.Value.Select(_ => {
+                                    return new AttributeValue{M = new Dictionary<string, AttributeValue> {
+                                        {"id", new AttributeValue{S = _.Id.Value.ToString()}},
+                                        {"name", new AttributeValue{S = _.Name}}
+                                    }};
+                                }).ToList()
+                                }}
+                            }
+                        });
+                        break;
+                    case AddPlayerEvent addPlayerEvent:
+                        await client.PutItemAsync(new PutItemRequest
+                        {
+                            TableName = tableName,
+                            ConditionExpression = "attribute_not_exists(version)",
+                            Item = new Dictionary<string, AttributeValue>{
+                                {"id", new AttributeValue {S = @event.GameId.Value.ToString()}},
+                                {"version", new AttributeValue {N = @event.Version.Value.ToString()}},
+                                {"type", new AttributeValue{S = EventType.AddPlayer.ToString("G")}},
+                                {"player_id", new AttributeValue {S = addPlayerEvent.PlayerId.Value.ToString()}},
+                            }
+                        });
+                        break;
+                    case NewRoundEvent newRoundEvent:
+                        await client.PutItemAsync(new PutItemRequest
+                        {
+                            TableName = tableName,
+                            ConditionExpression = "attribute_not_exists(version)",
+                            Item = new Dictionary<string, AttributeValue>{
+                                {"id", new AttributeValue {S = @event.GameId.Value.ToString()}},
+                                {"version", new AttributeValue {N = @event.Version.Value.ToString()}},
+                                {"type", new AttributeValue{S = EventType.NewRound.ToString("G")}},
+                                {"round_id", new AttributeValue {S = newRoundEvent.RoundId.Value.ToString()}},
+                                {"round_name", new AttributeValue {S = newRoundEvent.RoundName}},
+                            }
+                        });
+                        break;
+                    case SelectCardEvent selectCardEvent:
+                        await client.PutItemAsync(new PutItemRequest
+                        {
+                            TableName = tableName,
+                            ConditionExpression = "attribute_not_exists(version)",
+                            Item = new Dictionary<string, AttributeValue>{
+                                {"id", new AttributeValue {S = @event.GameId.Value.ToString()}},
+                                {"version", new AttributeValue {N = @event.Version.Value.ToString()}},
+                                {"type", new AttributeValue{S = EventType.SelectCard.ToString("G")}},
+                                {"player_card", new AttributeValue {M = new Dictionary<string, AttributeValue> {
+                                    {"player_id", new AttributeValue{S = selectCardEvent.PlayerCard.PlayerId.Value.ToString()}},
+                                    {"card_id", new AttributeValue{S = selectCardEvent.PlayerCard.CardId.Value.ToString()}}
+                                }}},
+                            }
+                        });
+                        break;
+                    case EndRoundEvent endRoundEvent:
+                        await client.PutItemAsync(new PutItemRequest
+                        {
+                            TableName = tableName,
+                            ConditionExpression = "attribute_not_exists(version)",
+                            Item = new Dictionary<string, AttributeValue>{
+                                {"id", new AttributeValue {S = @event.GameId.Value.ToString()}},
+                                {"version", new AttributeValue {N = @event.Version.Value.ToString()}},
+                                {"type", new AttributeValue{S = EventType.EndRound.ToString("G")}},
+                                {"result_card_id", new AttributeValue {S = endRoundEvent.ResultCardId.Value.ToString()}},
+                            }
+                        });
+                        break;
                 }
-            });
-        }
-
-        public Task AppendSelectCardEvent(SelectCardEvent @event)
-        {
-            throw new System.NotImplementedException();
+            }
+            catch (ConditionalCheckFailedException)
+            {
+                throw new ConflictingVersionException();
+            }
         }
 
         public async Task<IList<Event>> ListEvents(GameId gameId)
@@ -79,13 +133,13 @@ namespace Infrastructure.EventRepository
                 },
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>{
                     {":hv", new AttributeValue{S = gameId.Value.ToString()}}
-                }
+                },
+                ScanIndexForward = true
             });
 
-            return res.Items.Select(item =>
+            return res.Items.Select<Dictionary<string, AttributeValue>, Event>(item =>
             {
-                var p = Enum.Parse(typeof(EventType), item["type"].S);
-                return (p) switch
+                return (Enum.Parse(typeof(EventType), item["type"].S)) switch
                 {
                     EventType.New => new NewEvent(
                         new GameId(Guid.Parse(item["id"].S)),
@@ -99,7 +153,31 @@ namespace Infrastructure.EventRepository
                             );
                         }).ToArray())
                     ),
-                    _ => throw new BadEventTypeException(),
+                    EventType.AddPlayer => new AddPlayerEvent(
+                        new GameId(Guid.Parse(item["id"].S)),
+                        new EventVersion(int.Parse(item["version"].N)),
+                        new UserId(Guid.Parse(item["player_id"].S))
+                    ),
+                    EventType.NewRound => new NewRoundEvent(
+                        new GameId(Guid.Parse(item["id"].S)),
+                        new EventVersion(int.Parse(item["version"].N)),
+                        new RoundId(Guid.Parse(item["round_id"].S)),
+                        item["round_name"].S
+                    ),
+                    EventType.SelectCard => new SelectCardEvent(
+                        new GameId(Guid.Parse(item["id"].S)),
+                        new EventVersion(int.Parse(item["version"].N)),
+                        new PlayerCard(
+                            new UserId(Guid.Parse(item["player_card"].M["player_id"].S)),
+                            new CardId(Guid.Parse(item["player_card"].M["card_id"].S))
+                        )
+                    ),
+                    EventType.EndRound => new EndRoundEvent(
+                        new GameId(Guid.Parse(item["id"].S)),
+                        new EventVersion(int.Parse(item["version"].N)),
+                        new CardId(Guid.Parse(item["result_card_id"].S))
+                    ),
+                    _ => throw new NotImplementedException(),
                 };
             }).ToArray();
         }
