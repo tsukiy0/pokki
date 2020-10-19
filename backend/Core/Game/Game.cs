@@ -60,7 +60,7 @@ namespace Core.Game
             );
         }
 
-        public Game AddNewPlayer(AddPlayerEvent @event)
+        public Game AddPlayer(AddPlayerEvent @event)
         {
             if (!IsNextVersion(@event.Version))
             {

@@ -38,7 +38,7 @@ namespace Core.Game
             {
                 return @event switch
                 {
-                    AddPlayerEvent addPlayerEvent => acc.AddNewPlayer(addPlayerEvent),
+                    AddPlayerEvent addPlayerEvent => acc.AddPlayer(addPlayerEvent),
                     NewRoundEvent newRoundEvent => acc.NewRound(newRoundEvent),
                     SelectCardEvent selectCardEvent => acc.SelectCard(selectCardEvent),
                     EndRoundEvent endRoundEvent => acc.EndRound(endRoundEvent),

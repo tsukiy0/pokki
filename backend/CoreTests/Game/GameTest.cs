@@ -38,7 +38,7 @@ namespace CoreTests
         }
 
         [Fact]
-        public void AddNewPlayer()
+        public void AddPlayer()
         {
             var game = GetNewGame();
             var addPlayerEvent = new AddPlayerEvent(
@@ -47,7 +47,7 @@ namespace CoreTests
                 new UserId(Guid.NewGuid())
             );
 
-            var actual = game.AddNewPlayer(addPlayerEvent);
+            var actual = game.AddPlayer(addPlayerEvent);
 
             Assert.Equal(
                 new NonEmptySet<PlayerRole>(new PlayerRole[]{
@@ -65,7 +65,7 @@ namespace CoreTests
         }
 
         [Fact]
-        public void AddNewPlayer_ThrowWhenPlayerExists()
+        public void AddPlayer_ThrowWhenPlayerExists()
         {
             var game = GetNewGame();
             var addPlayerEvent = new AddPlayerEvent(
@@ -74,11 +74,11 @@ namespace CoreTests
                 game.GetAdminId()
             );
 
-            Assert.Throws<PlayerConflictException>(() => game.AddNewPlayer(addPlayerEvent));
+            Assert.Throws<PlayerConflictException>(() => game.AddPlayer(addPlayerEvent));
         }
 
         [Fact]
-        public void AddNewPlayer_ThrowWhenNotNextVersion()
+        public void AddPlayer_ThrowWhenNotNextVersion()
         {
             var game = GetNewGame();
             var addPlayerEvent = new AddPlayerEvent(
@@ -87,7 +87,7 @@ namespace CoreTests
                 game.GetAdminId()
             );
 
-            Assert.Throws<NotNextVersionException>(() => game.AddNewPlayer(addPlayerEvent));
+            Assert.Throws<NotNextVersionException>(() => game.AddPlayer(addPlayerEvent));
         }
 
         [Fact]
@@ -357,7 +357,7 @@ namespace CoreTests
         {
             var game = GetNewGame();
 
-            return game.AddNewPlayer(new AddPlayerEvent(
+            return game.AddPlayer(new AddPlayerEvent(
                 game.Id,
                 new EventVersion(2),
                 new UserId(Guid.NewGuid())

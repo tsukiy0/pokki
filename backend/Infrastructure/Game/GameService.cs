@@ -1,33 +1,67 @@
 using System.Threading.Tasks;
 using Core.Game;
+using Infrastructure.Game.EventRepository;
 
 namespace Infrastructure.Game
 {
     public class GameService : IGameService
     {
-        public Task<Core.Game.Game> AddPlayer(AddPlayerEvent @event)
+        private readonly IEventRepository eventRepository;
+
+        public GameService(IEventRepository eventRepository)
         {
-            throw new System.NotImplementedException();
+            this.eventRepository = eventRepository;
         }
 
-        public Task<Core.Game.Game> EndRound(EndRoundEvent @event)
+        public async Task<Core.Game.Game> AddPlayer(AddPlayerEvent @event)
         {
-            throw new System.NotImplementedException();
+            var events = await eventRepository.ListEvents(@event.GameId);
+            var game = new EventList(events).Reduce();
+
+            var newGame = game.AddPlayer(@event);
+            await eventRepository.AppendEvent(@event);
+
+            return newGame;
         }
 
-        public Task<Core.Game.Game> New(NewEvent @event)
+        public async Task<Core.Game.Game> EndRound(EndRoundEvent @event)
         {
-            throw new System.NotImplementedException();
+            var events = await eventRepository.ListEvents(@event.GameId);
+            var game = new EventList(events).Reduce();
+
+            var newGame = game.EndRound(@event);
+            await eventRepository.AppendEvent(@event);
+
+            return newGame;
         }
 
-        public Task<Core.Game.Game> SelectCard(SelectCardEvent @event)
+        public async Task<Core.Game.Game> New(NewEvent @event)
         {
-            throw new System.NotImplementedException();
+            var game = Core.Game.Game.New(@event);
+            await eventRepository.AppendEvent(@event);
+            return game;
         }
 
-        public Task<Core.Game.Game> NewRound(NewRoundEvent @event)
+        public async Task<Core.Game.Game> SelectCard(SelectCardEvent @event)
         {
-            throw new System.NotImplementedException();
+            var events = await eventRepository.ListEvents(@event.GameId);
+            var game = new EventList(events).Reduce();
+
+            var newGame = game.SelectCard(@event);
+            await eventRepository.AppendEvent(@event);
+
+            return newGame;
+        }
+
+        public async Task<Core.Game.Game> NewRound(NewRoundEvent @event)
+        {
+            var events = await eventRepository.ListEvents(@event.GameId);
+            var game = new EventList(events).Reduce();
+
+            var newGame = game.NewRound(@event);
+            await eventRepository.AppendEvent(@event);
+
+            return newGame;
         }
     }
 }
