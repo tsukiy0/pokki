@@ -2,7 +2,7 @@ using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using Core.GameDomain;
 using Core.Shared;
-using Core.User;
+using Core.UserDomain;
 using System;
 using System.Collections.Generic;
 using System.Linq;

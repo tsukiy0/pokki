@@ -1,4 +1,4 @@
-using Core.User;
+using Core.UserDomain;
 
 namespace Core.GameDomain
 {

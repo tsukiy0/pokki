@@ -1,6 +1,6 @@
 using Core.GameDomain;
 using Core.Shared;
-using Core.User;
+using Core.UserDomain;
 using System;
 using Xunit;
 

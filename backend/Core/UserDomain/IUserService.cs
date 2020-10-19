@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Core.User
+namespace Core.UserDomain
 {
     public interface IUserService
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Core.User
+namespace Core.UserDomain
 {
     public struct UserId
     {

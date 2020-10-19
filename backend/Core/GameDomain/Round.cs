@@ -1,5 +1,5 @@
 using Core.Shared;
-using Core.User;
+using Core.UserDomain;
 using System;
 
 namespace Core.GameDomain
