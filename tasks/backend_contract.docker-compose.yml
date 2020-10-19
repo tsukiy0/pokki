@@ -1,0 +1,20 @@
+version: '3'
+services:
+  backend_contract:
+    image: mcr.microsoft.com/dotnet/core/sdk:3.1
+    volumes: 
+      - ..:/app
+    working_dir: /app
+    environment:
+      DYNAMO_URL: http://dynamo:8000
+    command: ./tasks/backend_contract.sh
+    depends_on:
+      - dynamo
+    networks:
+      - contract
+  dynamo:
+    image: amazon/dynamodb-local
+    networks:
+      - contract
+networks:
+  contract:

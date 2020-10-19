@@ -22,6 +22,11 @@ jobs:
           docker-compose -f tasks/docker-compose.yml build backend_build
           docker-compose -f tasks/docker-compose.yml run backend_build
           docker-compose -f tasks/docker-compose.yml down
+      - name: backend_contract
+        run: |
+          docker-compose -f tasks/backend_contract.docker-compose.yml build backend_contract
+          docker-compose -f tasks/backend_contract.docker-compose.yml run backend_contract
+          docker-compose -f tasks/backend_contract.docker-compose.yml down
       - name: deploy
         env:
           NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}

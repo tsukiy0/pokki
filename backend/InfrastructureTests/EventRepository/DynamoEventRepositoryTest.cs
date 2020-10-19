@@ -14,7 +14,7 @@ namespace InfrastructureTests
         [Fact]
         public async Task AppendEvent_New()
         {
-            await using (var fixture = await DynamoEventRepositoryFixture.Init("http://localhost:8000"))
+            await using (var fixture = await DynamoEventRepositoryFixture.Init())
             {
                 var eventRepository = fixture.GetEventRepository();
 
@@ -41,7 +41,7 @@ namespace InfrastructureTests
         [Fact]
         public async Task AppendEvent_AddPlayer()
         {
-            await using (var fixture = await DynamoEventRepositoryFixture.Init("http://localhost:8000"))
+            await using (var fixture = await DynamoEventRepositoryFixture.Init())
             {
                 var eventRepository = fixture.GetEventRepository();
 
@@ -62,7 +62,7 @@ namespace InfrastructureTests
         [Fact]
         public async Task AppendEvent_NewRound()
         {
-            await using (var fixture = await DynamoEventRepositoryFixture.Init("http://localhost:8000"))
+            await using (var fixture = await DynamoEventRepositoryFixture.Init())
             {
                 var eventRepository = fixture.GetEventRepository();
 
@@ -84,7 +84,7 @@ namespace InfrastructureTests
         [Fact]
         public async Task AppendEvent_SelectCardEvent()
         {
-            await using (var fixture = await DynamoEventRepositoryFixture.Init("http://localhost:8000"))
+            await using (var fixture = await DynamoEventRepositoryFixture.Init())
             {
                 var eventRepository = fixture.GetEventRepository();
 
@@ -108,7 +108,7 @@ namespace InfrastructureTests
         [Fact]
         public async Task AppendEvent_EndRound()
         {
-            await using (var fixture = await DynamoEventRepositoryFixture.Init("http://localhost:8000"))
+            await using (var fixture = await DynamoEventRepositoryFixture.Init())
             {
                 var eventRepository = fixture.GetEventRepository();
 
@@ -130,7 +130,7 @@ namespace InfrastructureTests
         [Fact]
         public async Task AppendEvent_ThrowWhenConflictingVersion()
         {
-            await using (var fixture = await DynamoEventRepositoryFixture.Init("http://localhost:8000"))
+            await using (var fixture = await DynamoEventRepositoryFixture.Init())
             {
                 var eventRepository = fixture.GetEventRepository();
 
@@ -148,7 +148,7 @@ namespace InfrastructureTests
         [Fact]
         public async Task ListEvents_SortByEventVersionAscending()
         {
-            await using (var fixture = await DynamoEventRepositoryFixture.Init("http://localhost:8000"))
+            await using (var fixture = await DynamoEventRepositoryFixture.Init())
             {
                 var eventRepository = fixture.GetEventRepository();
 

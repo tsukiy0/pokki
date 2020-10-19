@@ -1,6 +1,7 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using Amazon.Runtime;
+using Infrastructure.Config;
 using Infrastructure.EventRepository;
 using System;
 using System.Collections.Generic;
@@ -19,13 +20,13 @@ namespace InfrastructureTests
             this.tableName = tableName;
         }
 
-        public static async Task<DynamoEventRepositoryFixture> Init(string serviceUrl)
+        public static async Task<DynamoEventRepositoryFixture> Init()
         {
+            var config = new SystemConfig();
             var tableName = Guid.NewGuid().ToString();
             var client = new AmazonDynamoDBClient(new BasicAWSCredentials("test", "test"), new AmazonDynamoDBConfig
             {
-                ServiceURL = serviceUrl,
-                // Timeout = TimeSpan.FromSeconds(2)
+                ServiceURL = config.Get("DYNAMO_URL")
             });
 
             await client.CreateTableAsync(new CreateTableRequest
