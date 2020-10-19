@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Core;
 using Core.GameDomain;
 using Infrastructure.GameDomain.EventRepository;
 
@@ -13,57 +14,44 @@ namespace Infrastructure.GameDomain
             this.eventRepository = eventRepository;
         }
 
-        private async Task<Game> GetGame(GameId gameId)
-        {
-            var events = await eventRepository.ListEvents(gameId);
-            return Game.FromEvent(events);
-        }
-
         public async Task<Game> AddPlayer(AddPlayerEvent @event)
         {
-            var game = await GetGame(@event.GameId);
-
-            var newGame = game.AddPlayer(@event);
+            var events = await eventRepository.ListEvents(@event.GameId);
+            var game = Game.FromEvent(events.ConcatOne(@event));
             await eventRepository.AppendEvent(@event);
-
-            return newGame;
+            return game;
         }
 
         public async Task<Game> EndRound(EndRoundEvent @event)
         {
-            var game = await GetGame(@event.GameId);
-
-            var newGame = game.EndRound(@event);
+            var events = await eventRepository.ListEvents(@event.GameId);
+            var game = Game.FromEvent(events.ConcatOne(@event));
             await eventRepository.AppendEvent(@event);
-
-            return newGame;
+            return game;
         }
 
         public async Task<Game> New(NewEvent @event)
         {
-            var game = Game.New(@event);
+            var events = await eventRepository.ListEvents(@event.GameId);
+            var game = Game.FromEvent(events.ConcatOne(@event));
             await eventRepository.AppendEvent(@event);
             return game;
         }
 
         public async Task<Game> SelectCard(SelectCardEvent @event)
         {
-            var game = await GetGame(@event.GameId);
-
-            var newGame = game.SelectCard(@event);
+            var events = await eventRepository.ListEvents(@event.GameId);
+            var game = Game.FromEvent(events.ConcatOne(@event));
             await eventRepository.AppendEvent(@event);
-
-            return newGame;
+            return game;
         }
 
         public async Task<Game> NewRound(NewRoundEvent @event)
         {
-            var game = await GetGame(@event.GameId);
-
-            var newGame = game.NewRound(@event);
+            var events = await eventRepository.ListEvents(@event.GameId);
+            var game = Game.FromEvent(events.ConcatOne(@event));
             await eventRepository.AppendEvent(@event);
-
-            return newGame;
+            return game;
         }
     }
 }

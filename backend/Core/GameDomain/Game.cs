@@ -66,7 +66,7 @@ namespace Core.GameDomain
             });
         }
 
-        public static Game New(NewEvent @event)
+        private static Game New(NewEvent @event)
         {
             return new Game(
                 @event.GameId,
@@ -83,7 +83,7 @@ namespace Core.GameDomain
             );
         }
 
-        public Game AddPlayer(AddPlayerEvent @event)
+        private Game AddPlayer(AddPlayerEvent @event)
         {
             if (!IsNextVersion(@event.Version))
             {
@@ -110,7 +110,7 @@ namespace Core.GameDomain
             );
         }
 
-        public Game NewRound(NewRoundEvent @event)
+        private Game NewRound(NewRoundEvent @event)
         {
             if (!IsNextVersion(@event.Version))
             {
@@ -136,7 +136,7 @@ namespace Core.GameDomain
             );
         }
 
-        public Game SelectCard(SelectCardEvent @event)
+        private Game SelectCard(SelectCardEvent @event)
         {
             if (!IsNextVersion(@event.Version))
             {
@@ -178,7 +178,7 @@ namespace Core.GameDomain
             );
         }
 
-        public Game EndRound(EndRoundEvent @event)
+        private Game EndRound(EndRoundEvent @event)
         {
             if (!IsNextVersion(@event.Version))
             {

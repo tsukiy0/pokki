@@ -2,13 +2,28 @@ using Core.GameDomain;
 using Core.Shared;
 using Core.UserDomain;
 using System;
+using System.Collections.Generic;
 using Xunit;
+using Core;
 
 namespace CoreTests
 {
     [Trait("Category", "Unit")]
     public class GameTest
     {
+        [Fact]
+        public void ThrowWhenNoNew()
+        {
+            var newEvent = new AddPlayerEvent(
+                new GameId(Guid.NewGuid()),
+                new EventVersion(2),
+                new UserId(Guid.NewGuid())
+            );
+
+            Assert.Throws<NoNewException>(() => Game.FromEvent(new Event[] { newEvent }));
+        }
+
+
         [Fact]
         public void New()
         {
@@ -27,7 +42,7 @@ namespace CoreTests
                 )
             }));
 
-            var actual = Game.New(newEvent);
+            var actual = Game.FromEvent(new Event[] { newEvent });
 
             Assert.Equal(newEvent.GameId, actual.Id);
             Assert.Equal(newEvent.Version, actual.Version);
@@ -40,14 +55,14 @@ namespace CoreTests
         [Fact]
         public void AddPlayer()
         {
-            var game = GetNewGame();
+            var (events, game) = GetNewGame();
             var addPlayerEvent = new AddPlayerEvent(
-                game.Id,
+                events[0].GameId,
                 new EventVersion(2),
                 new UserId(Guid.NewGuid())
             );
 
-            var actual = game.AddPlayer(addPlayerEvent);
+            var actual = Game.FromEvent(events.ConcatOne(addPlayerEvent));
 
             Assert.Equal(
                 new NonEmptySet<PlayerRole>(new PlayerRole[]{
@@ -67,33 +82,33 @@ namespace CoreTests
         [Fact]
         public void AddPlayer_ThrowWhenPlayerExists()
         {
-            var game = GetNewGame();
+            var (events, game) = GetNewGame();
             var addPlayerEvent = new AddPlayerEvent(
                 game.Id,
                 new EventVersion(2),
                 game.GetAdminId()
             );
 
-            Assert.Throws<PlayerConflictException>(() => game.AddPlayer(addPlayerEvent));
+            Assert.Throws<PlayerConflictException>(() => Game.FromEvent(events.ConcatOne(addPlayerEvent)));
         }
 
         [Fact]
         public void AddPlayer_ThrowWhenNotNextVersion()
         {
-            var game = GetNewGame();
+            var (events, game) = GetNewGame();
             var addPlayerEvent = new AddPlayerEvent(
                 game.Id,
                 new EventVersion(1),
                 game.GetAdminId()
             );
 
-            Assert.Throws<NotNextVersionException>(() => game.AddPlayer(addPlayerEvent));
+            Assert.Throws<NotNextVersionException>(() => Game.FromEvent(events.ConcatOne(addPlayerEvent)));
         }
 
         [Fact]
         public void NewRound()
         {
-            var game = GetNewGameWithPlayers();
+            var (events, game) = GetNewGameWithPlayers();
             var newRoundEvent = new NewRoundEvent(
                 game.Id,
                 new EventVersion(3),
@@ -101,7 +116,7 @@ namespace CoreTests
                 "SM-123"
             );
 
-            var actual = game.NewRound(newRoundEvent);
+            var actual = Game.FromEvent(events.ConcatOne(newRoundEvent));
 
             Assert.Equal(
                 new Round(
@@ -116,7 +131,7 @@ namespace CoreTests
         [Fact]
         public void NewRound_ThrowWhenHasActiveRound()
         {
-            var game = GetNewGameWithActiveRound();
+            var (events, game) = GetNewGameWithActiveRound();
             var newRoundEvent = new NewRoundEvent(
                 game.Id,
                 new EventVersion(4),
@@ -124,13 +139,13 @@ namespace CoreTests
                 "SM-123"
             );
 
-            Assert.Throws<ActiveRoundConflictException>(() => game.NewRound(newRoundEvent));
+            Assert.Throws<ActiveRoundConflictException>(() => Game.FromEvent(events.ConcatOne(newRoundEvent)));
         }
 
         [Fact]
         public void NewRound_ThrowWhenNotNextVersion()
         {
-            var game = GetNewGameWithPlayers();
+            var (events, game) = GetNewGameWithPlayers();
             var newRoundEvent = new NewRoundEvent(
                 game.Id,
                 new EventVersion(2),
@@ -138,13 +153,13 @@ namespace CoreTests
                 "SM-123"
             );
 
-            Assert.Throws<NotNextVersionException>(() => game.NewRound(newRoundEvent));
+            Assert.Throws<NotNextVersionException>(() => Game.FromEvent(events.ConcatOne(newRoundEvent)));
         }
 
         [Fact]
         public void SelectCard()
         {
-            var game = GetNewGameWithActiveRound();
+            var (events, game) = GetNewGameWithActiveRound();
             var selectCardEvent = new SelectCardEvent(
                 game.Id,
                 new EventVersion(4),
@@ -154,7 +169,7 @@ namespace CoreTests
                 )
             );
 
-            var actual = game.SelectCard(selectCardEvent);
+            var actual = Game.FromEvent(events.ConcatOne(selectCardEvent));
 
             Assert.Equal(
                     new NonEmptySet<PlayerCard>(
@@ -169,7 +184,7 @@ namespace CoreTests
         [Fact]
         public void SelectCard_ThrowWhenNoActiveRound()
         {
-            var game = GetNewGame();
+            var (events, game) = GetNewGame();
             var selectCardEvent = new SelectCardEvent(
                 game.Id,
                 new EventVersion(2),
@@ -179,13 +194,13 @@ namespace CoreTests
                 )
             );
 
-            Assert.Throws<NoActiveRoundException>(() => game.SelectCard(selectCardEvent));
+            Assert.Throws<NoActiveRoundException>(() => Game.FromEvent(events.ConcatOne(selectCardEvent)));
         }
 
         [Fact]
         public void SelectCard_ThrowWhenNoPlayer()
         {
-            var game = GetNewGameWithActiveRound();
+            var (events, game) = GetNewGameWithActiveRound();
             var selectCardEvent = new SelectCardEvent(
                 game.Id,
                 new EventVersion(4),
@@ -195,13 +210,13 @@ namespace CoreTests
                 )
             );
 
-            Assert.Throws<NoPlayerException>(() => game.SelectCard(selectCardEvent));
+            Assert.Throws<NoPlayerException>(() => Game.FromEvent(events.ConcatOne(selectCardEvent)));
         }
 
         [Fact]
         public void SelectCard_ThrowWhenNoCard()
         {
-            var game = GetNewGameWithActiveRound();
+            var (events, game) = GetNewGameWithActiveRound();
             var selectCardEvent = new SelectCardEvent(
                 game.Id,
                 new EventVersion(4),
@@ -211,13 +226,13 @@ namespace CoreTests
                 )
             );
 
-            Assert.Throws<NoCardException>(() => game.SelectCard(selectCardEvent));
+            Assert.Throws<NoCardException>(() => Game.FromEvent(events.ConcatOne(selectCardEvent)));
         }
 
         [Fact]
         public void SelectCard_ThrowWhenNotNextVersion()
         {
-            var game = GetNewGameWithActiveRound();
+            var (events, game) = GetNewGameWithActiveRound();
             var selectCardEvent = new SelectCardEvent(
                 game.Id,
                 new EventVersion(3),
@@ -227,13 +242,13 @@ namespace CoreTests
                 )
             );
 
-            Assert.Throws<NotNextVersionException>(() => game.SelectCard(selectCardEvent));
+            Assert.Throws<NotNextVersionException>(() => Game.FromEvent(events.ConcatOne(selectCardEvent)));
         }
 
         [Fact]
         public void SelectCard_ThrowWhenPlayerAlreadySelectedCard()
         {
-            var game = GetNewGameWithSelectedCards();
+            var (events, game) = GetNewGameWithSelectedCards();
             var selectCardEvent = new SelectCardEvent(
                 game.Id,
                 new EventVersion(6),
@@ -243,20 +258,20 @@ namespace CoreTests
                 )
             );
 
-            Assert.Throws<PlayerCardConflictException>(() => game.SelectCard(selectCardEvent));
+            Assert.Throws<PlayerCardConflictException>(() => Game.FromEvent(events.ConcatOne(selectCardEvent)));
         }
 
         [Fact]
         public void EndRound()
         {
-            var game = GetNewGameWithSelectedCards();
+            var (events, game) = GetNewGameWithSelectedCards();
             var endRoundEvent = new EndRoundEvent(
                 game.Id,
                 new EventVersion(6),
                 game.Cards.Value[0].Id
             );
 
-            var actual = game.EndRound(endRoundEvent);
+            var actual = Game.FromEvent(events.ConcatOne(endRoundEvent));
 
             Assert.Null(actual.ActiveRound);
             Assert.Equal(
@@ -277,46 +292,46 @@ namespace CoreTests
         [Fact]
         public void EndRound_ThrowWhenNoCard()
         {
-            var game = GetNewGameWithSelectedCards();
+            var (events, game) = GetNewGameWithSelectedCards();
             var endRoundEvent = new EndRoundEvent(
                 game.Id,
                 new EventVersion(6),
                 new CardId(Guid.NewGuid())
             );
 
-            Assert.Throws<NoCardException>(() => game.EndRound(endRoundEvent));
+            Assert.Throws<NoCardException>(() => Game.FromEvent(events.ConcatOne(endRoundEvent)));
         }
 
         [Fact]
         public void EndRound_ThrowWhenNotNextVersion()
         {
-            var game = GetNewGameWithSelectedCards();
+            var (events, game) = GetNewGameWithSelectedCards();
             var endRoundEvent = new EndRoundEvent(
                 game.Id,
                 new EventVersion(5),
                 new CardId(Guid.NewGuid())
             );
 
-            Assert.Throws<NotNextVersionException>(() => game.EndRound(endRoundEvent));
+            Assert.Throws<NotNextVersionException>(() => Game.FromEvent(events.ConcatOne(endRoundEvent)));
         }
 
         [Fact]
         public void EndRound_ThrowWhenNoActiveRound()
         {
-            var game = GetNewGameWithPlayers();
+            var (events, game) = GetNewGameWithPlayers();
             var endRoundEvent = new EndRoundEvent(
                 game.Id,
                 new EventVersion(3),
                 game.Cards.Value[0].Id
             );
 
-            Assert.Throws<NoActiveRoundException>(() => game.EndRound(endRoundEvent));
+            Assert.Throws<NoActiveRoundException>(() => Game.FromEvent(events.ConcatOne(endRoundEvent)));
         }
 
         [Fact]
         public void EndRound_ThrowWhenNotAllPlayersSelected()
         {
-            var game = GetNewGameWithActiveRound();
+            var (events, game) = GetNewGameWithActiveRound();
             var selectCardEvent = new SelectCardEvent(
                 game.Id,
                 new EventVersion(4),
@@ -331,70 +346,77 @@ namespace CoreTests
                 game.Cards.Value[0].Id
             );
 
-            Assert.Throws<NotAllPlayersSelectedException>(() => game.SelectCard(selectCardEvent).EndRound(endRoundEvent));
+            Assert.Throws<NotAllPlayersSelectedException>(() => Game.FromEvent(events.ConcatOne(selectCardEvent).ConcatOne(endRoundEvent)));
         }
 
-        private Game GetNewGame()
+        private (IList<Event>, Game) GetNewGame()
         {
-            return Game.New(new NewEvent(
-                new GameId(Guid.NewGuid()),
-                new EventVersion(1),
-                new UserId(Guid.NewGuid()),
-                new NonEmptySet<Card>(new Card[] {
-                    new Card(
-                        new CardId(Guid.NewGuid()),
-                        "M"
-                    ),
-                    new Card(
-                        new CardId(Guid.NewGuid()),
-                        "L"
-                    )
-                })
-            ));
+            var events = new Event[] {
+                new NewEvent(
+                    new GameId(Guid.NewGuid()),
+                    new EventVersion(1),
+                    new UserId(Guid.NewGuid()),
+                    new NonEmptySet<Card>(new Card[] {
+                        new Card(
+                            new CardId(Guid.NewGuid()),
+                            "M"
+                        ),
+                        new Card(
+                            new CardId(Guid.NewGuid()),
+                            "L"
+                        )
+                    })
+                )
+            };
+
+            return (events, Game.FromEvent(events));
         }
 
-        private Game GetNewGameWithPlayers()
+        private (IList<Event>, Game) GetNewGameWithPlayers()
         {
-            var game = GetNewGame();
-
-            return game.AddPlayer(new AddPlayerEvent(
+            var (events, game) = GetNewGame();
+            var newEvents = events.ConcatOne(new AddPlayerEvent(
                 game.Id,
                 new EventVersion(2),
                 new UserId(Guid.NewGuid())
             ));
+
+            return (newEvents, Game.FromEvent(newEvents));
         }
 
-        private Game GetNewGameWithActiveRound()
+        private (IList<Event>, Game) GetNewGameWithActiveRound()
         {
-            var game = GetNewGameWithPlayers();
-
-            return game.NewRound(new NewRoundEvent(
+            var (events, game) = GetNewGameWithPlayers();
+            var newEvents = events.ConcatOne(new NewRoundEvent(
                 game.Id,
                 new EventVersion(3),
                 new RoundId(Guid.NewGuid()),
                 "SM-123"
             ));
+
+            return (newEvents, Game.FromEvent(newEvents));
         }
 
-        private Game GetNewGameWithSelectedCards()
+        private (IList<Event>, Game) GetNewGameWithSelectedCards()
         {
-            var game = GetNewGameWithActiveRound();
-
-            return game.SelectCard(new SelectCardEvent(
+            var (events, game) = GetNewGameWithActiveRound();
+            var newEvents = events.ConcatOne(new SelectCardEvent(
                 game.Id,
                 new EventVersion(4),
                 new PlayerCard(
                     game.GetAdminId(),
                     game.Cards.Value[0].Id
                 )
-            )).SelectCard(new SelectCardEvent(
-                game.Id,
+            )).ConcatOne(new SelectCardEvent(
+                events[0].GameId,
                 new EventVersion(5),
                 new PlayerCard(
                     game.PlayerRoles.Value[1].PlayerId,
                     game.Cards.Value[0].Id
                 )
             ));
+
+            return (newEvents, Game.FromEvent(newEvents));
         }
     }
 }
