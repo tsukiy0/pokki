@@ -2,7 +2,7 @@ using Core.Game;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Infrastructure.EventRepository
+namespace Infrastructure.Game.EventRepository
 {
     public interface IEventRepository
     {

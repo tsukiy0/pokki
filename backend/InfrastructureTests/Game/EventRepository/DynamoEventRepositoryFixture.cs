@@ -2,7 +2,7 @@ using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using Amazon.Runtime;
 using Infrastructure.Config;
-using Infrastructure.EventRepository;
+using Infrastructure.Game.EventRepository;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

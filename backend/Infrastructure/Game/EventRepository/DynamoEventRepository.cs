@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Infrastructure.EventRepository
+namespace Infrastructure.Game.EventRepository
 {
     public class DynamoEventRepository : IEventRepository
     {
