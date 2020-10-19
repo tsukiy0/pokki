@@ -1,6 +1,7 @@
 using Core.Shared;
 using Core.User;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Core.Game.Models
@@ -15,6 +16,7 @@ namespace Core.Game.Models
         }
     }
 
+    public class NoNewException : Exception { }
     public class NoActiveRoundException : Exception { }
     public class PlayerConflictException : Exception { }
     public class ActiveRoundConflictException : Exception { }
@@ -23,6 +25,7 @@ namespace Core.Game.Models
     public class NotAllPlayersSelectedException : Exception { }
     public class PlayerCardConflictException : Exception { }
     public class NotNextVersionException : Exception { }
+    public class NotSupportedEventException : Exception { }
 
     public struct Game
     {
@@ -41,6 +44,26 @@ namespace Core.Game.Models
             Cards = cards;
             ActiveRound = activeRound;
             CompletedRounds = completedRounds;
+        }
+
+        public static Game FromEvent(IList<Event> events)
+        {
+            if (!(events.First() is NewEvent newEvent))
+            {
+                throw new NoNewException();
+            }
+
+            return events.Skip(1).Aggregate(New(newEvent), (acc, @event) =>
+            {
+                return @event switch
+                {
+                    AddPlayerEvent addPlayerEvent => acc.AddPlayer(addPlayerEvent),
+                    NewRoundEvent newRoundEvent => acc.NewRound(newRoundEvent),
+                    SelectCardEvent selectCardEvent => acc.SelectCard(selectCardEvent),
+                    EndRoundEvent endRoundEvent => acc.EndRound(endRoundEvent),
+                    _ => throw new NotSupportedEventException(),
+                };
+            });
         }
 
         public static Game New(NewEvent @event)

@@ -14,10 +14,15 @@ namespace Infrastructure.Game
             this.eventRepository = eventRepository;
         }
 
+        private async Task<Core.Game.Models.Game> GetGame(GameId gameId)
+        {
+            var events = await eventRepository.ListEvents(gameId);
+            return Core.Game.Models.Game.FromEvent(events);
+        }
+
         public async Task<Core.Game.Models.Game> AddPlayer(AddPlayerEvent @event)
         {
-            var events = await eventRepository.ListEvents(@event.GameId);
-            var game = new EventList(events).Reduce();
+            var game = await GetGame(@event.GameId);
 
             var newGame = game.AddPlayer(@event);
             await eventRepository.AppendEvent(@event);
@@ -27,8 +32,7 @@ namespace Infrastructure.Game
 
         public async Task<Core.Game.Models.Game> EndRound(EndRoundEvent @event)
         {
-            var events = await eventRepository.ListEvents(@event.GameId);
-            var game = new EventList(events).Reduce();
+            var game = await GetGame(@event.GameId);
 
             var newGame = game.EndRound(@event);
             await eventRepository.AppendEvent(@event);
@@ -45,8 +49,7 @@ namespace Infrastructure.Game
 
         public async Task<Core.Game.Models.Game> SelectCard(SelectCardEvent @event)
         {
-            var events = await eventRepository.ListEvents(@event.GameId);
-            var game = new EventList(events).Reduce();
+            var game = await GetGame(@event.GameId);
 
             var newGame = game.SelectCard(@event);
             await eventRepository.AppendEvent(@event);
@@ -56,8 +59,7 @@ namespace Infrastructure.Game
 
         public async Task<Core.Game.Models.Game> NewRound(NewRoundEvent @event)
         {
-            var events = await eventRepository.ListEvents(@event.GameId);
-            var game = new EventList(events).Reduce();
+            var game = await GetGame(@event.GameId);
 
             var newGame = game.NewRound(@event);
             await eventRepository.AppendEvent(@event);
