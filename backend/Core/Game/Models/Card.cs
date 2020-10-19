@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Core.Game
+namespace Core.Game.Models
 {
     public struct CardId
     {

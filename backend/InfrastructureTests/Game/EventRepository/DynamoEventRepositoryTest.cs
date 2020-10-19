@@ -1,4 +1,4 @@
-using Core.Game;
+using Core.Game.Models;
 using Core.Shared;
 using Core.User;
 using Infrastructure.Game.EventRepository;

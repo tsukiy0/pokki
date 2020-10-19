@@ -3,7 +3,7 @@ using Core.User;
 using System;
 using System.Linq;
 
-namespace Core.Game
+namespace Core.Game.Models
 {
     public struct GameId
     {

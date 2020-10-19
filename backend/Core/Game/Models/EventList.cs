@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Core.Game
+namespace Core.Game.Models
 {
     public class NoNewException : Exception { }
     public class MultipleNewException : Exception { }

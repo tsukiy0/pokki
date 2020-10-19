@@ -1,4 +1,4 @@
-using Core.Game;
+using Core.Game.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

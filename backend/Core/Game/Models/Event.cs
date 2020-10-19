@@ -3,7 +3,7 @@ using Core.User;
 using System;
 using System.Collections.Generic;
 
-namespace Core.Game
+namespace Core.Game.Models
 {
     public abstract class Event
     {

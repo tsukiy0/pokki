@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Core.Game;
+using Core.Game.Models;
 using Infrastructure.Game.EventRepository;
 
 namespace Infrastructure.Game
@@ -13,7 +14,7 @@ namespace Infrastructure.Game
             this.eventRepository = eventRepository;
         }
 
-        public async Task<Core.Game.Game> AddPlayer(AddPlayerEvent @event)
+        public async Task<Core.Game.Models.Game> AddPlayer(AddPlayerEvent @event)
         {
             var events = await eventRepository.ListEvents(@event.GameId);
             var game = new EventList(events).Reduce();
@@ -24,7 +25,7 @@ namespace Infrastructure.Game
             return newGame;
         }
 
-        public async Task<Core.Game.Game> EndRound(EndRoundEvent @event)
+        public async Task<Core.Game.Models.Game> EndRound(EndRoundEvent @event)
         {
             var events = await eventRepository.ListEvents(@event.GameId);
             var game = new EventList(events).Reduce();
@@ -35,14 +36,14 @@ namespace Infrastructure.Game
             return newGame;
         }
 
-        public async Task<Core.Game.Game> New(NewEvent @event)
+        public async Task<Core.Game.Models.Game> New(NewEvent @event)
         {
-            var game = Core.Game.Game.New(@event);
+            var game = Core.Game.Models.Game.New(@event);
             await eventRepository.AppendEvent(@event);
             return game;
         }
 
-        public async Task<Core.Game.Game> SelectCard(SelectCardEvent @event)
+        public async Task<Core.Game.Models.Game> SelectCard(SelectCardEvent @event)
         {
             var events = await eventRepository.ListEvents(@event.GameId);
             var game = new EventList(events).Reduce();
@@ -53,7 +54,7 @@ namespace Infrastructure.Game
             return newGame;
         }
 
-        public async Task<Core.Game.Game> NewRound(NewRoundEvent @event)
+        public async Task<Core.Game.Models.Game> NewRound(NewRoundEvent @event)
         {
             var events = await eventRepository.ListEvents(@event.GameId);
             var game = new EventList(events).Reduce();

@@ -1,6 +1,6 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
-using Core.Game;
+using Core.Game.Models;
 using Core.Shared;
 using Core.User;
 using System;

@@ -1,13 +1,14 @@
 using System.Threading.Tasks;
+using Core.Game.Models;
 
 namespace Core.Game
 {
     public interface IGameService
     {
-        Task<Game> New(NewEvent @event);
-        Task<Game> AddPlayer(AddPlayerEvent @event);
-        Task<Game> NewRound(NewRoundEvent @event);
-        Task<Game> SelectCard(SelectCardEvent @event);
-        Task<Game> EndRound(EndRoundEvent @event);
+        Task<Models.Game> New(NewEvent @event);
+        Task<Models.Game> AddPlayer(AddPlayerEvent @event);
+        Task<Models.Game> NewRound(NewRoundEvent @event);
+        Task<Models.Game> SelectCard(SelectCardEvent @event);
+        Task<Models.Game> EndRound(EndRoundEvent @event);
     }
 }

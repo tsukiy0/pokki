@@ -1,6 +1,6 @@
 using Core.User;
 
-namespace Core.Game
+namespace Core.Game.Models
 {
     public enum Role
     {
