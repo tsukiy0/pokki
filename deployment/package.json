@@ -1,0 +1,46 @@
+{
+  "name": "deployment",
+  "private": true,
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@aws-cdk/aws-apigateway": "1.69.0",
+    "@aws-cdk/aws-batch": "1.69.0",
+    "@aws-cdk/aws-budgets": "1.69.0",
+    "@aws-cdk/aws-cloudformation": "1.69.0",
+    "@aws-cdk/aws-cloudfront": "1.69.0",
+    "@aws-cdk/aws-cognito": "1.69.0",
+    "@aws-cdk/aws-ec2": "1.69.0",
+    "@aws-cdk/aws-ecr": "1.69.0",
+    "@aws-cdk/aws-ecr-assets": "1.69.0",
+    "@aws-cdk/aws-events": "1.69.0",
+    "@aws-cdk/aws-events-targets": "1.69.0",
+    "@aws-cdk/aws-iam": "1.69.0",
+    "@aws-cdk/aws-lambda": "1.69.0",
+    "@aws-cdk/aws-lambda-event-sources": "1.69.0",
+    "@aws-cdk/aws-logs": "1.69.0",
+    "@aws-cdk/aws-rds": "1.69.0",
+    "@aws-cdk/aws-s3": "1.69.0",
+    "@aws-cdk/aws-s3-deployment": "1.69.0",
+    "@aws-cdk/aws-sqs": "1.69.0",
+    "@aws-cdk/core": "1.69.0"
+  },
+  "devDependencies": {
+    "@types/node": "14.14.0",
+    "@typescript-eslint/eslint-plugin": "4.4.1",
+    "aws-cdk": "1.69.0",
+    "eslint": "7.11.0",
+    "eslint-config-airbnb-typescript": "12.0.0",
+    "eslint-plugin-import": "2.22.0",
+    "typescript": "4.0.3"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint \"./src/**/*.{ts,tsx}\"",
+    "lint:fix": "yarn lint --fix",
+    "clean": "rm -rf dist",
+    "build": "tsc",
+    "deploy": "cdk bootstrap && cdk deploy --require-approval never"
+  }
+}

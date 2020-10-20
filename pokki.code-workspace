@@ -5,7 +5,11 @@
 		},
 		{
 			"path": "backend"
+		},
+		{
+			"path": "deployment"
 		}
 	],
-	"settings": {}
+	"settings": {
+	}
 }
