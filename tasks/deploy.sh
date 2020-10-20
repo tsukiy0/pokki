@@ -7,4 +7,5 @@ yarn install --silent
 yarn typecheck
 yarn lint
 yarn build
+yarn deploy
 popd
