@@ -2,4 +2,9 @@
 
 set -euxo pipefail
 
-echo "deploy"
+pushd deployment
+yarn install --silent
+yarn typecheck
+yarn lint
+yarn build
+popd

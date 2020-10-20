@@ -41,6 +41,7 @@
     "lint": "eslint \"./src/**/*.{ts,tsx}\"",
     "lint:fix": "yarn lint --fix",
     "clean": "rm -rf dist",
+    "prebuild": "yarn clean",
     "build": "tsc",
     "deploy": "cdk bootstrap && cdk deploy --require-approval never"
   }
