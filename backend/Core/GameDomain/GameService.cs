@@ -1,9 +1,6 @@
 using System.Threading.Tasks;
-using Core;
-using Core.GameDomain;
-using Infrastructure.GameDomain.EventRepository;
 
-namespace Infrastructure.GameDomain
+namespace Core.GameDomain
 {
     public class GameService : IGameService
     {
