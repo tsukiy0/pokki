@@ -32,7 +32,7 @@ export class ApiConstruct extends Construct {
       code: Code.fromAsset(
         path.resolve(
           __dirname,
-          '../../../backend/src/Api/bin/Release/netcoreapp3.1/Api.zip',
+          '../../../backend/Api/bin/Release/netcoreapp3.1/Api.zip',
         ),
       ),
       runtime: Runtime.DOTNET_CORE_3_1,
