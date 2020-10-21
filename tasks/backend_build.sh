@@ -3,6 +3,7 @@
 set -euxo pipefail
 
 pushd backend
+dotnet tool restore
 dotnet restore
 dotnet build
 dotnet test --filter Category=Unit
