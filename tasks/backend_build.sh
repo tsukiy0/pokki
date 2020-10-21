@@ -6,4 +6,5 @@ pushd backend
 dotnet restore
 dotnet build
 dotnet test --filter Category=Unit
+dotnet lambda package Api
 popd
