@@ -40,11 +40,13 @@ export class ApiConstruct extends Construct {
       memorySize: 512,
       timeout: Duration.seconds(20),
       environment: {
-        TABLE_NAME: props.database.table.tableName,
+        GAME_TABLE_NAME: props.database.gameTable.tableName,
+        USER_TABLE_NAME: props.database.userTable.tableName,
       },
     });
 
-    props.database.table.grantReadWriteData(fn);
+    props.database.gameTable.grantReadWriteData(fn);
+    props.database.userTable.grantReadWriteData(fn);
 
     graphQlApi
       .addLambdaDataSource('HelloWorld', fn)
