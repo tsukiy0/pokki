@@ -1,27 +1,56 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-
 using Amazon.Lambda.Core;
-
-// Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
-[assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 
 namespace Api
 {
     public class Function
     {
-        
-        /// <summary>
-        /// A simple function that takes a string and does a ToUpper
-        /// </summary>
-        /// <param name="input"></param>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public string FunctionHandler(string input, ILambdaContext context)
+        public enum GraphQlRequestParentType
         {
-            return input?.ToUpper();
+            Query,
+            Mutation,
+            Subscription
+        }
+
+        public class GraphQlRequestInfo
+        {
+            [JsonPropertyName("fieldName")]
+            public string FieldName { get; set; }
+
+            [JsonPropertyName("parentTypeName")]
+            public GraphQlRequestParentType ParentType { get; set; }
+        }
+
+        public class GraphQlRequest
+        {
+            [JsonPropertyName("info")]
+            public GraphQlRequestInfo Info { get; set; }
+        }
+
+        public class HandlerNotFoundException : Exception { }
+
+        public async Task<Stream> FunctionHandler(Stream inStream, ILambdaContext context)
+        {
+            var input = new StreamReader(inStream).ReadToEnd();
+            Console.WriteLine(input);
+            var graphQlRequest = JsonSerializer.Deserialize<GraphQlRequest>(input);
+
+            var handlerMap = new Dictionary<GraphQlRequestInfo, Func<string, Task<string>>> { };
+
+            if (!handlerMap.TryGetValue(graphQlRequest.Info, out var p))
+            {
+                throw new HandlerNotFoundException();
+            };
+
+            var output = await p.Invoke(input);
+
+            return new MemoryStream(Encoding.UTF8.GetBytes(output));
         }
     }
 }
