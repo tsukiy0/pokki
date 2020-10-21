@@ -41,6 +41,19 @@
     "@aws-cdk/core" "1.69.0"
     constructs "^3.0.4"
 
+"@aws-cdk/aws-appsync@1.69.0":
+  version "1.69.0"
+  resolved "https://registry.yarnpkg.com/@aws-cdk/aws-appsync/-/aws-appsync-1.69.0.tgz#7281ce01231623ac5bce65d0d4dcb6eb7c78343a"
+  integrity sha512-KXEG4kBB3Z81+1b7gonMySS6MGG/WCMoGD03TfnvYB/W0STpp+GNzPV3dgoU550d2PiCV2j7XW3r6SOTAQ/Kmg==
+  dependencies:
+    "@aws-cdk/aws-cognito" "1.69.0"
+    "@aws-cdk/aws-dynamodb" "1.69.0"
+    "@aws-cdk/aws-iam" "1.69.0"
+    "@aws-cdk/aws-lambda" "1.69.0"
+    "@aws-cdk/aws-s3-assets" "1.69.0"
+    "@aws-cdk/core" "1.69.0"
+    constructs "^3.0.4"
+
 "@aws-cdk/aws-autoscaling-common@1.69.0":
   version "1.69.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-autoscaling-common/-/aws-autoscaling-common-1.69.0.tgz#2cfd87d88274e220faf1849cee28acb75f3f664e"

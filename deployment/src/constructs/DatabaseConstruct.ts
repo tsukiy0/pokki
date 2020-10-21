@@ -6,7 +6,7 @@ import {
   AttributeType,
 } from '@aws-cdk/aws-dynamodb';
 
-export class GameDatabaseConstruct extends Construct {
+export class DatabaseConstruct extends Construct {
   public readonly table: Table;
 
   constructor(scope: Construct, id: string) {
