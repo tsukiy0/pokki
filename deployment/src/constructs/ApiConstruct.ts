@@ -49,8 +49,8 @@ export class ApiConstruct extends Construct {
     graphQlApi
       .addLambdaDataSource('HelloWorld', fn)
       .createResolver({
-        typeName: 'Query',
-        fieldName: 'getUser',
+        typeName: 'Mutation',
+        fieldName: 'helloWorld',
         requestMappingTemplate: MappingTemplate.lambdaRequest(),
         responseMappingTemplate: MappingTemplate.lambdaResult(),
       });
