@@ -7,5 +7,5 @@ dotnet tool restore
 dotnet restore
 dotnet build
 dotnet test --filter Category=Unit
-dotnet lambda package Api
+dotnet lambda package -pl Api
 popd
