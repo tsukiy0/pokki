@@ -24,9 +24,7 @@ export class ApiConstruct extends Construct {
       },
       schema: Schema.fromAsset(path.resolve(
         __dirname,
-        '..',
-        '..',
-        'schema.graphql',
+        '../../../schema.graphql',
       )),
     });
 
