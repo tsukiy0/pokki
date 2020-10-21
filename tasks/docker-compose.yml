@@ -1,15 +1,5 @@
 version: '3'
 services:
-  build:
-    build:
-      context: .
-      dockerfile: build.Dockerfile
-    volumes: 
-      - ..:/app
-    working_dir: /app
-    environment:
-      GITHUB_TOKEN: ${GITHUB_TOKEN}
-    command: ./tasks/build.sh
   backend_build:
     image: mcr.microsoft.com/dotnet/core/sdk:3.1
     volumes: 
@@ -24,6 +14,7 @@ services:
       - ..:/app
     working_dir: /app
     environment:
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
       NOTIFICATION_EMAIL: ${NOTIFICATION_EMAIL}
       CFN_STACK_NAME: ${CFN_STACK_NAME}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}

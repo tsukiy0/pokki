@@ -10,13 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          docker-compose -f tasks/docker-compose.yml build build
-          docker-compose -f tasks/docker-compose.yml run build
-          docker-compose -f tasks/docker-compose.yml down
       - name: backend_build
         run: |
           docker-compose -f tasks/docker-compose.yml build backend_build
@@ -29,6 +22,7 @@ jobs:
           docker-compose -f tasks/backend_contract.docker-compose.yml down
       - name: deploy
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
           CFN_STACK_NAME: Main
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -38,8 +32,3 @@ jobs:
           docker-compose -f tasks/docker-compose.yml build deploy
           docker-compose -f tasks/docker-compose.yml run deploy
           docker-compose -f tasks/docker-compose.yml down
-      - name: integration
-        run: |
-          docker-compose -f tasks/integration.docker-compose.yml build integration
-          docker-compose -f tasks/integration.docker-compose.yml run integration
-          docker-compose -f tasks/integration.docker-compose.yml down
