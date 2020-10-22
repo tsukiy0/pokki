@@ -37,7 +37,8 @@
     "prebuild": "yarn clean",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test"
+    "test": "CI=true react-scripts test --testMatch=\"**/*.test.ts?(x)\"",
+    "test:contract": "CI=true react-scripts test --testMatch=\"**/*.contractTest.ts?(x)\"" 
   },
   "eslintConfig": {
     "extends": [
