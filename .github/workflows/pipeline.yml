@@ -20,6 +20,11 @@ jobs:
           docker-compose -f tasks/backend_contract.docker-compose.yml build backend_contract
           docker-compose -f tasks/backend_contract.docker-compose.yml run backend_contract
           docker-compose -f tasks/backend_contract.docker-compose.yml down
+      - name: frontend_build
+        run: |
+          docker-compose -f tasks/docker-compose.yml build frontend_build
+          docker-compose -f tasks/docker-compose.yml run frontend_build
+          docker-compose -f tasks/docker-compose.yml down
       - name: deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

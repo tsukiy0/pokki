@@ -8,6 +8,16 @@ services:
       - ..:/app
     working_dir: /app
     command: ./tasks/backend_build.sh
+  frontend_build:
+    build:
+      context: .
+      dockerfile: frontend_build.Dockerfile
+    volumes:
+      - ..:/app
+    working_dir: /app
+    environment:
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
+    command: ./tasks/frontend_build.sh
   deploy:
     build:
       context: .
