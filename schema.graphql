@@ -3,12 +3,18 @@ schema {
   mutation: Mutation
 }
 
+input VoidRequest {
+  void: Boolean
+}
+
+type VoidResponse {
+  void: Boolean
+}
+
 input CreateUserRequest {
   id: String!
   name: String!
 }
-
-type VoidResponse {}
 
 input GetUserRequest {
   id: String!
@@ -19,10 +25,15 @@ type GetUserResponse {
   name: String!
 }
 
+type HealthCheckResponse {
+  isHealthy: Boolean!
+}
+
 type Mutation {
   CreateUser(request: CreateUserRequest!): VoidResponse!
 }
 
 type Query {
+  HealthCheck(request: VoidRequest!): HealthCheckResponse!
   GetUser(request: GetUserRequest!): GetUserResponse!
 }

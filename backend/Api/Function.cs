@@ -57,7 +57,8 @@ namespace Api
             var handlerMap = new Dictionary<GraphQlRequestInfo, IHandler>
             {
                 { new GraphQlRequestInfo { ParentType = GraphQlRequestParentType.Mutation, FieldName = "CreateUser" }, new CreateUserHandler(userRepository) },
-                { new GraphQlRequestInfo{ ParentType = GraphQlRequestParentType.Query, FieldName = "GetUser" }, new GetUserHandler(userRepository) }
+                { new GraphQlRequestInfo{ ParentType = GraphQlRequestParentType.Query, FieldName = "GetUser" }, new GetUserHandler(userRepository) },
+                { new GraphQlRequestInfo{ ParentType = GraphQlRequestParentType.Query, FieldName = "HealthCheck" }, new HealthCheckHandler() }
             };
 
             if (!handlerMap.TryGetValue(graphQlRequest.Info, out var handler))

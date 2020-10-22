@@ -69,6 +69,7 @@ export class ApiConstruct extends Construct {
     props.database.gameTable.grantReadWriteData(fn);
     props.database.userTable.grantReadWriteData(fn);
 
+    addResolver(graphQlApi, fn, TypeName.Query, 'HealthCheck');
     addResolver(graphQlApi, fn, TypeName.Mutation, 'CreateUser');
     addResolver(graphQlApi, fn, TypeName.Query, 'GetUser');
   }
