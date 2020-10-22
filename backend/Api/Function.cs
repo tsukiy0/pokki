@@ -13,6 +13,7 @@ namespace Api
 {
     public class Function
     {
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public enum GraphQlRequestParentType
         {
             Query,
