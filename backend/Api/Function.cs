@@ -21,7 +21,7 @@ namespace Api
             Subscription
         }
 
-        public class GraphQlRequestInfo
+        public struct GraphQlRequestInfo
         {
             [JsonPropertyName("fieldName")]
             public string FieldName { get; set; }
@@ -30,13 +30,13 @@ namespace Api
             public GraphQlRequestParentType ParentType { get; set; }
         }
 
-        public class GraphQlArguments
+        public struct GraphQlArguments
         {
             [JsonPropertyName("request")]
             public JsonElement Request { get; set; }
         }
 
-        public class GraphQlRequest
+        public struct GraphQlRequest
         {
             [JsonPropertyName("info")]
             public GraphQlRequestInfo Info { get; set; }
@@ -57,7 +57,7 @@ namespace Api
 
             var handlerMap = new Dictionary<GraphQlRequestInfo, IHandler>
             {
-                { new GraphQlRequestInfo { ParentType = GraphQlRequestParentType.Mutation, FieldName = "CreateUser" }, new CreateUserHandler(userRepository) },
+                { new GraphQlRequestInfo{ ParentType = GraphQlRequestParentType.Mutation, FieldName = "CreateUser" }, new CreateUserHandler(userRepository) },
                 { new GraphQlRequestInfo{ ParentType = GraphQlRequestParentType.Query, FieldName = "GetUser" }, new GetUserHandler(userRepository) },
                 { new GraphQlRequestInfo{ ParentType = GraphQlRequestParentType.Query, FieldName = "HealthCheck" }, new HealthCheckHandler() }
             };

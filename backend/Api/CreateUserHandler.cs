@@ -4,7 +4,7 @@ using Core.UserDomain;
 
 namespace Api
 {
-    public class CreateUserRequest
+    public struct CreateUserRequest
     {
         public string Id { get; set; }
         public string Name { get; set; }

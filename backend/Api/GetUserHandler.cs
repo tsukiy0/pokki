@@ -4,12 +4,12 @@ using Core.UserDomain;
 
 namespace Api
 {
-    public class GetUserRequest
+    public struct GetUserRequest
     {
         public string Id { get; set; }
     }
 
-    public class GetUserResponse
+    public struct GetUserResponse
     {
         public string Id { get; set; }
         public string Name { get; set; }

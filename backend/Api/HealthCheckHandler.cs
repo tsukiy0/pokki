@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace Api
 {
-    public class HealthCheckResponse
+    public struct HealthCheckResponse
     {
         public bool IsHealthy { get; set; }
     }

@@ -1,4 +1,4 @@
 namespace Api
 {
-    public class VoidRequest { }
+    public struct VoidRequest { }
 }
