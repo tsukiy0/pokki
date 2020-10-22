@@ -12,21 +12,21 @@ type VoidResponse {
 }
 
 input CreateUserRequest {
-  id: String!
-  name: String!
+  Id: String!
+  Name: String!
 }
 
 input GetUserRequest {
-  id: String!
+  Id: String!
 }
 
 type GetUserResponse {
-  id: String!
-  name: String!
+  Id: String!
+  Name: String!
 }
 
 type HealthCheckResponse {
-  isHealthy: Boolean!
+  IsHealthy: Boolean!
 }
 
 type Mutation {
