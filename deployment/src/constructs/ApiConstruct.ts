@@ -6,6 +6,27 @@ import { Code, Function, Runtime } from '@aws-cdk/aws-lambda';
 import path from 'path';
 import { DatabaseConstruct } from './DatabaseConstruct';
 
+enum TypeName {
+  Mutation = 'Mutation',
+  Query = 'Query',
+}
+
+const addResolver = (
+  api: GraphqlApi,
+  fn: Function,
+  typeName: TypeName,
+  fieldName: string,
+): void => {
+  api
+    .addLambdaDataSource(`${typeName}_${fieldName}`, fn)
+    .createResolver({
+      typeName,
+      fieldName,
+      requestMappingTemplate: MappingTemplate.lambdaRequest(),
+      responseMappingTemplate: MappingTemplate.lambdaResult(),
+    });
+};
+
 export class ApiConstruct extends Construct {
   constructor(scope: Construct, id: string, props: {
     database: DatabaseConstruct
@@ -48,13 +69,7 @@ export class ApiConstruct extends Construct {
     props.database.gameTable.grantReadWriteData(fn);
     props.database.userTable.grantReadWriteData(fn);
 
-    graphQlApi
-      .addLambdaDataSource('HelloWorld', fn)
-      .createResolver({
-        typeName: 'Mutation',
-        fieldName: 'helloWorld',
-        requestMappingTemplate: MappingTemplate.lambdaRequest(),
-        responseMappingTemplate: MappingTemplate.lambdaResult(),
-      });
+    addResolver(graphQlApi, fn, TypeName.Mutation, 'CreateUser');
+    addResolver(graphQlApi, fn, TypeName.Query, 'GetUser');
   }
 }

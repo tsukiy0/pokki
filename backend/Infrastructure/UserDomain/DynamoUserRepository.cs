@@ -18,6 +18,12 @@ namespace Infrastructure.UserDomain
             this.tableName = tableName;
         }
 
+        public static IUserRepository Default(string tableName)
+        {
+            var client = new AmazonDynamoDBClient();
+            return new DynamoUserRepository(client, tableName);
+        }
+
         public async Task CreateUser(User user)
         {
             await client.PutItemAsync(new PutItemRequest

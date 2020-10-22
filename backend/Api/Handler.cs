@@ -1,28 +1,24 @@
-using System;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Api
 {
-    public class Handler<TRequest, TResponse>
+    public interface IHandler
     {
-        private readonly Func<string, TRequest> deserializeRequest;
-        private readonly Func<TResponse, string> serializeReponse;
-        private readonly Func<TRequest, Task<TResponse>> innerHandler;
+        Task<string> Run(string requestString);
+    }
 
-        public Handler(Func<string, TRequest> deserializeRequest, Func<TResponse, string> serializeReponse, Func<TRequest, Task<TResponse>> innerHandler)
-        {
-            this.deserializeRequest = deserializeRequest;
-            this.serializeReponse = serializeReponse;
-            this.innerHandler = innerHandler;
-        }
+    public abstract class BaseHandler<TRequest, TResponse> : IHandler
+    {
+        protected abstract Task<TResponse> Handle(TRequest request);
 
         public async Task<string> Run(string requestString)
         {
-            var request = deserializeRequest(requestString);
+            var request = JsonSerializer.Deserialize<TRequest>(requestString);
 
-            var response = await innerHandler(request);
+            var response = await Handle(request);
 
-            return serializeReponse(response);
+            return JsonSerializer.Serialize(response);
         }
     }
 }

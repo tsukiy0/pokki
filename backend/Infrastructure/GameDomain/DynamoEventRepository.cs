@@ -32,6 +32,12 @@ namespace Infrastructure.GameDomain
             this.tableName = tableName;
         }
 
+        public static IEventRepository Default(string tableName)
+        {
+            var client = new AmazonDynamoDBClient();
+            return new DynamoEventRepository(client, tableName);
+        }
+
         public async Task AppendEvent(Event @event)
         {
             try

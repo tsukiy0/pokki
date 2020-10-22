@@ -3,10 +3,26 @@ schema {
   mutation: Mutation
 }
 
+input CreateUserRequest {
+  id: String!
+  name: String!
+}
+
+type VoidResponse {}
+
+input GetUserRequest {
+  id: String!
+}
+
+type GetUserResponse {
+  id: String!
+  name: String!
+}
+
 type Mutation {
-  helloWorld(myInput: String!): String!
+  CreateUser(request: CreateUserRequest!): VoidResponse!
 }
 
 type Query {
-  getGame(getGameInput: String!): String!
+  GetUser(request: GetUserRequest!): GetUserResponse!
 }

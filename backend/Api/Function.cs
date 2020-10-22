@@ -6,6 +6,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Amazon.Lambda.Core;
+using Infrastructure.Config;
+using Infrastructure.UserDomain;
 
 namespace Api
 {
@@ -27,28 +29,43 @@ namespace Api
             public GraphQlRequestParentType ParentType { get; set; }
         }
 
+        public class GraphQlArguments
+        {
+            [JsonPropertyName("request")]
+            public JsonElement Request { get; set; }
+        }
+
         public class GraphQlRequest
         {
             [JsonPropertyName("info")]
             public GraphQlRequestInfo Info { get; set; }
+
+            [JsonPropertyName("arguments")]
+            public GraphQlArguments Arguments { get; set; }
         }
 
         public class HandlerNotFoundException : Exception { }
 
-        public async Task<Stream> FunctionHandler(Stream inStream, ILambdaContext context)
+        public async Task<Stream> FunctionHandler(Stream stream, ILambdaContext context)
         {
-            var input = new StreamReader(inStream).ReadToEnd();
+            var input = new StreamReader(stream).ReadToEnd();
             Console.WriteLine(input);
             var graphQlRequest = JsonSerializer.Deserialize<GraphQlRequest>(input);
+            var config = new SystemConfig();
+            var userRepository = DynamoUserRepository.Default(config.Get("USER_TABLE_NAME"));
 
-            var handlerMap = new Dictionary<GraphQlRequestInfo, Func<string, Task<string>>> { };
+            var handlerMap = new Dictionary<GraphQlRequestInfo, IHandler>
+            {
+                { new GraphQlRequestInfo { ParentType = GraphQlRequestParentType.Mutation, FieldName = "CreateUser" }, new CreateUserHandler(userRepository) },
+                { new GraphQlRequestInfo{ ParentType = GraphQlRequestParentType.Query, FieldName = "GetUser" }, new GetUserHandler(userRepository) }
+            };
 
-            if (!handlerMap.TryGetValue(graphQlRequest.Info, out var p))
+            if (!handlerMap.TryGetValue(graphQlRequest.Info, out var handler))
             {
                 throw new HandlerNotFoundException();
             };
 
-            var output = await p.Invoke(input);
+            var output = await handler.Run(graphQlRequest.Arguments.Request.ToString());
 
             return new MemoryStream(Encoding.UTF8.GetBytes(output));
         }
