@@ -5,11 +5,11 @@ import { UserClient } from './UserClient';
 describe('UserClient', () => {
   it('creates user', async () => {
     const client = new UserClient(new AWSAppSyncClient({
-      url: '',
-      region: '',
+      url: process.env.API_URL as string,
+      region: process.env.API_REGION as string,
       auth: {
         type: AUTH_TYPE.API_KEY,
-        apiKey: '',
+        apiKey: process.env.API_KEY as string,
       },
       disableOffline: true,
     }));

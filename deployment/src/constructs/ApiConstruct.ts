@@ -28,6 +28,8 @@ const addResolver = (
 };
 
 export class ApiConstruct extends Construct {
+  public readonly graphQlApi: GraphqlApi;
+
   constructor(scope: Construct, id: string, props: {
     database: DatabaseConstruct
   }) {
@@ -72,5 +74,7 @@ export class ApiConstruct extends Construct {
     addResolver(graphQlApi, fn, TypeName.Query, 'HealthCheck');
     addResolver(graphQlApi, fn, TypeName.Mutation, 'CreateUser');
     addResolver(graphQlApi, fn, TypeName.Query, 'GetUser');
+
+    this.graphQlApi = graphQlApi;
   }
 }

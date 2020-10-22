@@ -18,6 +18,19 @@ services:
     environment:
       GITHUB_TOKEN: ${GITHUB_TOKEN}
     command: ./tasks/frontend_build.sh
+  frontend_contract:
+    build:
+      context: .
+      dockerfile: frontend_contract.Dockerfile
+    volumes:
+      - ..:/app
+    working_dir: /app
+    environment:
+      CFN_STACK_NAME: ${CFN_STACK_NAME}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
+    command: ./tasks/frontend_contract.sh
   deploy:
     build:
       context: .
