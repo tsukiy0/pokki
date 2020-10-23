@@ -12,7 +12,6 @@ namespace Core.GameDomain
     public class NoPlayerException : Exception { }
     public class NoCardException : Exception { }
     public class NotAllPlayersSelectedException : Exception { }
-    public class NotNextVersionException : Exception { }
     public class NotSupportedEventException : Exception { }
     public class NotPendingException : Exception { }
 
@@ -74,7 +73,6 @@ namespace Core.GameDomain
 
             return events.Skip(1).Aggregate(new Game(
                 newEvent.GameId,
-                newEvent.Version,
                 GameStatus.PENDING,
                 new PlayerRoleSet(
                     new PlayerRole(
@@ -87,11 +85,6 @@ namespace Core.GameDomain
                 new CompletedRoundSet()
             ), (acc, @event) =>
             {
-                if (!acc.IsNextVersion(@event.Version))
-                {
-                    throw new NotNextVersionException();
-                }
-
                 switch (@event)
                 {
                     case AddPlayerEvent addPlayerEvent:
@@ -107,7 +100,6 @@ namespace Core.GameDomain
 
                         return new Game(
                            acc.Id,
-                           addPlayerEvent.Version,
                            GameStatus.PENDING,
                            acc.PlayerRoles.AddPlayer(addPlayerEvent.PlayerId),
                            acc.Cards,
@@ -122,7 +114,6 @@ namespace Core.GameDomain
 
                         return new Game(
                            acc.Id,
-                           newRoundEvent.Version,
                            GameStatus.ACTIVE,
                            acc.PlayerRoles,
                            acc.Cards,
@@ -151,7 +142,6 @@ namespace Core.GameDomain
 
                         return new Game(
                             acc.Id,
-                            selectCardEvent.Version,
                             GameStatus.ACTIVE,
                             acc.PlayerRoles,
                             acc.Cards,
@@ -180,7 +170,6 @@ namespace Core.GameDomain
 
                         return new Game(
                             acc.Id,
-                            endRoundEvent.Version,
                             GameStatus.INACTIVE,
                             acc.PlayerRoles,
                             acc.Cards,

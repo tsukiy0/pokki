@@ -7,24 +7,21 @@ namespace Core.GameDomain
     public abstract class Event
     {
         public readonly GameId GameId;
-        public readonly EventVersion Version;
 
-        public Event(GameId gameId, EventVersion version)
+        public Event(GameId gameId)
         {
             GameId = gameId;
-            Version = version;
         }
 
         public override bool Equals(object? obj)
         {
             return obj is Event @event &&
-                   EqualityComparer<GameId>.Default.Equals(GameId, @event.GameId) &&
-                   EqualityComparer<EventVersion>.Default.Equals(Version, @event.Version);
+                   EqualityComparer<GameId>.Default.Equals(GameId, @event.GameId);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(GameId, Version);
+            return HashCode.Combine(GameId);
         }
     }
 
@@ -33,7 +30,7 @@ namespace Core.GameDomain
         public readonly UserId AdminId;
         public readonly CardSet Cards;
 
-        public NewEvent(GameId gameId, EventVersion version, UserId adminId, CardSet cards) : base(gameId, version)
+        public NewEvent(GameId gameId, UserId adminId, CardSet cards) : base(gameId)
         {
             AdminId = adminId;
             Cards = cards;
@@ -44,7 +41,7 @@ namespace Core.GameDomain
     {
         public readonly UserId PlayerId;
 
-        public AddPlayerEvent(GameId gameId, EventVersion version, UserId playerId) : base(gameId, version)
+        public AddPlayerEvent(GameId gameId, UserId playerId) : base(gameId)
         {
             PlayerId = playerId;
         }
@@ -55,7 +52,7 @@ namespace Core.GameDomain
         public readonly RoundId RoundId;
         public readonly string RoundName;
 
-        public NewRoundEvent(GameId gameId, EventVersion version, RoundId roundId, string roundName) : base(gameId, version)
+        public NewRoundEvent(GameId gameId, RoundId roundId, string roundName) : base(gameId)
         {
             RoundId = roundId;
             RoundName = roundName;
@@ -66,7 +63,7 @@ namespace Core.GameDomain
     {
         public readonly PlayerCard PlayerCard;
 
-        public SelectCardEvent(GameId gameId, EventVersion version, PlayerCard playerCard) : base(gameId, version)
+        public SelectCardEvent(GameId gameId, PlayerCard playerCard) : base(gameId)
         {
             PlayerCard = playerCard;
         }
@@ -76,7 +73,7 @@ namespace Core.GameDomain
     {
         public readonly CardId ResultCardId;
 
-        public EndRoundEvent(GameId gameId, EventVersion version, CardId resultCardId) : base(gameId, version)
+        public EndRoundEvent(GameId gameId, CardId resultCardId) : base(gameId)
         {
             ResultCardId = resultCardId;
         }

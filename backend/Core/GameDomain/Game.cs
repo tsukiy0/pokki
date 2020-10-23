@@ -23,17 +23,15 @@ namespace Core.GameDomain
     public struct Game
     {
         public readonly GameId Id;
-        public readonly EventVersion Version;
         public readonly PlayerRoleSet PlayerRoles;
         public readonly CardSet Cards;
         public readonly Round? ActiveRound;
         public readonly CompletedRoundSet CompletedRounds;
         public readonly GameStatus Status;
 
-        public Game(GameId id, EventVersion version, GameStatus status, PlayerRoleSet playerRoles, CardSet cards, Round? activeRound, CompletedRoundSet completedRounds)
+        public Game(GameId id, GameStatus status, PlayerRoleSet playerRoles, CardSet cards, Round? activeRound, CompletedRoundSet completedRounds)
         {
             Id = id;
-            Version = version;
             Status = status;
             PlayerRoles = playerRoles;
             Cards = cards;
@@ -52,11 +50,6 @@ namespace Core.GameDomain
                 .Select(_ => _.PlayerId)
                 .Except(ActiveRound.Value.PlayerCards.Value.Select(_ => _.PlayerId))
                 .Any();
-        }
-
-        public bool IsNextVersion(EventVersion version)
-        {
-            return version.Value == Version.Value + 1;
         }
     }
 }

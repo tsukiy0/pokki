@@ -27,7 +27,8 @@ namespace InfrastructureTests
             var tableName = Guid.NewGuid().ToString();
             var client = new AmazonDynamoDBClient(new BasicAWSCredentials("test", "test"), new AmazonDynamoDBConfig
             {
-                ServiceURL = config.Get("DYNAMO_URL")
+                // ServiceURL = config.Get("DYNAMO_URL"),
+                ServiceURL = "http://localhost:8000"
             });
 
             await client.CreateTableAsync(new CreateTableRequest
