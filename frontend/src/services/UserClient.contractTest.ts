@@ -1,5 +1,5 @@
 import AWSAppSyncClient, { AUTH_TYPE } from 'aws-appsync';
-import uuid from 'uuid';
+import * as uuid from 'uuid';
 import { UserClient } from './UserClient';
 
 describe('UserClient', () => {
