@@ -40,7 +40,7 @@ namespace Core.GameDomain
             return game;
         }
 
-        public async Task<Game> New(NewEvent @event)
+        public async Task<Game> NewGame(NewGameEvent @event)
         {
             var events = await eventRepository.ListEvents(@event.GameId);
             var game = FromEvent(events.ConcatOne(@event));
@@ -66,7 +66,7 @@ namespace Core.GameDomain
 
         private Game FromEvent(IList<Event> events)
         {
-            if (!(events.First() is NewEvent newEvent))
+            if (!(events.First() is NewGameEvent newEvent))
             {
                 throw new NoNewException();
             }

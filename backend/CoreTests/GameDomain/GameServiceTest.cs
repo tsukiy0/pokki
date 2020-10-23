@@ -30,9 +30,9 @@ namespace GameTests
 
 
         [Fact]
-        public async Task New()
+        public async Task New_Game()
         {
-            var newEvent = new NewEvent(
+            var newEvent = new NewGameEvent(
                 gameId,
                 adminId,
                 cards
@@ -41,7 +41,7 @@ namespace GameTests
             eventRepositoryMock.Setup(_ => _.ListEvents(gameId)).ReturnsAsync(Array.Empty<Event>());
             var service = new GameService(eventRepositoryMock.Object);
 
-            var actual = await service.New(newEvent);
+            var actual = await service.NewGame(newEvent);
 
             Assert.Equal(newEvent.GameId, actual.Id);
             Assert.Equal(newEvent.AdminId, actual.PlayerRoles.GetAdminId());
@@ -397,7 +397,7 @@ namespace GameTests
         private IList<Event> GetNewGame()
         {
             return new Event[] {
-                new NewEvent(
+                new NewGameEvent(
                     gameId,
                     adminId,
                     cards

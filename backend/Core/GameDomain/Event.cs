@@ -25,12 +25,12 @@ namespace Core.GameDomain
         }
     }
 
-    public class NewEvent : Event
+    public class NewGameEvent : Event
     {
         public readonly UserId AdminId;
         public readonly CardSet Cards;
 
-        public NewEvent(GameId gameId, UserId adminId, CardSet cards) : base(gameId)
+        public NewGameEvent(GameId gameId, UserId adminId, CardSet cards) : base(gameId)
         {
             AdminId = adminId;
             Cards = cards;

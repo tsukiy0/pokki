@@ -1,6 +1,5 @@
 using Core.GameDomain;
 using Core.UserDomain;
-using Infrastructure.GameDomain;
 using System;
 using System.Threading.Tasks;
 using Xunit;
@@ -11,13 +10,13 @@ namespace InfrastructureTests
     public class DynamoEventRepositoryTest
     {
         [Fact]
-        public async Task AppendEvent_New()
+        public async Task AppendEvent_NewGame()
         {
             await using (var fixture = await DynamoEventRepositoryFixture.Init())
             {
                 var eventRepository = fixture.GetEventRepository();
 
-                var @event = new NewEvent(
+                var @event = new NewGameEvent(
                     new GameId(Guid.NewGuid()),
                     new UserId(Guid.NewGuid()),
                     new CardSet(
@@ -129,7 +128,7 @@ namespace InfrastructureTests
 
                 var gameId = new GameId(Guid.NewGuid());
 
-                var newEvent = new NewEvent(
+                var newEvent = new NewGameEvent(
                     gameId,
                     new UserId(Guid.NewGuid()),
                     new CardSet(

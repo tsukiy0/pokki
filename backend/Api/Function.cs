@@ -66,11 +66,11 @@ namespace Api
                 { new GraphQlRequestInfo{ ParentType = GraphQlRequestParentType.Mutation, FieldName = "CreateUser" }, new CreateUserHandler(userRepository) },
                 { new GraphQlRequestInfo{ ParentType = GraphQlRequestParentType.Query, FieldName = "GetUser" }, new GetUserHandler(userRepository) },
                 { new GraphQlRequestInfo{ ParentType = GraphQlRequestParentType.Query, FieldName = "HealthCheck" }, new HealthCheckHandler() },
-                { new GraphQlRequestInfo{ ParentType = GraphQlRequestParentType.Mutation, FieldName = "New" }, new NewEventHandler(gameService) },
-                { new GraphQlRequestInfo{ ParentType = GraphQlRequestParentType.Mutation, FieldName = "AddPlayer" }, new AddPlayerEventHandler(gameService) },
-                { new GraphQlRequestInfo{ ParentType = GraphQlRequestParentType.Mutation, FieldName = "NewRound" }, new NewRoundEventHandler(gameService) },
-                { new GraphQlRequestInfo{ ParentType = GraphQlRequestParentType.Mutation, FieldName = "SelectCard" }, new SelectCardEventHandler(gameService) },
-                { new GraphQlRequestInfo{ ParentType = GraphQlRequestParentType.Mutation, FieldName = "EndRound" }, new EndRoundEventHandler(gameService) },
+                { new GraphQlRequestInfo{ ParentType = GraphQlRequestParentType.Mutation, FieldName = "NewGame" }, new NewGameHandler(gameService) },
+                { new GraphQlRequestInfo{ ParentType = GraphQlRequestParentType.Mutation, FieldName = "AddPlayer" }, new AddPlayerHandler(gameService) },
+                { new GraphQlRequestInfo{ ParentType = GraphQlRequestParentType.Mutation, FieldName = "NewRound" }, new NewRoundHandler(gameService) },
+                { new GraphQlRequestInfo{ ParentType = GraphQlRequestParentType.Mutation, FieldName = "SelectCard" }, new SelectCardHandler(gameService) },
+                { new GraphQlRequestInfo{ ParentType = GraphQlRequestParentType.Mutation, FieldName = "EndRound" }, new EndRoundHandler(gameService) },
             };
 
             if (!handlerMap.TryGetValue(graphQlRequest.Info, out var handler))

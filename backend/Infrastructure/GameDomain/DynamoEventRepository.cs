@@ -13,7 +13,7 @@ namespace Infrastructure.GameDomain
     {
         private enum EventType
         {
-            New,
+            NewGame,
             AddPlayer,
             NewRound,
             SelectCard,
@@ -44,7 +44,7 @@ namespace Infrastructure.GameDomain
                 var nextVersion = await GetNextVersion(@event.GameId);
                 switch (@event)
                 {
-                    case NewEvent newEvent:
+                    case NewGameEvent newEvent:
                         await client.PutItemAsync(new PutItemRequest
                         {
                             TableName = tableName,
@@ -52,7 +52,7 @@ namespace Infrastructure.GameDomain
                             Item = new Dictionary<string, AttributeValue>{
                                 {"id", new AttributeValue {S = @event.GameId.Value.ToString()}},
                                 {"version", new AttributeValue {N = nextVersion.Value.ToString()}},
-                                {"type", new AttributeValue{S = EventType.New.ToString("G")}},
+                                {"type", new AttributeValue{S = EventType.NewGame.ToString("G")}},
                                 {"admin_id", new AttributeValue {S = newEvent.AdminId.Value.ToString()}},
                                 {"cards", new AttributeValue {L = newEvent.Cards.Value.Select(_ => {
                                     return new AttributeValue{M = new Dictionary<string, AttributeValue> {
@@ -147,7 +147,7 @@ namespace Infrastructure.GameDomain
             {
                 return (Enum.Parse(typeof(EventType), item["type"].S)) switch
                 {
-                    EventType.New => new NewEvent(
+                    EventType.NewGame => new NewGameEvent(
                         new GameId(Guid.Parse(item["id"].S)),
                         new UserId(Guid.Parse(item["admin_id"].S)),
                         new CardSet(item["cards"].L.Select(_ =>

@@ -4,23 +4,23 @@ using Core.GameDomain;
 
 namespace Api.GameDomain
 {
-    public struct NewRoundEventRequest
+    public struct NewRoundRequest
     {
         public string GameId { get; set; }
         public string RoundId { get; set; }
         public string RoundName { get; set; }
     }
 
-    public class NewRoundEventHandler : BaseHandler<NewRoundEventRequest, GameResponse>
+    public class NewRoundHandler : BaseHandler<NewRoundRequest, GameResponse>
     {
         private readonly IGameService gameService;
 
-        public NewRoundEventHandler(IGameService gameService)
+        public NewRoundHandler(IGameService gameService)
         {
             this.gameService = gameService;
         }
 
-        protected override async Task<GameResponse> Handle(NewRoundEventRequest request)
+        protected override async Task<GameResponse> Handle(NewRoundRequest request)
         {
             var game = await gameService.NewRound(new NewRoundEvent(
                 new GameId(Guid.Parse(request.GameId)),

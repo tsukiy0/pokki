@@ -7,7 +7,7 @@ using Core.UserDomain;
 
 namespace Api.GameDomain
 {
-    public struct NewEventRequest
+    public struct NewGameRequest
     {
         public struct Card
         {
@@ -20,18 +20,18 @@ namespace Api.GameDomain
         public IList<Card> Cards { get; set; }
     }
 
-    public class NewEventHandler : BaseHandler<NewEventRequest, GameResponse>
+    public class NewGameHandler : BaseHandler<NewGameRequest, GameResponse>
     {
         private readonly IGameService gameService;
 
-        public NewEventHandler(IGameService gameService)
+        public NewGameHandler(IGameService gameService)
         {
             this.gameService = gameService;
         }
 
-        protected override async Task<GameResponse> Handle(NewEventRequest request)
+        protected override async Task<GameResponse> Handle(NewGameRequest request)
         {
-            var game = await gameService.New(new NewEvent(
+            var game = await gameService.NewGame(new NewGameEvent(
                 new GameId(Guid.Parse(request.GameId)),
                 new UserId(Guid.Parse(request.AdminId)),
                 new CardSet(request.Cards.Select(card => new Card(

@@ -5,22 +5,22 @@ using Core.UserDomain;
 
 namespace Api.GameDomain
 {
-    public struct AddPlayerEventRequest
+    public struct AddPlayerRequest
     {
         public string GameId { get; set; }
         public string PlayerId { get; set; }
     }
 
-    public class AddPlayerEventHandler : BaseHandler<AddPlayerEventRequest, GameResponse>
+    public class AddPlayerHandler : BaseHandler<AddPlayerRequest, GameResponse>
     {
         private readonly IGameService gameService;
 
-        public AddPlayerEventHandler(IGameService gameService)
+        public AddPlayerHandler(IGameService gameService)
         {
             this.gameService = gameService;
         }
 
-        protected override async Task<GameResponse> Handle(AddPlayerEventRequest request)
+        protected override async Task<GameResponse> Handle(AddPlayerRequest request)
         {
             var game = await gameService.AddPlayer(new AddPlayerEvent(
                 new GameId(Guid.Parse(request.GameId)),
