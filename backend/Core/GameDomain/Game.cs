@@ -48,19 +48,6 @@ namespace Core.GameDomain
                 .Count() == 1;
         }
 
-        public bool HasPlayerCard(UserId playerId)
-        {
-            if (ActiveRound == null)
-            {
-                return false;
-            }
-
-            return ActiveRound.Value
-                .PlayerCards.Value
-                .Where(_ => _.PlayerId.Equals(playerId))
-                .Count() == 1;
-        }
-
         public bool HasCard(CardId cardId)
         {
             return Cards.Value

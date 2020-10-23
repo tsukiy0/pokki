@@ -13,7 +13,6 @@ namespace Core.GameDomain
     public class NoPlayerException : Exception { }
     public class NoCardException : Exception { }
     public class NotAllPlayersSelectedException : Exception { }
-    public class PlayerCardConflictException : Exception { }
     public class NotNextVersionException : Exception { }
     public class NotSupportedEventException : Exception { }
 
@@ -140,11 +139,6 @@ namespace Core.GameDomain
                         if (!acc.HasPlayer(selectCardEvent.PlayerCard.PlayerId))
                         {
                             throw new NoPlayerException();
-                        }
-
-                        if (acc.HasPlayerCard(selectCardEvent.PlayerCard.PlayerId))
-                        {
-                            throw new PlayerCardConflictException();
                         }
 
                         return new Game(

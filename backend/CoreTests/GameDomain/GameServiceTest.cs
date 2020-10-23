@@ -340,7 +340,7 @@ namespace GameTests
             eventRepositoryMock.Setup(_ => _.ListEvents(gameId)).ReturnsAsync(events);
             var service = new GameService(eventRepositoryMock.Object);
 
-            await Assert.ThrowsAsync<PlayerCardConflictException>(() => service.SelectCard(selectCardEvent));
+            await Assert.ThrowsAsync<PlayerCardSet.DuplicatePlayerException>(() => service.SelectCard(selectCardEvent));
         }
 
         [Fact]
