@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Core.UserDomain;
 
-namespace Api
+namespace Api.UserDomain
 {
     public struct GetUserRequest
     {

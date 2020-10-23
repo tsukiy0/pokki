@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Amazon.Lambda.Core;
+using Api.UserDomain;
 using Infrastructure.Config;
 using Infrastructure.UserDomain;
 
