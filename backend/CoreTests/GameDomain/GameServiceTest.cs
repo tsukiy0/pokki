@@ -47,7 +47,7 @@ namespace GameTests
 
             Assert.Equal(newEvent.GameId, actual.Id);
             Assert.Equal(newEvent.Version, actual.Version);
-            Assert.Equal(newEvent.AdminId, actual.GetAdminId());
+            Assert.Equal(newEvent.AdminId, actual.PlayerRoles.GetAdminId());
             Assert.Equal(newEvent.Cards, actual.Cards);
             Assert.Null(actual.ActiveRound);
             Assert.Equal(new Set<CompletedRound>(Array.Empty<CompletedRound>()), actual.CompletedRounds);

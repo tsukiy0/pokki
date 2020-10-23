@@ -34,13 +34,6 @@ namespace Core.GameDomain
             CompletedRounds = completedRounds;
         }
 
-        public UserId GetAdminId()
-        {
-            return PlayerRoles.Value
-                .Where(_ => _.Role == Role.Admin)
-                .Single().PlayerId;
-        }
-
         public bool IsActiveRound()
         {
             return ActiveRound != null;
