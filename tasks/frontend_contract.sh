@@ -9,3 +9,7 @@ get_cfn_output() {
 export API_KEY=$(get_cfn_output ApiKey)
 export API_URL=$(get_cfn_output ApiUrl)
 export API_REGION=$(get_cfn_output ApiRegion)
+
+pushd frontend
+yarn test:contract
+popd
