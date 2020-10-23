@@ -29,8 +29,87 @@ type HealthCheckResponse {
   IsHealthy: Boolean!
 }
 
+type PlayerRole {
+  PlayerId: String!
+  Role: String!
+}
+
+type Card {
+  Id: String!
+  Name: String!
+}
+
+type PlayerCard {
+  PlayerId: String!
+  CardId: String!
+}
+
+type Round {
+  Id: String!
+  Name: String!
+  PlayerCard: [PlayerCard!]!
+}
+
+type CompletedRound {
+  Id: String!
+  Name: String!
+  PlayerCard: [PlayerCard!]!
+  ResultCardId: String!
+}
+
+type GameResponse {
+  Id: String!
+  Status: String!
+  PlayerRoles: [PlayerRole!]!
+  Cards: [Card!]!
+  ActiveRound: Round
+  CompletedRound: [CompletedRound!]!
+}
+
+input CardRequest {
+  Id: String!
+  Name: String!
+}
+
+input NewGameRequest {
+  GameId: String!
+  AdminId: String!
+  Cards: [CardRequest!]!
+}
+
+input AddPlayerRequest {
+  GameId: String!
+  PlayerId: String!
+}
+
+input NewRoundRequest {
+  GameId: String!
+  RoundId: String!
+  RoundName: String!
+}
+
+input PlayerCardRequest {
+  PlayerId: String!
+  CardId: String!
+}
+
+input SelectCardRequest {
+  GameId: String!
+  PlayerCard: PlayerCardRequest!
+}
+
+input EndRoundRequest {
+  GameId: String!
+  ResultCardId: String!
+}
+
 type Mutation {
   CreateUser(request: CreateUserRequest!): VoidResponse!
+  NewGame(request: NewGameRequest!): GameResponse!
+  AddPlayer(request: AddPlayerRequest!): GameResponse!
+  NewRound(request: NewRoundRequest!): GameResponse!
+  SelectCard(request: SelectCardRequest!): GameResponse!
+  EndRound(request: EndRoundRequest!): GameResponse!
 }
 
 type Query {
