@@ -73,7 +73,7 @@ namespace Core.GameDomain
 
             return events.Skip(1).Aggregate(new Game(
                 newEvent.GameId,
-                GameStatus.PENDING,
+                GameStatus.Pending,
                 new PlayerRoleSet(
                     new PlayerRole(
                         newEvent.AdminId,
@@ -88,7 +88,7 @@ namespace Core.GameDomain
                 switch (@event)
                 {
                     case AddPlayerEvent addPlayerEvent:
-                        if (acc.Status != GameStatus.PENDING)
+                        if (acc.Status != GameStatus.Pending)
                         {
                             throw new NotPendingException();
                         }
@@ -100,21 +100,21 @@ namespace Core.GameDomain
 
                         return new Game(
                            acc.Id,
-                           GameStatus.PENDING,
+                           GameStatus.Pending,
                            acc.PlayerRoles.AddPlayer(addPlayerEvent.PlayerId),
                            acc.Cards,
                            acc.ActiveRound,
                            acc.CompletedRounds
                        );
                     case NewRoundEvent newRoundEvent:
-                        if (acc.Status == GameStatus.ACTIVE)
+                        if (acc.Status == GameStatus.Active)
                         {
                             throw new ActiveRoundConflictException();
                         }
 
                         return new Game(
                            acc.Id,
-                           GameStatus.ACTIVE,
+                           GameStatus.Active,
                            acc.PlayerRoles,
                            acc.Cards,
                            new Round(
@@ -125,7 +125,7 @@ namespace Core.GameDomain
                            acc.CompletedRounds
                         );
                     case SelectCardEvent selectCardEvent:
-                        if (acc.Status != GameStatus.ACTIVE)
+                        if (acc.Status != GameStatus.Active)
                         {
                             throw new NoActiveRoundException();
                         }
@@ -142,7 +142,7 @@ namespace Core.GameDomain
 
                         return new Game(
                             acc.Id,
-                            GameStatus.ACTIVE,
+                            GameStatus.Active,
                             acc.PlayerRoles,
                             acc.Cards,
                             new Round(
@@ -153,7 +153,7 @@ namespace Core.GameDomain
                             acc.CompletedRounds
                         );
                     case EndRoundEvent endRoundEvent:
-                        if (acc.Status != GameStatus.ACTIVE)
+                        if (acc.Status != GameStatus.Active)
                         {
                             throw new NoActiveRoundException();
                         }
@@ -170,7 +170,7 @@ namespace Core.GameDomain
 
                         return new Game(
                             acc.Id,
-                            GameStatus.INACTIVE,
+                            GameStatus.Inactive,
                             acc.PlayerRoles,
                             acc.Cards,
                             null,

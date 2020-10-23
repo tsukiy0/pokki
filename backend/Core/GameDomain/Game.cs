@@ -15,9 +15,9 @@ namespace Core.GameDomain
 
     public enum GameStatus
     {
-        PENDING,
-        ACTIVE,
-        INACTIVE
+        Pending,
+        Active,
+        Inactive
     }
 
     public struct Game

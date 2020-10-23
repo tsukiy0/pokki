@@ -22,7 +22,7 @@ namespace ApiTests
             var roundId2 = new RoundId(Guid.NewGuid());
             var game = new Game(
                 gameId,
-                GameStatus.ACTIVE,
+                GameStatus.Active,
                 new PlayerRoleSet(
                     new PlayerRole(
                         playerId1,
@@ -81,7 +81,7 @@ namespace ApiTests
             var expected = new GameResponse
             {
                 Id = gameId.Value.ToString(),
-                Status = GameStatus.ACTIVE,
+                Status = GameStatus.Active,
                 PlayerRoles = new[]{
                     new GameResponse.PlayerRole {
                         PlayerId = playerId1.Value.ToString(),
