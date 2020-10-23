@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Core;
 using Core.GameDomain;
-using Core.Shared;
 using Core.UserDomain;
 using Moq;
 using Xunit;
