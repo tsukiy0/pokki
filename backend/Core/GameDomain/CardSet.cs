@@ -26,6 +26,11 @@ namespace Core.GameDomain
             Value = value;
         }
 
+        public bool HasCard(CardId cardId)
+        {
+            return Value.Where(_ => _.Id.Equals(cardId)).Any();
+        }
+
         public CardSet AddCard(Card card)
         {
             return new CardSet(Value.ConcatOne(card).ToArray());

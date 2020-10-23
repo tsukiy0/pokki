@@ -94,7 +94,7 @@ namespace Core.GameDomain
                 switch (@event)
                 {
                     case AddPlayerEvent addPlayerEvent:
-                        if (acc.HasPlayer(addPlayerEvent.PlayerId))
+                        if (acc.PlayerRoles.HasPlayer(addPlayerEvent.PlayerId))
                         {
                             throw new PlayerConflictException();
                         }
@@ -131,12 +131,12 @@ namespace Core.GameDomain
                             throw new NoActiveRoundException();
                         }
 
-                        if (!acc.HasCard(selectCardEvent.PlayerCard.CardId))
+                        if (!acc.Cards.HasCard(selectCardEvent.PlayerCard.CardId))
                         {
                             throw new NoCardException();
                         }
 
-                        if (!acc.HasPlayer(selectCardEvent.PlayerCard.PlayerId))
+                        if (!acc.PlayerRoles.HasPlayer(selectCardEvent.PlayerCard.PlayerId))
                         {
                             throw new NoPlayerException();
                         }
@@ -159,7 +159,7 @@ namespace Core.GameDomain
                             throw new NoActiveRoundException();
                         }
 
-                        if (!acc.HasCard(endRoundEvent.ResultCardId))
+                        if (!acc.Cards.HasCard(endRoundEvent.ResultCardId))
                         {
                             throw new NoCardException();
                         }

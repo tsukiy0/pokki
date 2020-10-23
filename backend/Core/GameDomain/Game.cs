@@ -41,20 +41,6 @@ namespace Core.GameDomain
                 .Single().PlayerId;
         }
 
-        public bool HasPlayer(UserId playerId)
-        {
-            return PlayerRoles.Value
-                .Where(_ => _.PlayerId.Equals(playerId))
-                .Count() == 1;
-        }
-
-        public bool HasCard(CardId cardId)
-        {
-            return Cards.Value
-                .Where(_ => _.Id.Equals(cardId))
-                .Count() == 1;
-        }
-
         public bool IsActiveRound()
         {
             return ActiveRound != null;
