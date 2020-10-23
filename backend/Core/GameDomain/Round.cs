@@ -17,9 +17,9 @@ namespace Core.GameDomain
     {
         public readonly RoundId Id;
         public readonly string Name;
-        public readonly Set<PlayerCard> PlayerCards;
+        public readonly PlayerCardSet PlayerCards;
 
-        public Round(RoundId id, string name, Set<PlayerCard> playerCards)
+        public Round(RoundId id, string name, PlayerCardSet playerCards)
         {
             Id = id;
             Name = name;
@@ -31,10 +31,10 @@ namespace Core.GameDomain
     {
         public readonly RoundId Id;
         public readonly string Name;
-        public readonly NonEmptySet<PlayerCard> PlayerCards;
+        public readonly PlayerCardSet PlayerCards;
         public readonly CardId ResultCardId;
 
-        public CompletedRound(RoundId id, string name, NonEmptySet<PlayerCard> playerCards, CardId resultCardId)
+        public CompletedRound(RoundId id, string name, PlayerCardSet playerCards, CardId resultCardId)
         {
             Id = id;
             Name = name;

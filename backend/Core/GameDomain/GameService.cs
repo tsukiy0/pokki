@@ -122,7 +122,7 @@ namespace Core.GameDomain
                            new Round(
                                newRoundEvent.RoundId,
                                newRoundEvent.RoundName,
-                               new Set<PlayerCard>(Array.Empty<PlayerCard>())
+                               new PlayerCardSet()
                            ),
                            acc.CompletedRounds
                         );
@@ -155,7 +155,7 @@ namespace Core.GameDomain
                             new Round(
                                 acc.ActiveRound.Value.Id,
                                 acc.ActiveRound.Value.Name,
-                                acc.ActiveRound.Value.PlayerCards.ConcatOne(selectCardEvent.PlayerCard)
+                                acc.ActiveRound.Value.PlayerCards.AddPlayerCard(selectCardEvent.PlayerCard)
                             ),
                             acc.CompletedRounds
                         );
@@ -185,7 +185,7 @@ namespace Core.GameDomain
                                 new CompletedRound(
                                     acc.ActiveRound.Value.Id,
                                     acc.ActiveRound.Value.Name,
-                                    new NonEmptySet<PlayerCard>(acc.ActiveRound.Value.PlayerCards.Value),
+                                    acc.ActiveRound.Value.PlayerCards,
                                     endRoundEvent.ResultCardId
                                 )
                             )

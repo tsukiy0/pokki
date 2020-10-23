@@ -158,7 +158,7 @@ namespace GameTests
                 new Round(
                     newRoundEvent.RoundId,
                     newRoundEvent.RoundName,
-                    new Set<PlayerCard>(Array.Empty<PlayerCard>())
+                    new PlayerCardSet()
                 ),
                 actual.ActiveRound
             );
@@ -233,11 +233,7 @@ namespace GameTests
             var actual = await service.SelectCard(selectCardEvent);
 
             Assert.Equal(
-                new NonEmptySet<PlayerCard>(
-                    new PlayerCard[]{
-                        selectCardEvent.PlayerCard
-                    }
-                ),
+                new PlayerCardSet(selectCardEvent.PlayerCard),
                 actual.ActiveRound.Value.PlayerCards
             );
         }
@@ -377,7 +373,7 @@ namespace GameTests
                         new CompletedRound(
                             roundId,
                             roundName,
-                            new NonEmptySet<PlayerCard>(new []{
+                            new PlayerCardSet(
                                 new PlayerCard(
                                     adminId,
                                     cards.Value[0].Id
@@ -386,7 +382,7 @@ namespace GameTests
                                     playerId,
                                     cards.Value[0].Id
                                 )
-                            }),
+                            ),
                             endRoundEvent.ResultCardId
                         )
                     }
