@@ -42,5 +42,24 @@ namespace Core.GameDomain
         {
             return Value.Where(_ => _.PlayerId.Equals(playerId)).Any();
         }
+
+        public PlayerRoleSet AddPlayer(UserId playerId)
+        {
+            return new PlayerRoleSet(Value.ConcatOne(new PlayerRole(
+                playerId,
+                Role.Player
+            )).ToArray());
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is PlayerRoleSet set &&
+                   Value.SequenceEqual(set.Value);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Value);
+        }
     }
 }

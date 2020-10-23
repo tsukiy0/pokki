@@ -77,7 +77,7 @@ namespace GameTests
             var actual = await service.AddPlayer(addPlayerEvent);
 
             Assert.Equal(
-                new NonEmptySet<PlayerRole>(new PlayerRole[]{
+                new PlayerRoleSet(
                     new PlayerRole(
                         adminId,
                         Role.Admin
@@ -86,7 +86,7 @@ namespace GameTests
                         addPlayerEvent.PlayerId,
                         Role.Player
                     )
-                }),
+                ),
                 actual.PlayerRoles
             );
         }

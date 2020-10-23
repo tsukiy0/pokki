@@ -89,5 +89,21 @@ namespace GameTests
 
             Assert.True(actual);
         }
+
+        [Fact]
+        public void AddPlayer()
+        {
+            var playerId = new UserId(Guid.NewGuid());
+            var set = new PlayerRoleSet(
+                new PlayerRole(
+                    new UserId(Guid.NewGuid()),
+                    Role.Admin
+                )
+            ).AddPlayer(playerId);
+
+            var actual = set.HasPlayer(playerId);
+
+            Assert.True(actual);
+        }
     }
 }

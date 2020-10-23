@@ -76,12 +76,12 @@ namespace Core.GameDomain
             return events.Skip(1).Aggregate(new Game(
                 newEvent.GameId,
                 newEvent.Version,
-                new NonEmptySet<PlayerRole>(new PlayerRole[] {
+                new PlayerRoleSet(
                     new PlayerRole(
                         newEvent.AdminId,
                         Role.Admin
                     )
-                }),
+                ),
                 newEvent.Cards,
                 null,
                 new Set<CompletedRound>(Array.Empty<CompletedRound>())
@@ -103,12 +103,7 @@ namespace Core.GameDomain
                         return new Game(
                            acc.Id,
                            addPlayerEvent.Version,
-                            acc.PlayerRoles.ConcatOne(
-                               new PlayerRole(
-                                   addPlayerEvent.PlayerId,
-                                   Role.Player
-                               )
-                           ),
+                           acc.PlayerRoles.AddPlayer(addPlayerEvent.PlayerId),
                            acc.Cards,
                            acc.ActiveRound,
                            acc.CompletedRounds
