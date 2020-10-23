@@ -16,16 +16,16 @@ namespace GameTests
         private readonly GameId gameId = new GameId(Guid.NewGuid());
         private readonly UserId adminId = new UserId(Guid.NewGuid());
         private readonly UserId playerId = new UserId(Guid.NewGuid());
-        private readonly NonEmptySet<Card> cards = new NonEmptySet<Card>(new[]{
+        private readonly CardSet cards = new CardSet(
             new Card(
                 new CardId(Guid.NewGuid()),
                 "M"
             ),
             new Card(
                 new CardId(Guid.NewGuid()),
-                "M"
-            ),
-        });
+                "L"
+            )
+        );
         private readonly RoundId roundId = new RoundId(Guid.NewGuid());
         private readonly string roundName = "SM123";
 
@@ -34,21 +34,13 @@ namespace GameTests
         public async Task New()
         {
             var newEvent = new NewEvent(
-                new GameId(Guid.NewGuid()),
+                gameId,
                 new EventVersion(1),
-                new UserId(Guid.NewGuid()),
-                new NonEmptySet<Card>(new Card[] {
-                new Card(
-                    new CardId(Guid.NewGuid()),
-                    "M"
-                ),
-                new Card(
-                    new CardId(Guid.NewGuid()),
-                    "L"
-                )
-            }));
+                adminId,
+                cards
+            );
             var eventRepositoryMock = new Mock<IEventRepository>();
-            eventRepositoryMock.Setup(_ => _.ListEvents(newEvent.GameId)).ReturnsAsync(Array.Empty<Event>());
+            eventRepositoryMock.Setup(_ => _.ListEvents(gameId)).ReturnsAsync(Array.Empty<Event>());
             var service = new GameService(eventRepositoryMock.Object);
 
             var actual = await service.New(newEvent);

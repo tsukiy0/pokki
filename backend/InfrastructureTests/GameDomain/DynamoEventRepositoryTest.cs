@@ -22,12 +22,12 @@ namespace InfrastructureTests
                     new GameId(Guid.NewGuid()),
                     new EventVersion(1),
                     new UserId(Guid.NewGuid()),
-                    new NonEmptySet<Card>(new Card[]{
+                    new CardSet(
                         new Card(
                             new CardId(Guid.NewGuid()),
                             "M"
                         )
-                    })
+                    )
                 );
 
                 await eventRepository.AppendEvent(@event);
@@ -158,12 +158,12 @@ namespace InfrastructureTests
                     gameId,
                     new EventVersion(1),
                     new UserId(Guid.NewGuid()),
-                    new NonEmptySet<Card>(new Card[]{
+                    new CardSet(
                         new Card(
                             new CardId(Guid.NewGuid()),
                             "M"
                         )
-                    })
+                    )
                 );
 
                 var addPlayerEvent = new AddPlayerEvent(

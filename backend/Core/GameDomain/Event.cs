@@ -32,9 +32,9 @@ namespace Core.GameDomain
     public class NewEvent : Event
     {
         public readonly UserId AdminId;
-        public readonly NonEmptySet<Card> Cards;
+        public readonly CardSet Cards;
 
-        public NewEvent(GameId gameId, EventVersion version, UserId adminId, NonEmptySet<Card> cards) : base(gameId, version)
+        public NewEvent(GameId gameId, EventVersion version, UserId adminId, CardSet cards) : base(gameId, version)
         {
             AdminId = adminId;
             Cards = cards;

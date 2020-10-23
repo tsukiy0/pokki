@@ -151,7 +151,7 @@ namespace Infrastructure.GameDomain
                         new GameId(Guid.Parse(item["id"].S)),
                         new EventVersion(int.Parse(item["version"].N)),
                         new UserId(Guid.Parse(item["admin_id"].S)),
-                        new NonEmptySet<Card>(item["cards"].L.Select(_ =>
+                        new CardSet(item["cards"].L.Select(_ =>
                         {
                             return new Card(
                                 new CardId(Guid.Parse(_.M["id"].S)),

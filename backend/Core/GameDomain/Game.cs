@@ -20,11 +20,11 @@ namespace Core.GameDomain
         public readonly GameId Id;
         public readonly EventVersion Version;
         public readonly PlayerRoleSet PlayerRoles;
-        public readonly NonEmptySet<Card> Cards;
+        public readonly CardSet Cards;
         public readonly Round? ActiveRound;
         public readonly Set<CompletedRound> CompletedRounds;
 
-        public Game(GameId id, EventVersion version, PlayerRoleSet playerRoles, NonEmptySet<Card> cards, Round? activeRound, Set<CompletedRound> completedRounds)
+        public Game(GameId id, EventVersion version, PlayerRoleSet playerRoles, CardSet cards, Round? activeRound, Set<CompletedRound> completedRounds)
         {
             Id = id;
             Version = version;
