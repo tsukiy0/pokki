@@ -131,6 +131,22 @@ namespace GameTests
         }
 
         [Fact]
+        public async Task AddPlayer_ThrowWhenNotPending()
+        {
+            var events = GetNewGameWithActiveRound();
+            var addPlayerEvent = new AddPlayerEvent(
+                gameId,
+                new EventVersion(4),
+                adminId
+            );
+            var eventRepositoryMock = new Mock<IEventRepository>();
+            eventRepositoryMock.Setup(_ => _.ListEvents(gameId)).ReturnsAsync(events);
+            var service = new GameService(eventRepositoryMock.Object);
+
+            await Assert.ThrowsAsync<NotPendingException>(() => service.AddPlayer(addPlayerEvent));
+        }
+
+        [Fact]
         public async Task NewRound()
         {
             var events = GetNewGameWithPlayers();

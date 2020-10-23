@@ -15,6 +15,13 @@ namespace Core.GameDomain
         }
     }
 
+    public enum GameStatus
+    {
+        PENDING,
+        ACTIVE,
+        INACTIVE
+    }
+
     public struct Game
     {
         public readonly GameId Id;
@@ -23,20 +30,17 @@ namespace Core.GameDomain
         public readonly CardSet Cards;
         public readonly Round? ActiveRound;
         public readonly Set<CompletedRound> CompletedRounds;
+        public readonly GameStatus Status;
 
-        public Game(GameId id, EventVersion version, PlayerRoleSet playerRoles, CardSet cards, Round? activeRound, Set<CompletedRound> completedRounds)
+        public Game(GameId id, EventVersion version, GameStatus status, PlayerRoleSet playerRoles, CardSet cards, Round? activeRound, Set<CompletedRound> completedRounds)
         {
             Id = id;
             Version = version;
+            Status = status;
             PlayerRoles = playerRoles;
             Cards = cards;
             ActiveRound = activeRound;
             CompletedRounds = completedRounds;
-        }
-
-        public bool IsActiveRound()
-        {
-            return ActiveRound != null;
         }
 
         public bool HasAllPlayersSelected()

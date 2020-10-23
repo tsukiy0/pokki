@@ -15,6 +15,7 @@ namespace Core.GameDomain
     public class NotAllPlayersSelectedException : Exception { }
     public class NotNextVersionException : Exception { }
     public class NotSupportedEventException : Exception { }
+    public class NotPendingException : Exception { }
 
     public class GameService : IGameService
     {
@@ -75,6 +76,7 @@ namespace Core.GameDomain
             return events.Skip(1).Aggregate(new Game(
                 newEvent.GameId,
                 newEvent.Version,
+                GameStatus.PENDING,
                 new PlayerRoleSet(
                     new PlayerRole(
                         newEvent.AdminId,
@@ -94,6 +96,11 @@ namespace Core.GameDomain
                 switch (@event)
                 {
                     case AddPlayerEvent addPlayerEvent:
+                        if (acc.Status != GameStatus.PENDING)
+                        {
+                            throw new NotPendingException();
+                        }
+
                         if (acc.PlayerRoles.HasPlayer(addPlayerEvent.PlayerId))
                         {
                             throw new PlayerConflictException();
@@ -102,13 +109,14 @@ namespace Core.GameDomain
                         return new Game(
                            acc.Id,
                            addPlayerEvent.Version,
+                           GameStatus.PENDING,
                            acc.PlayerRoles.AddPlayer(addPlayerEvent.PlayerId),
                            acc.Cards,
                            acc.ActiveRound,
                            acc.CompletedRounds
                        );
                     case NewRoundEvent newRoundEvent:
-                        if (acc.IsActiveRound())
+                        if (acc.Status == GameStatus.ACTIVE)
                         {
                             throw new ActiveRoundConflictException();
                         }
@@ -116,6 +124,7 @@ namespace Core.GameDomain
                         return new Game(
                            acc.Id,
                            newRoundEvent.Version,
+                           GameStatus.ACTIVE,
                            acc.PlayerRoles,
                            acc.Cards,
                            new Round(
@@ -126,7 +135,7 @@ namespace Core.GameDomain
                            acc.CompletedRounds
                         );
                     case SelectCardEvent selectCardEvent:
-                        if (!acc.IsActiveRound())
+                        if (acc.Status != GameStatus.ACTIVE)
                         {
                             throw new NoActiveRoundException();
                         }
@@ -144,6 +153,7 @@ namespace Core.GameDomain
                         return new Game(
                             acc.Id,
                             selectCardEvent.Version,
+                            GameStatus.ACTIVE,
                             acc.PlayerRoles,
                             acc.Cards,
                             new Round(
@@ -154,7 +164,7 @@ namespace Core.GameDomain
                             acc.CompletedRounds
                         );
                     case EndRoundEvent endRoundEvent:
-                        if (!acc.IsActiveRound())
+                        if (acc.Status != GameStatus.ACTIVE)
                         {
                             throw new NoActiveRoundException();
                         }
@@ -171,7 +181,8 @@ namespace Core.GameDomain
 
                         return new Game(
                             acc.Id,
-                            @event.Version,
+                            endRoundEvent.Version,
+                            GameStatus.INACTIVE,
                             acc.PlayerRoles,
                             acc.Cards,
                             null,
