@@ -17,7 +17,6 @@ namespace Core.GameDomain
     public class NotNextVersionException : Exception { }
     public class NotSupportedEventException : Exception { }
 
-
     public class GameService : IGameService
     {
         private readonly IEventRepository eventRepository;

@@ -1,5 +1,4 @@
 using Core.Shared;
-using Core.UserDomain;
 using System;
 
 namespace Core.GameDomain
@@ -11,18 +10,6 @@ namespace Core.GameDomain
         public RoundId(Guid value)
         {
             Value = value;
-        }
-    }
-
-    public struct PlayerCard
-    {
-        public readonly UserId PlayerId;
-        public readonly CardId CardId;
-
-        public PlayerCard(UserId userId, CardId cardId)
-        {
-            PlayerId = userId;
-            CardId = cardId;
         }
     }
 
