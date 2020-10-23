@@ -1,5 +1,4 @@
-﻿using Core.Shared;
-using Core.UserDomain;
+﻿using Core.UserDomain;
 using System;
 using System.Collections.Generic;
 

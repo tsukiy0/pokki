@@ -50,7 +50,7 @@ namespace GameTests
             Assert.Equal(newEvent.AdminId, actual.PlayerRoles.GetAdminId());
             Assert.Equal(newEvent.Cards, actual.Cards);
             Assert.Null(actual.ActiveRound);
-            Assert.Equal(new Set<CompletedRound>(Array.Empty<CompletedRound>()), actual.CompletedRounds);
+            Assert.Equal(new CompletedRoundSet(), actual.CompletedRounds);
         }
 
         [Fact]
@@ -376,24 +376,22 @@ namespace GameTests
 
             Assert.Null(actual.ActiveRound);
             Assert.Equal(
-                new Set<CompletedRound>(
-                    new CompletedRound[]{
-                        new CompletedRound(
-                            roundId,
-                            roundName,
-                            new PlayerCardSet(
-                                new PlayerCard(
-                                    adminId,
-                                    cards.Value[0].Id
-                                ),
-                                new PlayerCard(
-                                    playerId,
-                                    cards.Value[0].Id
-                                )
+                new CompletedRoundSet(
+                    new CompletedRound(
+                        roundId,
+                        roundName,
+                        new PlayerCardSet(
+                            new PlayerCard(
+                                adminId,
+                                cards.Value[0].Id
                             ),
-                            endRoundEvent.ResultCardId
-                        )
-                    }
+                            new PlayerCard(
+                                playerId,
+                                cards.Value[0].Id
+                            )
+                        ),
+                        endRoundEvent.ResultCardId
+                    )
                 ),
                 actual.CompletedRounds
             );

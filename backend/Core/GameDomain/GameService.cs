@@ -85,7 +85,7 @@ namespace Core.GameDomain
                 ),
                 newEvent.Cards,
                 null,
-                new Set<CompletedRound>(Array.Empty<CompletedRound>())
+                new CompletedRoundSet()
             ), (acc, @event) =>
             {
                 if (!acc.IsNextVersion(@event.Version))
@@ -186,7 +186,7 @@ namespace Core.GameDomain
                             acc.PlayerRoles,
                             acc.Cards,
                             null,
-                            acc.CompletedRounds.ConcatOne(
+                            acc.CompletedRounds.AddRound(
                                 new CompletedRound(
                                     acc.ActiveRound.Value.Id,
                                     acc.ActiveRound.Value.Name,
