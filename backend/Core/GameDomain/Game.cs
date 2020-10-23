@@ -1,7 +1,6 @@
 using Core.Shared;
 using Core.UserDomain;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Core.GameDomain
@@ -16,17 +15,6 @@ namespace Core.GameDomain
         }
     }
 
-    public class NoNewException : Exception { }
-    public class NoActiveRoundException : Exception { }
-    public class PlayerConflictException : Exception { }
-    public class ActiveRoundConflictException : Exception { }
-    public class NoPlayerException : Exception { }
-    public class NoCardException : Exception { }
-    public class NotAllPlayersSelectedException : Exception { }
-    public class PlayerCardConflictException : Exception { }
-    public class NotNextVersionException : Exception { }
-    public class NotSupportedEventException : Exception { }
-
     public struct Game
     {
         public readonly GameId Id;
@@ -36,7 +24,7 @@ namespace Core.GameDomain
         public readonly Round? ActiveRound;
         public readonly Set<CompletedRound> CompletedRounds;
 
-        private Game(GameId id, EventVersion version, NonEmptySet<PlayerRole> playerRoles, NonEmptySet<Card> cards, Round? activeRound, Set<CompletedRound> completedRounds)
+        public Game(GameId id, EventVersion version, NonEmptySet<PlayerRole> playerRoles, NonEmptySet<Card> cards, Round? activeRound, Set<CompletedRound> completedRounds)
         {
             Id = id;
             Version = version;
@@ -46,177 +34,6 @@ namespace Core.GameDomain
             CompletedRounds = completedRounds;
         }
 
-        public static Game FromEvent(IList<Event> events)
-        {
-            if (!(events.First() is NewEvent newEvent))
-            {
-                throw new NoNewException();
-            }
-
-            return events.Skip(1).Aggregate(New(newEvent), (acc, @event) =>
-            {
-                return @event switch
-                {
-                    AddPlayerEvent addPlayerEvent => acc.AddPlayer(addPlayerEvent),
-                    NewRoundEvent newRoundEvent => acc.NewRound(newRoundEvent),
-                    SelectCardEvent selectCardEvent => acc.SelectCard(selectCardEvent),
-                    EndRoundEvent endRoundEvent => acc.EndRound(endRoundEvent),
-                    _ => throw new NotSupportedEventException(),
-                };
-            });
-        }
-
-        private static Game New(NewEvent @event)
-        {
-            return new Game(
-                @event.GameId,
-                @event.Version,
-                new NonEmptySet<PlayerRole>(new PlayerRole[] {
-                    new PlayerRole(
-                        @event.AdminId,
-                        Role.Admin
-                    )
-                }),
-                @event.Cards,
-                null,
-                new Set<CompletedRound>(Array.Empty<CompletedRound>())
-            );
-        }
-
-        private Game AddPlayer(AddPlayerEvent @event)
-        {
-            if (!IsNextVersion(@event.Version))
-            {
-                throw new NotNextVersionException();
-            }
-
-            if (HasPlayer(@event.PlayerId))
-            {
-                throw new PlayerConflictException();
-            }
-
-            return new Game(
-                Id,
-                @event.Version,
-                PlayerRoles.ConcatOne(
-                    new PlayerRole(
-                        @event.PlayerId,
-                        Role.Player
-                    )
-                ),
-                Cards,
-                ActiveRound,
-                CompletedRounds
-            );
-        }
-
-        private Game NewRound(NewRoundEvent @event)
-        {
-            if (!IsNextVersion(@event.Version))
-            {
-                throw new NotNextVersionException();
-            }
-
-            if (ActiveRound != null)
-            {
-                throw new ActiveRoundConflictException();
-            }
-
-            return new Game(
-                Id,
-                @event.Version,
-                PlayerRoles,
-                Cards,
-                new Round(
-                    @event.RoundId,
-                    @event.RoundName,
-                    new Set<PlayerCard>(Array.Empty<PlayerCard>())
-                ),
-                CompletedRounds
-            );
-        }
-
-        private Game SelectCard(SelectCardEvent @event)
-        {
-            if (!IsNextVersion(@event.Version))
-            {
-                throw new NotNextVersionException();
-            }
-
-            if (ActiveRound == null)
-            {
-                throw new NoActiveRoundException();
-            }
-
-            if (!HasCard(@event.PlayerCard.CardId))
-            {
-                throw new NoCardException();
-            }
-
-            if (!HasPlayer(@event.PlayerCard.PlayerId))
-            {
-                throw new NoPlayerException();
-            }
-
-            if (HasPlayerCard(@event.PlayerCard.PlayerId))
-            {
-                throw new PlayerCardConflictException();
-            }
-
-
-            return new Game(
-                Id,
-                @event.Version,
-                PlayerRoles,
-                Cards,
-                new Round(
-                    ActiveRound.Value.Id,
-                    ActiveRound.Value.Name,
-                    ActiveRound.Value.PlayerCards.ConcatOne(@event.PlayerCard)
-                ),
-                CompletedRounds
-            );
-        }
-
-        private Game EndRound(EndRoundEvent @event)
-        {
-            if (!IsNextVersion(@event.Version))
-            {
-                throw new NotNextVersionException();
-            }
-
-            if (ActiveRound == null)
-            {
-                throw new NoActiveRoundException();
-            }
-
-            if (!HasCard(@event.ResultCardId))
-            {
-                throw new NoCardException();
-            }
-
-            if (!HasAllPlayersSelected())
-            {
-                throw new NotAllPlayersSelectedException();
-            }
-
-            return new Game(
-                Id,
-                @event.Version,
-                PlayerRoles,
-                Cards,
-                null,
-                CompletedRounds.ConcatOne(
-                    new CompletedRound(
-                        ActiveRound.Value.Id,
-                        ActiveRound.Value.Name,
-                        new NonEmptySet<PlayerCard>(ActiveRound.Value.PlayerCards.Value),
-                        @event.ResultCardId
-                    )
-                )
-            );
-        }
-
         public UserId GetAdminId()
         {
             return PlayerRoles.Value
@@ -224,14 +41,14 @@ namespace Core.GameDomain
                 .Single().PlayerId;
         }
 
-        private bool HasPlayer(UserId playerId)
+        public bool HasPlayer(UserId playerId)
         {
             return PlayerRoles.Value
                 .Where(_ => _.PlayerId.Equals(playerId))
                 .Count() == 1;
         }
 
-        private bool HasPlayerCard(UserId playerId)
+        public bool HasPlayerCard(UserId playerId)
         {
             if (ActiveRound == null)
             {
@@ -244,14 +61,19 @@ namespace Core.GameDomain
                 .Count() == 1;
         }
 
-        private bool HasCard(CardId cardId)
+        public bool HasCard(CardId cardId)
         {
             return Cards.Value
                 .Where(_ => _.Id.Equals(cardId))
                 .Count() == 1;
         }
 
-        private bool HasAllPlayersSelected()
+        public bool IsActiveRound()
+        {
+            return ActiveRound != null;
+        }
+
+        public bool HasAllPlayersSelected()
         {
             if (ActiveRound == null)
             {
@@ -264,7 +86,7 @@ namespace Core.GameDomain
                 .Any();
         }
 
-        private bool IsNextVersion(EventVersion version)
+        public bool IsNextVersion(EventVersion version)
         {
             return version.Value == Version.Value + 1;
         }

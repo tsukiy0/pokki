@@ -10,10 +10,26 @@ using Xunit;
 
 namespace GameTests
 {
-
     [Trait("Category", "Unit")]
     public class GameServiceTest
     {
+        private readonly GameId gameId = new GameId(Guid.NewGuid());
+        private readonly UserId adminId = new UserId(Guid.NewGuid());
+        private readonly UserId playerId = new UserId(Guid.NewGuid());
+        private readonly NonEmptySet<Card> cards = new NonEmptySet<Card>(new[]{
+            new Card(
+                new CardId(Guid.NewGuid()),
+                "M"
+            ),
+            new Card(
+                new CardId(Guid.NewGuid()),
+                "M"
+            ),
+        });
+        private readonly RoundId roundId = new RoundId(Guid.NewGuid());
+        private readonly string roundName = "SM123";
+
+
         [Fact]
         public async Task New()
         {
@@ -48,14 +64,14 @@ namespace GameTests
         [Fact]
         public async Task AddPlayer()
         {
-            var (events, game) = GetNewGame();
+            var events = GetNewGame();
             var addPlayerEvent = new AddPlayerEvent(
                 events[0].GameId,
                 new EventVersion(2),
                 new UserId(Guid.NewGuid())
             );
             var eventRepositoryMock = new Mock<IEventRepository>();
-            eventRepositoryMock.Setup(_ => _.ListEvents(game.Id)).ReturnsAsync(events);
+            eventRepositoryMock.Setup(_ => _.ListEvents(gameId)).ReturnsAsync(events);
             var service = new GameService(eventRepositoryMock.Object);
 
             var actual = await service.AddPlayer(addPlayerEvent);
@@ -63,7 +79,7 @@ namespace GameTests
             Assert.Equal(
                 new NonEmptySet<PlayerRole>(new PlayerRole[]{
                     new PlayerRole(
-                        game.GetAdminId(),
+                        adminId,
                         Role.Admin
                     ),
                     new PlayerRole(
@@ -93,14 +109,14 @@ namespace GameTests
         [Fact]
         public async Task AddPlayer_ThrowWhenPlayerExists()
         {
-            var (events, game) = GetNewGame();
+            var events = GetNewGame();
             var addPlayerEvent = new AddPlayerEvent(
-                game.Id,
+                gameId,
                 new EventVersion(2),
-                game.GetAdminId()
+                adminId
             );
             var eventRepositoryMock = new Mock<IEventRepository>();
-            eventRepositoryMock.Setup(_ => _.ListEvents(game.Id)).ReturnsAsync(events);
+            eventRepositoryMock.Setup(_ => _.ListEvents(gameId)).ReturnsAsync(events);
             var service = new GameService(eventRepositoryMock.Object);
 
             await Assert.ThrowsAsync<PlayerConflictException>(() => service.AddPlayer(addPlayerEvent));
@@ -109,14 +125,14 @@ namespace GameTests
         [Fact]
         public async Task AddPlayer_ThrowWhenNotNextVersion()
         {
-            var (events, game) = GetNewGame();
+            var events = GetNewGame();
             var addPlayerEvent = new AddPlayerEvent(
-                game.Id,
+                gameId,
                 new EventVersion(1),
-                game.GetAdminId()
+                adminId
             );
             var eventRepositoryMock = new Mock<IEventRepository>();
-            eventRepositoryMock.Setup(_ => _.ListEvents(game.Id)).ReturnsAsync(events);
+            eventRepositoryMock.Setup(_ => _.ListEvents(gameId)).ReturnsAsync(events);
             var service = new GameService(eventRepositoryMock.Object);
 
             await Assert.ThrowsAsync<NotNextVersionException>(() => service.AddPlayer(addPlayerEvent));
@@ -125,15 +141,15 @@ namespace GameTests
         [Fact]
         public async Task NewRound()
         {
-            var (events, game) = GetNewGameWithPlayers();
+            var events = GetNewGameWithPlayers();
             var newRoundEvent = new NewRoundEvent(
-                game.Id,
+                gameId,
                 new EventVersion(3),
                 new RoundId(Guid.NewGuid()),
                 "SM-123"
             );
             var eventRepositoryMock = new Mock<IEventRepository>();
-            eventRepositoryMock.Setup(_ => _.ListEvents(game.Id)).ReturnsAsync(events);
+            eventRepositoryMock.Setup(_ => _.ListEvents(gameId)).ReturnsAsync(events);
             var service = new GameService(eventRepositoryMock.Object);
 
             var actual = await service.NewRound(newRoundEvent);
@@ -167,15 +183,15 @@ namespace GameTests
         [Fact]
         public async Task NewRound_ThrowWhenHasActiveRound()
         {
-            var (events, game) = GetNewGameWithActiveRound();
+            var events = GetNewGameWithActiveRound();
             var newRoundEvent = new NewRoundEvent(
-                game.Id,
+                gameId,
                 new EventVersion(4),
                 new RoundId(Guid.NewGuid()),
                 "SM-123"
             );
             var eventRepositoryMock = new Mock<IEventRepository>();
-            eventRepositoryMock.Setup(_ => _.ListEvents(game.Id)).ReturnsAsync(events);
+            eventRepositoryMock.Setup(_ => _.ListEvents(gameId)).ReturnsAsync(events);
             var service = new GameService(eventRepositoryMock.Object);
 
             await Assert.ThrowsAsync<ActiveRoundConflictException>(() => service.NewRound(newRoundEvent));
@@ -184,15 +200,15 @@ namespace GameTests
         [Fact]
         public async Task NewRound_ThrowWhenNotNextVersion()
         {
-            var (events, game) = GetNewGameWithPlayers();
+            var events = GetNewGameWithPlayers();
             var newRoundEvent = new NewRoundEvent(
-                game.Id,
+                gameId,
                 new EventVersion(2),
                 new RoundId(Guid.NewGuid()),
                 "SM-123"
             );
             var eventRepositoryMock = new Mock<IEventRepository>();
-            eventRepositoryMock.Setup(_ => _.ListEvents(game.Id)).ReturnsAsync(events);
+            eventRepositoryMock.Setup(_ => _.ListEvents(gameId)).ReturnsAsync(events);
             var service = new GameService(eventRepositoryMock.Object);
 
             await Assert.ThrowsAsync<NotNextVersionException>(() => service.NewRound(newRoundEvent));
@@ -201,17 +217,17 @@ namespace GameTests
         [Fact]
         public async Task SelectCard()
         {
-            var (events, game) = GetNewGameWithActiveRound();
+            var events = GetNewGameWithActiveRound();
             var selectCardEvent = new SelectCardEvent(
-                game.Id,
+                gameId,
                 new EventVersion(4),
                 new PlayerCard(
-                    game.GetAdminId(),
-                    game.Cards.Value[0].Id
+                    adminId,
+                    cards.Value[0].Id
                 )
             );
             var eventRepositoryMock = new Mock<IEventRepository>();
-            eventRepositoryMock.Setup(_ => _.ListEvents(game.Id)).ReturnsAsync(events);
+            eventRepositoryMock.Setup(_ => _.ListEvents(gameId)).ReturnsAsync(events);
             var service = new GameService(eventRepositoryMock.Object);
 
             var actual = await service.SelectCard(selectCardEvent);
@@ -247,17 +263,17 @@ namespace GameTests
         [Fact]
         public async Task SelectCard_ThrowWhenNoActiveRound()
         {
-            var (events, game) = GetNewGame();
+            var events = GetNewGame();
             var selectCardEvent = new SelectCardEvent(
-                game.Id,
+                gameId,
                 new EventVersion(2),
                 new PlayerCard(
-                    game.GetAdminId(),
-                    game.Cards.Value[0].Id
+                    adminId,
+                    cards.Value[0].Id
                 )
             );
             var eventRepositoryMock = new Mock<IEventRepository>();
-            eventRepositoryMock.Setup(_ => _.ListEvents(game.Id)).ReturnsAsync(events);
+            eventRepositoryMock.Setup(_ => _.ListEvents(gameId)).ReturnsAsync(events);
             var service = new GameService(eventRepositoryMock.Object);
 
             await Assert.ThrowsAsync<NoActiveRoundException>(() => service.SelectCard(selectCardEvent));
@@ -266,17 +282,17 @@ namespace GameTests
         [Fact]
         public async Task SelectCard_ThrowWhenNoPlayer()
         {
-            var (events, game) = GetNewGameWithActiveRound();
+            var events = GetNewGameWithActiveRound();
             var selectCardEvent = new SelectCardEvent(
-                game.Id,
+                gameId,
                 new EventVersion(4),
                 new PlayerCard(
                     new UserId(Guid.NewGuid()),
-                    game.Cards.Value[0].Id
+                    cards.Value[0].Id
                 )
             );
             var eventRepositoryMock = new Mock<IEventRepository>();
-            eventRepositoryMock.Setup(_ => _.ListEvents(game.Id)).ReturnsAsync(events);
+            eventRepositoryMock.Setup(_ => _.ListEvents(gameId)).ReturnsAsync(events);
             var service = new GameService(eventRepositoryMock.Object);
 
             await Assert.ThrowsAsync<NoPlayerException>(() => service.SelectCard(selectCardEvent));
@@ -285,17 +301,17 @@ namespace GameTests
         [Fact]
         public async Task SelectCard_ThrowWhenNoCard()
         {
-            var (events, game) = GetNewGameWithActiveRound();
+            var events = GetNewGameWithActiveRound();
             var selectCardEvent = new SelectCardEvent(
-                game.Id,
+                gameId,
                 new EventVersion(4),
                 new PlayerCard(
-                    game.GetAdminId(),
+                    adminId,
                     new CardId(Guid.NewGuid())
                 )
             );
             var eventRepositoryMock = new Mock<IEventRepository>();
-            eventRepositoryMock.Setup(_ => _.ListEvents(game.Id)).ReturnsAsync(events);
+            eventRepositoryMock.Setup(_ => _.ListEvents(gameId)).ReturnsAsync(events);
             var service = new GameService(eventRepositoryMock.Object);
 
             await Assert.ThrowsAsync<NoCardException>(() => service.SelectCard(selectCardEvent));
@@ -304,17 +320,17 @@ namespace GameTests
         [Fact]
         public async Task SelectCard_ThrowWhenNotNextVersion()
         {
-            var (events, game) = GetNewGameWithActiveRound();
+            var events = GetNewGameWithActiveRound();
             var selectCardEvent = new SelectCardEvent(
-                game.Id,
+                gameId,
                 new EventVersion(3),
                 new PlayerCard(
-                    game.GetAdminId(),
-                    game.Cards.Value[0].Id
+                    adminId,
+                    cards.Value[0].Id
                 )
             );
             var eventRepositoryMock = new Mock<IEventRepository>();
-            eventRepositoryMock.Setup(_ => _.ListEvents(game.Id)).ReturnsAsync(events);
+            eventRepositoryMock.Setup(_ => _.ListEvents(gameId)).ReturnsAsync(events);
             var service = new GameService(eventRepositoryMock.Object);
 
             await Assert.ThrowsAsync<NotNextVersionException>(() => service.SelectCard(selectCardEvent));
@@ -323,17 +339,17 @@ namespace GameTests
         [Fact]
         public async Task SelectCard_ThrowWhenPlayerAlreadySelectedCard()
         {
-            var (events, game) = GetNewGameWithSelectedCards();
+            var events = GetNewGameWithSelectedCards();
             var selectCardEvent = new SelectCardEvent(
-                game.Id,
+                gameId,
                 new EventVersion(6),
                 new PlayerCard(
-                    game.GetAdminId(),
-                    game.Cards.Value[0].Id
+                    adminId,
+                    cards.Value[0].Id
                 )
             );
             var eventRepositoryMock = new Mock<IEventRepository>();
-            eventRepositoryMock.Setup(_ => _.ListEvents(game.Id)).ReturnsAsync(events);
+            eventRepositoryMock.Setup(_ => _.ListEvents(gameId)).ReturnsAsync(events);
             var service = new GameService(eventRepositoryMock.Object);
 
             await Assert.ThrowsAsync<PlayerCardConflictException>(() => service.SelectCard(selectCardEvent));
@@ -342,14 +358,14 @@ namespace GameTests
         [Fact]
         public async Task EndRound()
         {
-            var (events, game) = GetNewGameWithSelectedCards();
+            var events = GetNewGameWithSelectedCards();
             var endRoundEvent = new EndRoundEvent(
-                game.Id,
+                gameId,
                 new EventVersion(6),
-                game.Cards.Value[0].Id
+                cards.Value[0].Id
             );
             var eventRepositoryMock = new Mock<IEventRepository>();
-            eventRepositoryMock.Setup(_ => _.ListEvents(game.Id)).ReturnsAsync(events);
+            eventRepositoryMock.Setup(_ => _.ListEvents(gameId)).ReturnsAsync(events);
             var service = new GameService(eventRepositoryMock.Object);
 
             var actual = await service.EndRound(endRoundEvent);
@@ -359,9 +375,18 @@ namespace GameTests
                 new Set<CompletedRound>(
                     new CompletedRound[]{
                         new CompletedRound(
-                            game.ActiveRound.Value.Id,
-                            game.ActiveRound.Value.Name,
-                            new NonEmptySet<PlayerCard>(game.ActiveRound.Value.PlayerCards.Value),
+                            roundId,
+                            roundName,
+                            new NonEmptySet<PlayerCard>(new []{
+                                new PlayerCard(
+                                    adminId,
+                                    cards.Value[0].Id
+                                ),
+                                new PlayerCard(
+                                    playerId,
+                                    cards.Value[0].Id
+                                )
+                            }),
                             endRoundEvent.ResultCardId
                         )
                     }
@@ -388,14 +413,14 @@ namespace GameTests
         [Fact]
         public async Task EndRound_ThrowWhenNoCard()
         {
-            var (events, game) = GetNewGameWithSelectedCards();
+            var events = GetNewGameWithSelectedCards();
             var endRoundEvent = new EndRoundEvent(
-                game.Id,
+                gameId,
                 new EventVersion(6),
                 new CardId(Guid.NewGuid())
             );
             var eventRepositoryMock = new Mock<IEventRepository>();
-            eventRepositoryMock.Setup(_ => _.ListEvents(game.Id)).ReturnsAsync(events);
+            eventRepositoryMock.Setup(_ => _.ListEvents(gameId)).ReturnsAsync(events);
             var service = new GameService(eventRepositoryMock.Object);
 
             await Assert.ThrowsAsync<NoCardException>(() => service.EndRound(endRoundEvent));
@@ -404,14 +429,14 @@ namespace GameTests
         [Fact]
         public async Task EndRound_ThrowWhenNotNextVersion()
         {
-            var (events, game) = GetNewGameWithSelectedCards();
+            var events = GetNewGameWithSelectedCards();
             var endRoundEvent = new EndRoundEvent(
-                game.Id,
+                gameId,
                 new EventVersion(5),
                 new CardId(Guid.NewGuid())
             );
             var eventRepositoryMock = new Mock<IEventRepository>();
-            eventRepositoryMock.Setup(_ => _.ListEvents(game.Id)).ReturnsAsync(events);
+            eventRepositoryMock.Setup(_ => _.ListEvents(gameId)).ReturnsAsync(events);
             var service = new GameService(eventRepositoryMock.Object);
 
             await Assert.ThrowsAsync<NotNextVersionException>(() => service.EndRound(endRoundEvent));
@@ -420,14 +445,14 @@ namespace GameTests
         [Fact]
         public async Task EndRound_ThrowWhenNoActiveRound()
         {
-            var (events, game) = GetNewGameWithPlayers();
+            var events = GetNewGameWithPlayers();
             var endRoundEvent = new EndRoundEvent(
-                game.Id,
+                gameId,
                 new EventVersion(3),
-                game.Cards.Value[0].Id
+                cards.Value[0].Id
             );
             var eventRepositoryMock = new Mock<IEventRepository>();
-            eventRepositoryMock.Setup(_ => _.ListEvents(game.Id)).ReturnsAsync(events);
+            eventRepositoryMock.Setup(_ => _.ListEvents(gameId)).ReturnsAsync(events);
             var service = new GameService(eventRepositoryMock.Object);
 
             await Assert.ThrowsAsync<NoActiveRoundException>(() => service.EndRound(endRoundEvent));
@@ -436,95 +461,78 @@ namespace GameTests
         [Fact]
         public async Task EndRound_ThrowWhenNotAllPlayersSelected()
         {
-            var (events, game) = GetNewGameWithActiveRound();
+            var events = GetNewGameWithActiveRound();
             var selectCardEvent = new SelectCardEvent(
-                game.Id,
+                gameId,
                 new EventVersion(4),
                 new PlayerCard(
-                    game.GetAdminId(),
-                    game.Cards.Value[0].Id
+                    adminId,
+                    cards.Value[0].Id
                 )
             );
             var endRoundEvent = new EndRoundEvent(
-                game.Id,
+                gameId,
                 new EventVersion(5),
-                game.Cards.Value[0].Id
+                cards.Value[0].Id
             );
             var eventRepositoryMock = new Mock<IEventRepository>();
-            eventRepositoryMock.Setup(_ => _.ListEvents(game.Id)).ReturnsAsync(events.ConcatOne(selectCardEvent));
+            eventRepositoryMock.Setup(_ => _.ListEvents(gameId)).ReturnsAsync(events.ConcatOne(selectCardEvent));
             var service = new GameService(eventRepositoryMock.Object);
 
             await Assert.ThrowsAsync<NotAllPlayersSelectedException>(() => service.EndRound(endRoundEvent));
         }
 
-        private (IList<Event>, Game) GetNewGame()
+        private IList<Event> GetNewGame()
         {
-            var events = new Event[] {
+            return new Event[] {
                 new NewEvent(
-                    new GameId(Guid.NewGuid()),
+                    gameId,
                     new EventVersion(1),
-                    new UserId(Guid.NewGuid()),
-                    new NonEmptySet<Card>(new Card[] {
-                        new Card(
-                            new CardId(Guid.NewGuid()),
-                            "M"
-                        ),
-                        new Card(
-                            new CardId(Guid.NewGuid()),
-                            "L"
-                        )
-                    })
+                    adminId,
+                    cards
                 )
             };
-
-            return (events, Game.FromEvent(events));
         }
 
-        private (IList<Event>, Game) GetNewGameWithPlayers()
+        private IList<Event> GetNewGameWithPlayers()
         {
-            var (events, game) = GetNewGame();
-            var newEvents = events.ConcatOne(new AddPlayerEvent(
-                game.Id,
+            var events = GetNewGame();
+            return events.ConcatOne(new AddPlayerEvent(
+                gameId,
                 new EventVersion(2),
-                new UserId(Guid.NewGuid())
+                playerId
             ));
-
-            return (newEvents, Game.FromEvent(newEvents));
         }
 
-        private (IList<Event>, Game) GetNewGameWithActiveRound()
+        private IList<Event> GetNewGameWithActiveRound()
         {
-            var (events, game) = GetNewGameWithPlayers();
-            var newEvents = events.ConcatOne(new NewRoundEvent(
-                game.Id,
+            var events = GetNewGameWithPlayers();
+            return events.ConcatOne(new NewRoundEvent(
+                gameId,
                 new EventVersion(3),
-                new RoundId(Guid.NewGuid()),
-                "SM-123"
+                roundId,
+                roundName
             ));
-
-            return (newEvents, Game.FromEvent(newEvents));
         }
 
-        private (IList<Event>, Game) GetNewGameWithSelectedCards()
+        private IList<Event> GetNewGameWithSelectedCards()
         {
-            var (events, game) = GetNewGameWithActiveRound();
-            var newEvents = events.ConcatOne(new SelectCardEvent(
-                game.Id,
+            var events = GetNewGameWithActiveRound();
+            return events.ConcatOne(new SelectCardEvent(
+                gameId,
                 new EventVersion(4),
                 new PlayerCard(
-                    game.GetAdminId(),
-                    game.Cards.Value[0].Id
+                    adminId,
+                    cards.Value[0].Id
                 )
             )).ConcatOne(new SelectCardEvent(
-                events[0].GameId,
+                gameId,
                 new EventVersion(5),
                 new PlayerCard(
-                    game.PlayerRoles.Value[1].PlayerId,
-                    game.Cards.Value[0].Id
+                    playerId,
+                    cards.Value[0].Id
                 )
             ));
-
-            return (newEvents, Game.FromEvent(newEvents));
         }
 
     }
