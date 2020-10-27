@@ -7,7 +7,7 @@ import {
 } from "@tsukiy0/tscore";
 
 export class UserId extends Guid {
-  private readonly __tag = "GameId";
+  private readonly __tag = "UserId";
 }
 
 export const UserIdRandomizer: Randomizer<UserId> = new ExtendedGuidRandomizer(
