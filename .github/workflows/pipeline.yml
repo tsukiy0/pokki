@@ -37,13 +37,13 @@ jobs:
           docker-compose -f tasks/docker-compose.yml build deploy
           docker-compose -f tasks/docker-compose.yml run deploy
           docker-compose -f tasks/docker-compose.yml down
-      - name: frontend_contract
-        env: 
-          CFN_STACK_NAME: Main
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
-        run: |
-          docker-compose -f tasks/docker-compose.yml build frontend_contract
-          docker-compose -f tasks/docker-compose.yml run frontend_contract
-          docker-compose -f tasks/docker-compose.yml down
+      # - name: frontend_contract
+      #   env: 
+      #     CFN_STACK_NAME: Main
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     AWS_DEFAULT_REGION: us-east-1
+      #   run: |
+      #     docker-compose -f tasks/docker-compose.yml build frontend_contract
+      #     docker-compose -f tasks/docker-compose.yml run frontend_contract
+      #     docker-compose -f tasks/docker-compose.yml down
