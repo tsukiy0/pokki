@@ -1,0 +1,7 @@
+{
+  "extends": "@pokki/tools/tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  }
+}
