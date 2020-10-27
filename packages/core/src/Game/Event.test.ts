@@ -10,6 +10,7 @@ import {
   PlayCardEvent,
 } from "./Event";
 import { GameIdRandomizer } from "./Game";
+import { RoundIdRandomizer } from "./Round";
 
 describe("NewGameEvent", () => {
   testComparable(
@@ -38,6 +39,7 @@ describe("NewRoundEvent", () => {
       new NewRoundEvent(
         GameIdRandomizer.random(),
         UserIdRandomizer.random(),
+        RoundIdRandomizer.random(),
         "aaaa",
       ),
   );

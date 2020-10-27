@@ -3,8 +3,12 @@ import {
   EnumHelper,
   ExtendedGuidRandomizer,
   Guid,
+  isOptionalEqual,
   Randomizer,
 } from "@tsukiy0/tscore";
+import { CardSet } from "./CardSet";
+import { PlayerRoleSet } from "./PlayerRoleSet";
+import { Round } from "./Round";
 
 export class GameId extends Guid {
   private readonly __tag = "GameId";
@@ -15,7 +19,6 @@ export const GameIdRandomizer: Randomizer<GameId> = new ExtendedGuidRandomizer(
 );
 
 export enum GameStatus {
-  PENDING = "PENDING",
   ACTIVE = "ACTIVE",
   INACTIVE = "INACTIVE",
 }
@@ -23,9 +26,21 @@ export enum GameStatus {
 export const GameStatusEnumHelper = new EnumHelper<GameStatus>(GameStatus);
 
 export class Game implements Comparable {
-  constructor(public readonly id: GameId) {}
+  constructor(
+    public readonly id: GameId,
+    public readonly name: GameStatus,
+    public readonly cards: CardSet,
+    public readonly players: PlayerRoleSet,
+    public readonly round?: Round,
+  ) {}
 
   equals(input: this): boolean {
-    return this.id.equals(input.id);
+    return (
+      this.id.equals(input.id) &&
+      this.name === input.name &&
+      this.cards.equals(input.cards) &&
+      this.players.equals(input.players) &&
+      isOptionalEqual(this.round, input.round, (a, b) => a.equals(b))
+    );
   }
 }

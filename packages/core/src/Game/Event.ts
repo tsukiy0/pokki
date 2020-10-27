@@ -3,6 +3,7 @@ import { UserId } from "../User/User";
 import { CardId } from "./Card";
 import { CardSet } from "./CardSet";
 import { GameId } from "./Game";
+import { RoundId } from "./Round";
 
 export abstract class Event implements Comparable {
   constructor(
@@ -37,13 +38,18 @@ export class NewRoundEvent extends Event {
   constructor(
     gameId: GameId,
     playerId: UserId,
+    public readonly roundId: RoundId,
     public readonly roundName: string,
   ) {
     super(gameId, playerId);
   }
 
   equals(input: this): boolean {
-    return super.equals(input) && this.roundName === input.roundName;
+    return (
+      super.equals(input) &&
+      this.roundId.equals(input.roundId) &&
+      this.roundName === input.roundName
+    );
   }
 }
 
