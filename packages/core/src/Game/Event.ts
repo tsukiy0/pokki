@@ -3,59 +3,71 @@ import { UserId } from "../User/User";
 import { CardId } from "./Card";
 import { CardSet } from "./CardSet";
 import { GameId } from "./Game";
-import { PlayerCard } from "./PlayerCard";
 
 export abstract class Event implements Comparable {
-  constructor(public readonly gameId: GameId) {}
+  constructor(
+    public readonly gameId: GameId,
+    public readonly playerId: UserId,
+  ) {}
 
   equals(input: this): boolean {
-    return this.gameId.equals(input.gameId);
+    return (
+      this.gameId.equals(input.gameId) && this.playerId.equals(input.playerId)
+    );
   }
 }
 
 export class NewGameEvent extends Event {
   constructor(
     gameId: GameId,
-    public readonly adminId: UserId,
+    playerId: UserId,
     public readonly cards: CardSet,
   ) {
-    super(gameId);
+    super(gameId, playerId);
   }
 
   equals(input: this): boolean {
-    return (
-      super.equals(input) &&
-      this.adminId.equals(input.adminId) &&
-      this.cards.equals(input.cards)
-    );
+    return super.equals(input) && this.cards.equals(input.cards);
   }
 }
 
-export class AddPlayerEvent extends Event {
-  constructor(gameId: GameId, public readonly playerId: UserId) {
-    super(gameId);
+export class AddPlayerEvent extends Event {}
+
+export class NewRoundEvent extends Event {
+  constructor(
+    gameId: GameId,
+    playerId: UserId,
+    public readonly roundName: string,
+  ) {
+    super(gameId, playerId);
   }
 
   equals(input: this): boolean {
-    return super.equals(input) && this.playerId.equals(input.playerId);
+    return super.equals(input) && this.roundName === input.roundName;
   }
 }
-
-export class NewRoundEvent extends Event {}
 
 export class PlayCardEvent extends Event {
-  constructor(gameId: GameId, public readonly playerCard: PlayerCard) {
-    super(gameId);
+  constructor(
+    gameId: GameId,
+    playerId: UserId,
+    public readonly cardId: CardId,
+  ) {
+    super(gameId, playerId);
   }
 
   equals(input: this): boolean {
-    return super.equals(input) && this.playerCard.equals(this.playerCard);
+    return super.equals(input) && this.cardId.equals(this.cardId);
   }
 }
 
 export class EndRoundEvent extends Event {
-  constructor(gameId: GameId, public readonly resultCardId: CardId) {
-    super(gameId);
+  constructor(
+    gameId: GameId,
+    playerId: UserId,
+    public readonly resultCardId: CardId,
+  ) {
+    super(gameId, playerId);
   }
 
   equals(input: this): boolean {
