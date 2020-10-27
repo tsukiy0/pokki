@@ -33,7 +33,7 @@ describe("CardSet", () => {
       const id = CardIdRandomizer.random();
       const cards = new CardSet([
         new Card(CardIdRandomizer.random(), "1234"),
-        new Card(id, "1234"),
+        new Card(id, "5678"),
       ]);
 
       const actual = cards.hasCard(id);
@@ -44,7 +44,7 @@ describe("CardSet", () => {
     it("false when not has card", () => {
       const cards = new CardSet([
         new Card(CardIdRandomizer.random(), "1234"),
-        new Card(CardIdRandomizer.random(), "1234"),
+        new Card(CardIdRandomizer.random(), "5678"),
       ]);
 
       const actual = cards.hasCard(CardIdRandomizer.random());

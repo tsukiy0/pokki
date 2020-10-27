@@ -2,7 +2,7 @@ import { testComparable } from "@tsukiy0/tscore/dist/index.testTemplate";
 import { UserIdRandomizer } from "../User/User";
 import { CardIdRandomizer } from "./Card";
 import { PlayerCard } from "./PlayerCard";
-import { DuplicatePlayerIdError, PlayerCardSet } from "./PlayerCardSet";
+import { DuplicatePlayerCardError, PlayerCardSet } from "./PlayerCardSet";
 
 describe("PlayerCardSet", () => {
   testComparable(
@@ -20,6 +20,6 @@ describe("PlayerCardSet", () => {
         new PlayerCard(id, CardIdRandomizer.random()),
         new PlayerCard(id, CardIdRandomizer.random()),
       ]);
-    }).toThrow(DuplicatePlayerIdError);
+    }).toThrow(DuplicatePlayerCardError);
   });
 });

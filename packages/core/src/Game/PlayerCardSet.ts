@@ -1,7 +1,7 @@
 import { Comparable, isArrayEqual } from "@tsukiy0/tscore";
 import { PlayerCard } from "./PlayerCard";
 
-export class DuplicatePlayerIdError extends Error {}
+export class DuplicatePlayerCardError extends Error {}
 
 export class PlayerCardSet implements Comparable {
   constructor(public readonly items: readonly PlayerCard[]) {
@@ -9,7 +9,7 @@ export class PlayerCardSet implements Comparable {
       new Set(items.map((_) => _.playerId.toString())).size !== items.length;
 
     if (hasDuplicatePlayerId) {
-      throw new DuplicatePlayerIdError();
+      throw new DuplicatePlayerCardError();
     }
   }
 

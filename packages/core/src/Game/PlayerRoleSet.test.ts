@@ -2,7 +2,7 @@ import { testComparable } from "@tsukiy0/tscore/dist/index.testTemplate";
 import { UserIdRandomizer } from "../User/User";
 import { PlayerRole } from "./PlayerRole";
 import {
-  DuplicatePlayerIdException,
+  DuplicatePlayerRoleError,
   MultipleAdminError,
   NoAdminError,
   PlayerRoleSet,
@@ -45,7 +45,7 @@ describe("PlayerRoleSet", () => {
         new PlayerRole(id, Role.ADMIN),
         new PlayerRole(id, Role.PLAYER),
       ]);
-    }).toThrow(DuplicatePlayerIdException);
+    }).toThrow(DuplicatePlayerRoleError);
   });
 
   describe("hasPlayer", () => {
@@ -56,7 +56,7 @@ describe("PlayerRoleSet", () => {
         new PlayerRole(id, Role.PLAYER),
       ]);
 
-      const actual = set.hasPlayer(id);
+      const actual = set.getPlayer(id);
 
       expect(actual).toBeTruthy();
     });
@@ -67,7 +67,7 @@ describe("PlayerRoleSet", () => {
         new PlayerRole(UserIdRandomizer.random(), Role.PLAYER),
       ]);
 
-      const actual = set.hasPlayer(UserIdRandomizer.random());
+      const actual = set.getPlayer(UserIdRandomizer.random());
 
       expect(actual).toBeFalsy();
     });

@@ -5,7 +5,7 @@ import { Role } from "./Role";
 
 export class NoAdminError extends BaseError {}
 export class MultipleAdminError extends BaseError {}
-export class DuplicatePlayerIdException extends BaseError {}
+export class DuplicatePlayerRoleError extends BaseError {}
 
 export class PlayerRoleSet implements Comparable {
   constructor(public readonly items: readonly PlayerRole[]) {
@@ -23,12 +23,12 @@ export class PlayerRoleSet implements Comparable {
       new Set(items.map((_) => _.playerId.toString())).size !== items.length;
 
     if (hasDuplicatePlayerId) {
-      throw new DuplicatePlayerIdException();
+      throw new DuplicatePlayerRoleError();
     }
   }
 
-  hasPlayer(id: UserId): boolean {
-    return this.items.find((_) => _.playerId.equals(id)) !== undefined;
+  getPlayer(id: UserId): PlayerRole | undefined {
+    return this.items.find((_) => _.playerId.equals(id));
   }
 
   equals(input: this): boolean {

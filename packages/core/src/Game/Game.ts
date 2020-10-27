@@ -1,5 +1,4 @@
 import {
-  BaseError,
   Comparable,
   EnumHelper,
   ExtendedGuidRandomizer,
