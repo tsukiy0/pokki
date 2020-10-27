@@ -1,10 +1,10 @@
-import { Construct } from '@aws-cdk/core';
+import { Construct } from "@aws-cdk/core";
 import {
   Table,
   BillingMode,
   Attribute,
   AttributeType,
-} from '@aws-cdk/aws-dynamodb';
+} from "@aws-cdk/aws-dynamodb";
 
 export class DatabaseConstruct extends Construct {
   public readonly gameTable: Table;
@@ -20,16 +20,16 @@ export class DatabaseConstruct extends Construct {
 
   private getGameTable() {
     const idAttr: Attribute = {
-      name: 'id',
+      name: "id",
       type: AttributeType.STRING,
     };
 
     const versionAttr: Attribute = {
-      name: 'version',
+      name: "version",
       type: AttributeType.NUMBER,
     };
 
-    return new Table(this, 'GameTable', {
+    return new Table(this, "GameTable", {
       partitionKey: idAttr,
       sortKey: versionAttr,
       billingMode: BillingMode.PAY_PER_REQUEST,
@@ -38,11 +38,11 @@ export class DatabaseConstruct extends Construct {
 
   private getUserTable() {
     const idAttr: Attribute = {
-      name: 'id',
+      name: "id",
       type: AttributeType.STRING,
     };
 
-    return new Table(this, 'UserTable', {
+    return new Table(this, "UserTable", {
       partitionKey: idAttr,
       billingMode: BillingMode.PAY_PER_REQUEST,
     });

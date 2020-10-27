@@ -1,5 +1,5 @@
-import * as cdk from '@aws-cdk/core';
-import { RootStack } from './RootStack';
+import * as cdk from "@aws-cdk/core";
+import { RootStack } from "./RootStack";
 
 const stackName = process.env.CFN_STACK_NAME as string;
 
