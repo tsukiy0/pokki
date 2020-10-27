@@ -47,4 +47,29 @@ describe("PlayerRoleSet", () => {
       ]);
     }).toThrow(DuplicatePlayerIdException);
   });
+
+  describe("hasPlayer", () => {
+    it("true when has player", () => {
+      const id = UserIdRandomizer.random();
+      const set = new PlayerRoleSet([
+        new PlayerRole(UserIdRandomizer.random(), Role.ADMIN),
+        new PlayerRole(id, Role.PLAYER),
+      ]);
+
+      const actual = set.hasPlayer(id);
+
+      expect(actual).toBeTruthy();
+    });
+
+    it("false when not has player", () => {
+      const set = new PlayerRoleSet([
+        new PlayerRole(UserIdRandomizer.random(), Role.ADMIN),
+        new PlayerRole(UserIdRandomizer.random(), Role.PLAYER),
+      ]);
+
+      const actual = set.hasPlayer(UserIdRandomizer.random());
+
+      expect(actual).toBeFalsy();
+    });
+  });
 });

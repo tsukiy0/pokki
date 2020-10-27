@@ -1,5 +1,5 @@
 import { BaseError, Comparable, isArrayEqual } from "@tsukiy0/tscore";
-import { Card } from "./Card";
+import { Card, CardId } from "./Card";
 
 export class DuplicateCardIdException extends BaseError {}
 
@@ -19,6 +19,10 @@ export class CardSet implements Comparable {
     if (hasDuplicateCardName) {
       throw new DuplicateCardIdException();
     }
+  }
+
+  hasCard(id: CardId): boolean {
+    return this.items.find((_) => _.id.equals(id)) !== undefined;
   }
 
   equals(input: this): boolean {

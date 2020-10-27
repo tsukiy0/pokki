@@ -27,4 +27,29 @@ describe("CardSet", () => {
         ]),
     ).toThrow(DuplicateCardIdException);
   });
+
+  describe("hasCard", () => {
+    it("true when has card", () => {
+      const id = CardIdRandomizer.random();
+      const cards = new CardSet([
+        new Card(CardIdRandomizer.random(), "1234"),
+        new Card(id, "1234"),
+      ]);
+
+      const actual = cards.hasCard(id);
+
+      expect(actual).toBeTruthy();
+    });
+
+    it("false when not has card", () => {
+      const cards = new CardSet([
+        new Card(CardIdRandomizer.random(), "1234"),
+        new Card(CardIdRandomizer.random(), "1234"),
+      ]);
+
+      const actual = cards.hasCard(CardIdRandomizer.random());
+
+      expect(actual).toBeFalsy();
+    });
+  });
 });

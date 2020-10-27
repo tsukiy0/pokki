@@ -1,4 +1,5 @@
 import { BaseError, Comparable, isArrayEqual } from "@tsukiy0/tscore";
+import { UserId } from "../User/User";
 import { PlayerRole } from "./PlayerRole";
 import { Role } from "./Role";
 
@@ -24,6 +25,10 @@ export class PlayerRoleSet implements Comparable {
     if (hasDuplicatePlayerId) {
       throw new DuplicatePlayerIdException();
     }
+  }
+
+  hasPlayer(id: UserId): boolean {
+    return this.items.find((_) => _.playerId.equals(id)) !== undefined;
   }
 
   equals(input: this): boolean {

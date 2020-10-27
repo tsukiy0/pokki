@@ -1,4 +1,5 @@
 import {
+  BaseError,
   Comparable,
   EnumHelper,
   ExtendedGuidRandomizer,
@@ -28,7 +29,7 @@ export const GameStatusEnumHelper = new EnumHelper<GameStatus>(GameStatus);
 export class Game implements Comparable {
   constructor(
     public readonly id: GameId,
-    public readonly name: GameStatus,
+    public readonly status: GameStatus,
     public readonly cards: CardSet,
     public readonly players: PlayerRoleSet,
     public readonly round?: Round,
@@ -37,7 +38,7 @@ export class Game implements Comparable {
   equals(input: this): boolean {
     return (
       this.id.equals(input.id) &&
-      this.name === input.name &&
+      this.status === input.status &&
       this.cards.equals(input.cards) &&
       this.players.equals(input.players) &&
       isOptionalEqual(this.round, input.round, (a, b) => a.equals(b))
