@@ -47,7 +47,7 @@ export class ApiConstruct extends Construct {
       },
       schema: Schema.fromAsset(path.resolve(
         __dirname,
-        '../../../schema.graphql',
+        '../../../../schema.graphql',
       )),
     });
 
@@ -55,7 +55,7 @@ export class ApiConstruct extends Construct {
       code: Code.fromAsset(
         path.resolve(
           __dirname,
-          '../../../backend/Api/bin/Release/netcoreapp3.1/Api.zip',
+          '../../../../backend/Api/bin/Release/netcoreapp3.1/Api.zip',
         ),
       ),
       runtime: Runtime.DOTNET_CORE_3_1,

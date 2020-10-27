@@ -1,5 +1,13 @@
 version: '3'
 services:
+  build:
+    image: node:12
+    volumes: 
+      - ..:/app
+    working_dir: /app
+    command: ./tasks/build.sh
+    environment:
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
   backend_build:
     build:
       context: .

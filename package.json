@@ -1,0 +1,28 @@
+{
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/@pokki/tools",
+      "**/@pokki/tools/**"
+    ]
+  },
+  "scripts": {
+    "typecheck": "lerna run typecheck",
+    "preclean": "lerna run clean",
+    "clean": "lerna exec -- rm -rf node_modules",
+    "prebuild": "lerna run clean",
+    "build": "lerna run build",
+    "lint": "lerna run lint",
+    "lint:fix": "lerna run lint:fix",
+    "test": "TZ=UTC lerna run test",
+    "test:integration": "lerna run test:integration",
+    "deploy": "lerna run deploy",
+    "dev": "docker-compose -f ./tasks/dev/docker-compose.yml up"
+  },
+  "devDependencies": {
+    "lerna": "3.22.1"
+  }
+}

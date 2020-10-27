@@ -10,6 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          docker-compose -f tasks/docker-compose.yml build build
+          docker-compose -f tasks/docker-compose.yml run build
+          docker-compose -f tasks/docker-compose.yml down
       - name: backend_build
         run: |
           docker-compose -f tasks/docker-compose.yml build backend_build
