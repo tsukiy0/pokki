@@ -1,5 +1,6 @@
 import {
   Comparable,
+  EnumHelper,
   ExtendedGuidRandomizer,
   Guid,
   Randomizer,
@@ -12,6 +13,14 @@ export class GameId extends Guid {
 export const GameIdRandomizer: Randomizer<GameId> = new ExtendedGuidRandomizer(
   (_) => new GameId(_),
 );
+
+export enum GameStatus {
+  PENDING = "PENDING",
+  ACTIVE = "ACTIVE",
+  INACTIVE = "INACTIVE",
+}
+
+export const GameStatusEnumHelper = new EnumHelper<GameStatus>(GameStatus);
 
 export class Game implements Comparable {
   constructor(public readonly id: GameId) {}
