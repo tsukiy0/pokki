@@ -10,3 +10,4 @@ export * from "./Game/PlayerRoleSet";
 export * from "./Game/Role";
 export * from "./Game/Round";
 export * from "./Game/GameService";
+export * from "./Game/EventRepository";
