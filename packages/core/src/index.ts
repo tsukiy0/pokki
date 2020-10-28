@@ -1,4 +1,5 @@
 export * from "./User/User";
+export * from "./User/UserRepository";
 export * from "./Game/Game";
 export * from "./Game/Card";
 export * from "./Game/CardSet";
