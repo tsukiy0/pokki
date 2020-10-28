@@ -1,4 +1,4 @@
-import { Comparable } from "@tsukiy0/tscore";
+import { BaseError, Comparable } from "@tsukiy0/tscore";
 import { UserId } from "../User/User";
 import { CardId } from "./Card";
 import { CardSet } from "./CardSet";
@@ -80,3 +80,38 @@ export class EndRoundEvent extends Event {
     return super.equals(input) && this.resultCardId.equals(input.resultCardId);
   }
 }
+
+export class NoEventMatchedError extends BaseError {}
+
+export const matchEvent = <T>(
+  input: Event,
+  actions: {
+    newGame: (event: NewGameEvent) => T;
+    addPlayer: (event: AddPlayerEvent) => T;
+    newRound: (event: NewRoundEvent) => T;
+    playCard: (event: PlayCardEvent) => T;
+    endRound: (event: EndRoundEvent) => T;
+  },
+): T => {
+  if (input instanceof NewGameEvent) {
+    return actions.newGame(input);
+  }
+
+  if (input instanceof AddPlayerEvent) {
+    return actions.addPlayer(input);
+  }
+
+  if (input instanceof NewRoundEvent) {
+    return actions.newRound(input);
+  }
+
+  if (input instanceof PlayCardEvent) {
+    return actions.playCard(input);
+  }
+
+  if (input instanceof EndRoundEvent) {
+    return actions.endRound(input);
+  }
+
+  throw new NoEventMatchedError();
+};

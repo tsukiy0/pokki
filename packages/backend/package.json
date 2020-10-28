@@ -6,7 +6,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "devDependencies": {
-    "@pokki/tools": "*"
+    "@pokki/tools": "*",
+    "dotenv": "8.2.0"
   },
   "dependencies": {
     "@pokki/core": "*",
@@ -19,6 +20,7 @@
     "lint:fix": "yarn lint --fix",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "build": "tsc --build .",
-    "test": "jest"
+    "test": "jest",
+    "test:integration": "jest --config jest.integration.config.js"
   }
 }

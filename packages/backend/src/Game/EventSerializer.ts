@@ -11,17 +11,19 @@ import {
   RoundId,
   UserId,
 } from "@pokki/core";
-import { Serializer } from "@tsukiy0/tscore";
+import { EnumHelper, Serializer } from "@tsukiy0/tscore";
 import { AttributeMap } from "aws-sdk/clients/dynamodb";
 import { EventVersion } from "./EventVersion";
 
-enum EventType {
+export enum EventType {
   NEW_GAME = "NEW_GAME",
   ADD_PLAYER = "ADD_PLAYER",
   NEW_ROUND = "NEW_ROUND",
   PLAY_CARD = "PLAY_CARD",
   END_ROUND = "END_ROUND",
 }
+
+export const EventTypeEnumHelper = new EnumHelper<EventType>(EventType);
 
 export class NewGameEventSerializer
   implements Serializer<NewGameEvent, AttributeMap> {
@@ -70,7 +72,7 @@ export class AddPlayerEventSerializer
     return {
       id: { S: input.gameId.toString() },
       version: { N: this.eventVersion.toNumber().toString() },
-      type: { S: EventType.NEW_GAME },
+      type: { S: EventType.ADD_PLAYER },
       player_id: { S: input.playerId.toString() },
     };
   }
@@ -91,7 +93,7 @@ export class NewRoundEventSerializer
     return {
       id: { S: input.gameId.toString() },
       version: { N: this.eventVersion.toNumber().toString() },
-      type: { S: EventType.NEW_GAME },
+      type: { S: EventType.NEW_ROUND },
       player_id: { S: input.playerId.toString() },
       round_id: { S: input.roundId.toString() },
       round_name: { S: input.roundName },
@@ -116,7 +118,7 @@ export class PlayCardEventSerializer
     return {
       id: { S: input.gameId.toString() },
       version: { N: this.eventVersion.toNumber().toString() },
-      type: { S: EventType.NEW_GAME },
+      type: { S: EventType.PLAY_CARD },
       player_id: { S: input.playerId.toString() },
       card_id: { S: input.cardId.toString() },
     };
@@ -139,7 +141,7 @@ export class EndRoundEventSerializer
     return {
       id: { S: input.gameId.toString() },
       version: { N: this.eventVersion.toNumber().toString() },
-      type: { S: EventType.NEW_GAME },
+      type: { S: EventType.END_ROUND },
       player_id: { S: input.playerId.toString() },
       result_card_id: { S: input.resultCardId.toString() },
     };
