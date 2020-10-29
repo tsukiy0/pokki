@@ -1,8 +1,20 @@
-import { testComparable } from "@tsukiy0/tscore/dist/index.testTemplate";
-import { BadUserNameError, User, UserIdRandomizer } from "./User";
+import {
+  testComparable,
+  testSerializer,
+} from "@tsukiy0/tscore/dist/index.testTemplate";
+import {
+  BadUserNameError,
+  User,
+  UserIdRandomizer,
+  UserSerializer,
+} from "./User";
 
 describe("User", () => {
   testComparable(() => new User(UserIdRandomizer.random(), "test"));
+  testSerializer(
+    UserSerializer,
+    () => new User(UserIdRandomizer.random(), "test"),
+  );
 
   it("throws when name is empty", () => {
     expect(() => new User(UserIdRandomizer.random(), "")).toThrow(
