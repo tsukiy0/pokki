@@ -1,0 +1,23 @@
+{
+  "name": "@pokki/api",
+  "private": true,
+  "version": "0.0.0",
+  "license": "UNLICENSED",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "devDependencies": {
+    "@pokki/tools": "*"
+  },
+  "dependencies": {
+    "@pokki/backend": "*",
+    "@pokki/core": "*",
+    "@tsukiy0/tscore": "1.5.0"
+  },
+  "scripts": {
+    "typecheck": "tsc --build .",
+    "lint": "eslint \"./src/**/*.{ts,tsx}\"",
+    "lint:fix": "yarn lint --fix",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "build": "tsc --build ."
+  }
+}
