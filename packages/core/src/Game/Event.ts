@@ -1,6 +1,6 @@
 import { BaseError, Comparable, Serializer } from "@tsukiy0/tscore";
 import { UserId } from "../User/User";
-import { CardId, CardJson, CardSerializer } from "./Card";
+import { CardId } from "./Card";
 import { CardSet, CardSetJson, CardSetSerializer } from "./CardSet";
 import { GameId } from "./Game";
 import { RoundId } from "./Round";

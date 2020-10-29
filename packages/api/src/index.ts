@@ -1,3 +1,3 @@
 export const p = {
-    id: 'test'
-}
+  id: "test",
+};
