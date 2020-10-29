@@ -4,8 +4,13 @@ import {
   ExtendedGuidRandomizer,
   Guid,
   Randomizer,
+  Serializer,
 } from "@tsukiy0/tscore";
-import { PlayerCardSet } from "./PlayerCardSet";
+import {
+  PlayerCardSet,
+  PlayerCardSetJson,
+  PlayerCardSetSerializer,
+} from "./PlayerCardSet";
 
 export class RoundId extends Guid {
   private readonly __tag = "RoundId";
@@ -40,3 +45,26 @@ export class Round implements Comparable {
     return this.id.equals(input.id) && this.name === input.name;
   }
 }
+
+export type RoundJson = {
+  id: string;
+  name: string;
+  playerCards: PlayerCardSetJson;
+};
+
+export const RoundSerializer: Serializer<Round, RoundJson> = {
+  serialize: (input: Round): RoundJson => {
+    return {
+      id: input.id.toString(),
+      name: input.name,
+      playerCards: PlayerCardSetSerializer.serialize(input.playerCards),
+    };
+  },
+  deserialize: (input: RoundJson): Round => {
+    return new Round(
+      new RoundId(input.id),
+      input.name,
+      PlayerCardSetSerializer.deserialize(input.playerCards),
+    );
+  },
+};

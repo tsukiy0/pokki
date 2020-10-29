@@ -1,5 +1,5 @@
-import { Comparable, isArrayEqual } from "@tsukiy0/tscore";
-import { PlayerCard } from "./PlayerCard";
+import { Comparable, isArrayEqual, Serializer } from "@tsukiy0/tscore";
+import { PlayerCard, PlayerCardJson, PlayerCardSerializer } from "./PlayerCard";
 
 export class DuplicatePlayerCardError extends Error {}
 
@@ -17,3 +17,21 @@ export class PlayerCardSet implements Comparable {
     return isArrayEqual(this.items, input.items, (a, b) => a.equals(b));
   }
 }
+
+export type PlayerCardSetJson = {
+  items: PlayerCardJson[];
+};
+
+export const PlayerCardSetSerializer: Serializer<
+  PlayerCardSet,
+  PlayerCardSetJson
+> = {
+  serialize: (input: PlayerCardSet): PlayerCardSetJson => {
+    return {
+      items: input.items.map(PlayerCardSerializer.serialize),
+    };
+  },
+  deserialize: (input: PlayerCardSetJson): PlayerCardSet => {
+    return new PlayerCardSet(input.items.map(PlayerCardSerializer.deserialize));
+  },
+};

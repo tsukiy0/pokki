@@ -1,4 +1,7 @@
-import { testComparable } from "@tsukiy0/tscore/dist/index.testTemplate";
+import {
+  testComparable,
+  testSerializer,
+} from "@tsukiy0/tscore/dist/index.testTemplate";
 import { UserIdRandomizer } from "../User/User";
 import { PlayerRole } from "./PlayerRole";
 import {
@@ -6,11 +9,21 @@ import {
   MultipleAdminError,
   NoAdminError,
   PlayerRoleSet,
+  PlayerRoleSetSerializer,
 } from "./PlayerRoleSet";
 import { Role } from "./Role";
 
 describe("PlayerRoleSet", () => {
   testComparable(
+    () =>
+      new PlayerRoleSet([
+        new PlayerRole(UserIdRandomizer.random(), Role.ADMIN),
+        new PlayerRole(UserIdRandomizer.random(), Role.PLAYER),
+      ]),
+  );
+
+  testSerializer(
+    PlayerRoleSetSerializer,
     () =>
       new PlayerRoleSet([
         new PlayerRole(UserIdRandomizer.random(), Role.ADMIN),

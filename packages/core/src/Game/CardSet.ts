@@ -1,5 +1,10 @@
-import { BaseError, Comparable, isArrayEqual } from "@tsukiy0/tscore";
-import { Card, CardId } from "./Card";
+import {
+  BaseError,
+  Comparable,
+  isArrayEqual,
+  Serializer,
+} from "@tsukiy0/tscore";
+import { Card, CardId, CardJson, CardSerializer } from "./Card";
 
 export class DuplicateCardIdException extends BaseError {}
 
@@ -29,3 +34,18 @@ export class CardSet implements Comparable {
     return isArrayEqual(this.items, input.items, (a, b) => a.equals(b));
   }
 }
+
+export type CardSetJson = {
+  items: CardJson[];
+};
+
+export const CardSetSerializer: Serializer<CardSet, CardSetJson> = {
+  serialize: (input: CardSet): CardSetJson => {
+    return {
+      items: input.items.map(CardSerializer.serialize),
+    };
+  },
+  deserialize: (input: CardSetJson): CardSet => {
+    return new CardSet(input.items.map(CardSerializer.deserialize));
+  },
+};

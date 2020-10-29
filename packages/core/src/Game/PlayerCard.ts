@@ -1,4 +1,4 @@
-import { Comparable } from "@tsukiy0/tscore";
+import { Comparable, Serializer } from "@tsukiy0/tscore";
 import { UserId } from "../User/User";
 import { CardId } from "./Card";
 
@@ -14,3 +14,20 @@ export class PlayerCard implements Comparable {
     );
   }
 }
+
+export type PlayerCardJson = {
+  playerId: string;
+  cardId: string;
+};
+
+export const PlayerCardSerializer: Serializer<PlayerCard, PlayerCardJson> = {
+  serialize: (input: PlayerCard): PlayerCardJson => {
+    return {
+      playerId: input.playerId.toString(),
+      cardId: input.cardId.toString(),
+    };
+  },
+  deserialize: (input: PlayerCardJson): PlayerCard => {
+    return new PlayerCard(new UserId(input.playerId), new CardId(input.cardId));
+  },
+};

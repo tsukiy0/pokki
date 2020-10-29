@@ -1,4 +1,7 @@
-import { testComparable } from "@tsukiy0/tscore/dist/index.testTemplate";
+import {
+  testComparable,
+  testSerializer,
+} from "@tsukiy0/tscore/dist/index.testTemplate";
 import { UserIdRandomizer } from "../User/User";
 import { Card, CardIdRandomizer } from "./Card";
 import { CardSet } from "./CardSet";
@@ -11,12 +14,30 @@ import {
   NewRoundEvent,
   PlayCardEvent,
   NoEventMatchedError,
+  NewGameEventSerializer,
+  AddPlayerEventSerializer,
+  NewRoundEventSerializer,
+  PlayCardEventSerializer,
+  EndRoundEventSerializer,
 } from "./Event";
 import { GameIdRandomizer } from "./Game";
 import { RoundIdRandomizer } from "./Round";
 
 describe("NewGameEvent", () => {
   testComparable(
+    () =>
+      new NewGameEvent(
+        GameIdRandomizer.random(),
+        UserIdRandomizer.random(),
+        new CardSet([
+          new Card(CardIdRandomizer.random(), "aaaa"),
+          new Card(CardIdRandomizer.random(), "bbbb"),
+        ]),
+      ),
+  );
+
+  testSerializer(
+    NewGameEventSerializer,
     () =>
       new NewGameEvent(
         GameIdRandomizer.random(),
@@ -34,10 +55,27 @@ describe("AddPlayerEvent", () => {
     () =>
       new AddPlayerEvent(GameIdRandomizer.random(), UserIdRandomizer.random()),
   );
+
+  testSerializer(
+    AddPlayerEventSerializer,
+    () =>
+      new AddPlayerEvent(GameIdRandomizer.random(), UserIdRandomizer.random()),
+  );
 });
 
 describe("NewRoundEvent", () => {
   testComparable(
+    () =>
+      new NewRoundEvent(
+        GameIdRandomizer.random(),
+        UserIdRandomizer.random(),
+        RoundIdRandomizer.random(),
+        "aaaa",
+      ),
+  );
+
+  testSerializer(
+    NewRoundEventSerializer,
     () =>
       new NewRoundEvent(
         GameIdRandomizer.random(),
@@ -57,10 +95,30 @@ describe("PlayCardEvent", () => {
         CardIdRandomizer.random(),
       ),
   );
+
+  testSerializer(
+    PlayCardEventSerializer,
+    () =>
+      new PlayCardEvent(
+        GameIdRandomizer.random(),
+        UserIdRandomizer.random(),
+        CardIdRandomizer.random(),
+      ),
+  );
 });
 
 describe("EndRoundEvent", () => {
   testComparable(
+    () =>
+      new EndRoundEvent(
+        GameIdRandomizer.random(),
+        UserIdRandomizer.random(),
+        CardIdRandomizer.random(),
+      ),
+  );
+
+  testSerializer(
+    EndRoundEventSerializer,
     () =>
       new EndRoundEvent(
         GameIdRandomizer.random(),

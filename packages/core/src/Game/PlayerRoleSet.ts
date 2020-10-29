@@ -1,6 +1,11 @@
-import { BaseError, Comparable, isArrayEqual } from "@tsukiy0/tscore";
+import {
+  BaseError,
+  Comparable,
+  isArrayEqual,
+  Serializer,
+} from "@tsukiy0/tscore";
 import { UserId } from "../User/User";
-import { PlayerRole } from "./PlayerRole";
+import { PlayerRole, PlayerRoleJson, PlayerRoleSerializer } from "./PlayerRole";
 import { Role } from "./Role";
 
 export class NoAdminError extends BaseError {}
@@ -35,3 +40,21 @@ export class PlayerRoleSet implements Comparable {
     return isArrayEqual(this.items, input.items, (a, b) => a.equals(b));
   }
 }
+
+export type PlayerRoleSetJson = {
+  items: PlayerRoleJson[];
+};
+
+export const PlayerRoleSetSerializer: Serializer<
+  PlayerRoleSet,
+  PlayerRoleSetJson
+> = {
+  serialize: (input: PlayerRoleSet): PlayerRoleSetJson => {
+    return {
+      items: input.items.map(PlayerRoleSerializer.serialize),
+    };
+  },
+  deserialize: (input: PlayerRoleSetJson): PlayerRoleSet => {
+    return new PlayerRoleSet(input.items.map(PlayerRoleSerializer.deserialize));
+  },
+};

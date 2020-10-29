@@ -5,10 +5,16 @@ import {
   Guid,
   isOptionalEqual,
   Randomizer,
+  Serializer,
 } from "@tsukiy0/tscore";
-import { CardSet } from "./CardSet";
-import { PlayerRoleSet } from "./PlayerRoleSet";
-import { Round } from "./Round";
+import { CardSet, CardSetJson, CardSetSerializer } from "./CardSet";
+import { PlayerRoleJson } from "./PlayerRole";
+import {
+  PlayerRoleSet,
+  PlayerRoleSetJson,
+  PlayerRoleSetSerializer,
+} from "./PlayerRoleSet";
+import { Round, RoundJson, RoundSerializer } from "./Round";
 
 export class GameId extends Guid {
   private readonly __tag = "GameId";
@@ -44,3 +50,32 @@ export class Game implements Comparable {
     );
   }
 }
+
+export type GameJson = {
+  id: string;
+  status: string;
+  cards: CardSetJson;
+  players: PlayerRoleSetJson;
+  round?: RoundJson;
+};
+
+export const GameSerializer: Serializer<Game, GameJson> = {
+  serialize: (input: Game): GameJson => {
+    return {
+      id: input.id.toString(),
+      status: input.status,
+      cards: CardSetSerializer.serialize(input.cards),
+      players: PlayerRoleSetSerializer.serialize(input.players),
+      round: input.round ? RoundSerializer.serialize(input.round) : undefined,
+    };
+  },
+  deserialize: (input: GameJson): Game => {
+    return new Game(
+      new GameId(input.id),
+      GameStatusEnumHelper.fromString(input.status),
+      CardSetSerializer.deserialize(input.cards),
+      PlayerRoleSetSerializer.deserialize(input.players),
+      input.round ? RoundSerializer.deserialize(input.round) : undefined,
+    );
+  },
+};

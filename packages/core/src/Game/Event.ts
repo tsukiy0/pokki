@@ -1,7 +1,7 @@
-import { BaseError, Comparable } from "@tsukiy0/tscore";
+import { BaseError, Comparable, Serializer } from "@tsukiy0/tscore";
 import { UserId } from "../User/User";
-import { CardId } from "./Card";
-import { CardSet } from "./CardSet";
+import { CardId, CardJson, CardSerializer } from "./Card";
+import { CardSet, CardSetJson, CardSetSerializer } from "./CardSet";
 import { GameId } from "./Game";
 import { RoundId } from "./Round";
 
@@ -18,6 +18,11 @@ export abstract class Event implements Comparable {
   }
 }
 
+export type EventJson = {
+  gameId: string;
+  playerId: string;
+};
+
 export class NewGameEvent extends Event {
   constructor(
     gameId: GameId,
@@ -32,7 +37,51 @@ export class NewGameEvent extends Event {
   }
 }
 
+type NewGameEventJson = EventJson & {
+  cards: CardSetJson;
+};
+
+export const NewGameEventSerializer: Serializer<
+  NewGameEvent,
+  NewGameEventJson
+> = {
+  serialize: (input: NewGameEvent): NewGameEventJson => {
+    return {
+      gameId: input.gameId.toString(),
+      playerId: input.playerId.toString(),
+      cards: CardSetSerializer.serialize(input.cards),
+    };
+  },
+  deserialize: (input: NewGameEventJson): NewGameEvent => {
+    return new NewGameEvent(
+      new GameId(input.gameId),
+      new UserId(input.playerId),
+      CardSetSerializer.deserialize(input.cards),
+    );
+  },
+};
+
 export class AddPlayerEvent extends Event {}
+
+type AddPlayerEventJson = EventJson;
+
+export const AddPlayerEventSerializer: Serializer<
+  AddPlayerEvent,
+  AddPlayerEventJson
+> = {
+  serialize: (input: AddPlayerEvent): AddPlayerEventJson => {
+    return {
+      gameId: input.gameId.toString(),
+      playerId: input.playerId.toString(),
+    };
+  },
+  deserialize: (input: AddPlayerEventJson): AddPlayerEvent => {
+    return new AddPlayerEvent(
+      new GameId(input.gameId),
+      new UserId(input.playerId),
+    );
+  },
+};
 
 export class NewRoundEvent extends Event {
   constructor(
@@ -53,6 +102,33 @@ export class NewRoundEvent extends Event {
   }
 }
 
+type NewRoundEventJson = EventJson & {
+  roundId: string;
+  roundName: string;
+};
+
+export const NewRoundEventSerializer: Serializer<
+  NewRoundEvent,
+  NewRoundEventJson
+> = {
+  serialize: (input: NewRoundEvent): NewRoundEventJson => {
+    return {
+      gameId: input.gameId.toString(),
+      playerId: input.playerId.toString(),
+      roundId: input.roundId.toString(),
+      roundName: input.roundName,
+    };
+  },
+  deserialize: (input: NewRoundEventJson): NewRoundEvent => {
+    return new NewRoundEvent(
+      new GameId(input.gameId),
+      new UserId(input.playerId),
+      new RoundId(input.roundId),
+      input.roundName,
+    );
+  },
+};
+
 export class PlayCardEvent extends Event {
   constructor(
     gameId: GameId,
@@ -67,6 +143,30 @@ export class PlayCardEvent extends Event {
   }
 }
 
+type PlayCardEventJson = EventJson & {
+  cardId: string;
+};
+
+export const PlayCardEventSerializer: Serializer<
+  PlayCardEvent,
+  PlayCardEventJson
+> = {
+  serialize: (input: PlayCardEvent): PlayCardEventJson => {
+    return {
+      gameId: input.gameId.toString(),
+      playerId: input.playerId.toString(),
+      cardId: input.cardId.toString(),
+    };
+  },
+  deserialize: (input: PlayCardEventJson): PlayCardEvent => {
+    return new PlayCardEvent(
+      new GameId(input.gameId),
+      new UserId(input.playerId),
+      new CardId(input.cardId),
+    );
+  },
+};
+
 export class EndRoundEvent extends Event {
   constructor(
     gameId: GameId,
@@ -80,6 +180,30 @@ export class EndRoundEvent extends Event {
     return super.equals(input) && this.resultCardId.equals(input.resultCardId);
   }
 }
+
+type EndRoundEventJson = EventJson & {
+  resultCardId: string;
+};
+
+export const EndRoundEventSerializer: Serializer<
+  EndRoundEvent,
+  EndRoundEventJson
+> = {
+  serialize: (input: EndRoundEvent): EndRoundEventJson => {
+    return {
+      gameId: input.gameId.toString(),
+      playerId: input.playerId.toString(),
+      resultCardId: input.resultCardId.toString(),
+    };
+  },
+  deserialize: (input: EndRoundEventJson): EndRoundEvent => {
+    return new EndRoundEvent(
+      new GameId(input.gameId),
+      new UserId(input.playerId),
+      new CardId(input.resultCardId),
+    );
+  },
+};
 
 export class NoEventMatchedError extends BaseError {}
 

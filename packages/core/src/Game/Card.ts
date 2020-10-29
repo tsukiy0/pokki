@@ -4,6 +4,7 @@ import {
   ExtendedGuidRandomizer,
   Guid,
   Randomizer,
+  Serializer,
 } from "@tsukiy0/tscore";
 
 export class CardId extends Guid {
@@ -35,3 +36,20 @@ export class Card implements Comparable {
     return this.id.equals(input.id) && this.name === input.name;
   }
 }
+
+export type CardJson = {
+  id: string;
+  name: string;
+};
+
+export const CardSerializer: Serializer<Card, CardJson> = {
+  serialize: (input: Card): CardJson => {
+    return {
+      id: input.id.toString(),
+      name: input.name,
+    };
+  },
+  deserialize: (input: CardJson): Card => {
+    return new Card(new CardId(input.id), input.name);
+  },
+};
