@@ -8,7 +8,6 @@ import {
   Serializer,
 } from "@tsukiy0/tscore";
 import { CardSet, CardSetJson, CardSetSerializer } from "./CardSet";
-import { PlayerRoleJson } from "./PlayerRole";
 import {
   PlayerRoleSet,
   PlayerRoleSetJson,

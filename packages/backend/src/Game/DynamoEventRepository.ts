@@ -31,6 +31,10 @@ export class DynamoEventRepository implements EventRepository {
     private readonly tableName: string,
   ) {}
 
+  static default = (tableName: string): EventRepository => {
+    return new DynamoEventRepository(new DynamoDB(), tableName);
+  };
+
   async appendEvent(event: Event): Promise<void> {
     const nextVersion = await this.getNextVersion(event.gameId);
 

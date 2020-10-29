@@ -1,29 +1,35 @@
-import { BaseError, Serializer } from "@tsukiy0/tscore";
+import { BaseError } from "@tsukiy0/tscore";
+import { Handler } from "./Handler";
 
 export enum GraphQlType {
   MUTATION = "Mutation",
   QUERY = "Query",
 }
 
-type RequestMap<TRequest, TResponse> = {
+export type HandlerMapItem<TRequest, TResponse> = {
   type: GraphQlType;
   field: string;
-  requestSerializer: Serializer<TRequest, unknown>;
-  responseSerializer: Serializer<TResponse, unknown>;
-  handler: (request: TRequest) => Promise<TResponse>;
+  handler: Handler<TRequest, TResponse>;
 };
 
 class HandlerNotFoundError extends BaseError {}
 
-export class AppSyncRuntime {
-  constructor(private readonly map: RequestMap<unknown, unknown>[]) {}
+export abstract class AppSyncRuntime<TDependencies> {
+  abstract getDependencies(): Promise<TDependencies>;
+
+  abstract getHandlerMap(
+    dependencies: TDependencies,
+  ): HandlerMapItem<unknown, unknown>[];
 
   async run(
     event: AWSLambda.AppSyncResolverEvent<{
       request: unknown;
     }>,
   ): Promise<unknown> {
-    const item = this.map.find(
+    const dependencies = await this.getDependencies();
+    const handlerMap = this.getHandlerMap(dependencies);
+
+    const item = handlerMap.find(
       (_) =>
         _.type === event.info.parentTypeName &&
         _.field === event.info.fieldName,
@@ -33,8 +39,6 @@ export class AppSyncRuntime {
       throw new HandlerNotFoundError();
     }
 
-    const request = item.requestSerializer.deserialize(event.arguments.request);
-    const response = await item.handler(request);
-    return item.responseSerializer.serialize(response);
+    return item.handler.handle(event.arguments.request);
   }
 }
