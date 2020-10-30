@@ -1,6 +1,6 @@
 import { User, UserId, UserRepository, UserSerializer } from "@pokki/core";
 import { Serializer } from "@tsukiy0/tscore";
-import { Handler } from "./Handler";
+import { Handler } from "@pokki/backend";
 
 export class GetUserRequest {
   constructor(public readonly id: UserId) {}

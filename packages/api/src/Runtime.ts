@@ -1,16 +1,13 @@
 import { BaseError, SystemConfig } from "@tsukiy0/tscore";
-import {
-  AddPlayerHandler,
-  CreateUserHandler,
-  DynamoEventRepository,
-  DynamoUserRepository,
-  EndRoundHandler,
-  GetUserHandler,
-  NewGameHandler,
-  NewRoundHandler,
-  PlayCardHandler,
-} from "@pokki/backend";
 import { GameService } from "@pokki/core";
+import { DynamoEventRepository, DynamoUserRepository } from "@pokki/backend";
+import { CreateUserHandler } from "./handlers/CreateUserHandler";
+import { GetUserHandler } from "./handlers/GetUserHandler";
+import { NewGameHandler } from "./handlers/NewGameHandler";
+import { AddPlayerHandler } from "./handlers/AddPlayerHandler";
+import { NewRoundHandler } from "./handlers/NewRoundHandler";
+import { PlayCardHandler } from "./handlers/PlayCardHandler";
+import { EndRoundHandler } from "./handlers/EndRoundHandler";
 
 export enum GraphQlType {
   MUTATION = "Mutation",

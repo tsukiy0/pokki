@@ -5,7 +5,7 @@ import {
   GameSerializer,
   GameService,
 } from "@pokki/core";
-import { Handler } from "./Handler";
+import { Handler } from "@pokki/backend";
 
 export class EndRoundHandler extends Handler<EndRoundEvent, Game> {
   constructor(public readonly gameService: GameService) {

@@ -1,5 +1,5 @@
 import { User, UserRepository, UserSerializer } from "@pokki/core";
-import { Handler } from "./Handler";
+import { Handler } from "@pokki/backend";
 import { VoidResponse, VoidResponseSerializer } from "./VoidResponse";
 
 export class CreateUserHandler extends Handler<User, VoidResponse> {
