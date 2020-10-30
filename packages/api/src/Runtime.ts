@@ -17,7 +17,7 @@ export enum GraphQlType {
 
 class HandlerNotFoundError extends BaseError {}
 
-export class AppSyncRuntime {
+export class Runtime {
   async run(
     event: AWSLambda.AppSyncResolverEvent<{
       request: unknown;

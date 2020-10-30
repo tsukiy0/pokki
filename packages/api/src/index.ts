@@ -1,3 +1,3 @@
-export const p = {
-  id: "test",
-};
+import { Runtime } from "./Runtime";
+
+export const handler = new Runtime().run;
