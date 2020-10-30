@@ -22,18 +22,18 @@ jobs:
           docker-compose -f tasks/integration.docker-compose.yml build integration
           docker-compose -f tasks/integration.docker-compose.yml run integration
           docker-compose -f tasks/integration.docker-compose.yml down
-      # - name: deploy
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
-      #     CFN_STACK_NAME: Main
-      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     AWS_DEFAULT_REGION: us-east-1
-      #   run: |
-      #     docker-compose -f tasks/docker-compose.yml build deploy
-      #     docker-compose -f tasks/docker-compose.yml run deploy
-      #     docker-compose -f tasks/docker-compose.yml down
+      - name: deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
+          CFN_STACK_NAME: Main
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
+        run: |
+          docker-compose -f tasks/docker-compose.yml build deploy
+          docker-compose -f tasks/docker-compose.yml run deploy
+          docker-compose -f tasks/docker-compose.yml down
       # - name: frontend_contract
       #   env: 
       #     CFN_STACK_NAME: Main
