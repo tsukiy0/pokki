@@ -82,13 +82,13 @@ input NewRoundEvent {
 }
 
 input PlayCardEvent {
-  gameId: string!
+  gameId: String!
   playerId: String!
   cardId: String!
 }
 
 input EndRoundEvent {
-  gameId: string!
+  gameId: String!
   playerId: String!
   resultCardId: String!
 }

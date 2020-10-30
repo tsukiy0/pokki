@@ -4,6 +4,7 @@ set -euxo pipefail
 
 npm set //npm.pkg.github.com/:_authToken ${GITHUB_TOKEN}
 yarn install --silent
+yarn codegen
 yarn typecheck
 yarn lint
 yarn build
