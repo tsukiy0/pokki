@@ -1,35 +1,18 @@
-import { User, UserId, UserRepository, UserSerializer } from "@pokki/core";
-import { Serializer } from "@tsukiy0/tscore";
+import {
+  GetUserRequest,
+  GetUserRequestSerializer,
+  User,
+  UserSerializer,
+  UserService,
+} from "@pokki/core";
 import { Handler } from "@pokki/backend";
 
-export class GetUserRequest {
-  constructor(public readonly id: UserId) {}
-}
-
-export type GetUserRequestJson = {
-  id: string;
-};
-
-export const GetUserRequestSerializer: Serializer<
-  GetUserRequest,
-  GetUserRequestJson
-> = {
-  serialize: (input: GetUserRequest): GetUserRequestJson => {
-    return {
-      id: input.id.toString(),
-    };
-  },
-  deserialize: (input: GetUserRequestJson): GetUserRequest => {
-    return new GetUserRequest(new UserId(input.id));
-  },
-};
-
 export class GetUserHandler extends Handler<GetUserRequest, User> {
-  constructor(public readonly userRepository: UserRepository) {
+  constructor(public readonly userService: UserService) {
     super(GetUserRequestSerializer, UserSerializer);
   }
 
   handle(request: GetUserRequest): Promise<User> {
-    return this.userRepository.getUser(request.id);
+    return this.userService.getUser(request);
   }
 }

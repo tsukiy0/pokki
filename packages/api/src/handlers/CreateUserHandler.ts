@@ -1,14 +1,14 @@
-import { User, UserRepository, UserSerializer } from "@pokki/core";
+import { User, UserSerializer, UserService } from "@pokki/core";
 import { Handler } from "@pokki/backend";
 import { VoidResponse, VoidResponseSerializer } from "./VoidResponse";
 
 export class CreateUserHandler extends Handler<User, VoidResponse> {
-  constructor(public readonly userRepository: UserRepository) {
+  constructor(public readonly userService: UserService) {
     super(UserSerializer, VoidResponseSerializer);
   }
 
-  async handle(user: User): Promise<VoidResponse> {
-    await this.userRepository.createUser(user);
+  async handle(request: User): Promise<VoidResponse> {
+    await this.userService.createUser(request);
     return new VoidResponse();
   }
 }

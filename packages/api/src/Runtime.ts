@@ -1,5 +1,5 @@
 import { BaseError, SystemConfig } from "@tsukiy0/tscore";
-import { GameService } from "@pokki/core";
+import { GameService, UserService } from "@pokki/core";
 import { DynamoEventRepository, DynamoUserRepository } from "@pokki/backend";
 import { CreateUserHandler } from "./handlers/CreateUserHandler";
 import { GetUserHandler } from "./handlers/GetUserHandler";
@@ -30,17 +30,18 @@ export class AppSyncRuntime {
       config.get("USER_TABLE_NAME"),
     );
     const gameService = new GameService(eventRepository);
+    const userService = new UserService(userRepository);
 
     const item = [
       {
         type: GraphQlType.MUTATION,
         field: "CreateUser",
-        handler: new CreateUserHandler(userRepository),
+        handler: new CreateUserHandler(userService),
       },
       {
         type: GraphQlType.QUERY,
         field: "GetUser",
-        handler: new GetUserHandler(userRepository),
+        handler: new GetUserHandler(userService),
       },
       {
         type: GraphQlType.MUTATION,
