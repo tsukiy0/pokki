@@ -8,6 +8,7 @@ import { AddPlayerHandler } from "./handlers/AddPlayerHandler";
 import { NewRoundHandler } from "./handlers/NewRoundHandler";
 import { PlayCardHandler } from "./handlers/PlayCardHandler";
 import { EndRoundHandler } from "./handlers/EndRoundHandler";
+import { HealthCheckHandler } from "./handlers/HealthCheckHandler";
 
 export enum GraphQlType {
   MUTATION = "Mutation",
@@ -33,6 +34,11 @@ export class AppSyncRuntime {
     const userService = new UserService(userRepository);
 
     const item = [
+      {
+        type: GraphQlType.QUERY,
+        field: "HealthCheck",
+        handler: new HealthCheckHandler(),
+      },
       {
         type: GraphQlType.MUTATION,
         field: "CreateUser",

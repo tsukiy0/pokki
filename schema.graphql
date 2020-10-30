@@ -12,104 +12,94 @@ type VoidResponse {
 }
 
 input CreateUserRequest {
-  Id: String!
-  Name: String!
+  id: String!
+  name: String!
 }
 
 input GetUserRequest {
-  Id: String!
+  id: String!
 }
 
 type GetUserResponse {
-  Id: String!
-  Name: String!
+  id: String!
+  name: String!
 }
 
 type HealthCheckResponse {
-  IsHealthy: Boolean!
+  isHealthy: Boolean!
 }
 
 type PlayerRole {
-  PlayerId: String!
-  Role: String!
+  playerId: String!
+  role: String!
 }
 
 type Card {
-  Id: String!
-  Name: String!
+  id: String!
+  name: String!
 }
 
 type PlayerCard {
-  PlayerId: String!
-  CardId: String!
+  playerId: String!
+  cardId: String!
 }
 
 type Round {
-  Id: String!
-  Name: String!
-  PlayerCard: [PlayerCard!]!
-}
-
-type CompletedRound {
-  Id: String!
-  Name: String!
-  PlayerCard: [PlayerCard!]!
-  ResultCardId: String!
+  id: String!
+  name: String!
+  playerCards: [PlayerCard!]!
 }
 
 type GameResponse {
-  Id: String!
-  Status: String!
-  PlayerRoles: [PlayerRole!]!
-  Cards: [Card!]!
-  ActiveRound: Round
-  CompletedRound: [CompletedRound!]!
+  id: String!
+  status: String!
+  cards: [Card!]!
+  players: [PlayerRole!]!
+  round: Round
 }
 
 input CardRequest {
-  Id: String!
-  Name: String!
+  id: String!
+  name: String!
 }
 
-input NewGameRequest {
-  GameId: String!
-  AdminId: String!
-  Cards: [CardRequest!]!
+input NewGameEvent {
+  gameId: String!
+  playerId: String!
+  cards: [CardRequest!]!
 }
 
-input AddPlayerRequest {
-  GameId: String!
-  PlayerId: String!
+input AddPlayerEvent {
+  gameId: String!
+  playerId: String!
 }
 
-input NewRoundRequest {
-  GameId: String!
-  RoundId: String!
-  RoundName: String!
+input NewRoundEvent {
+  gameId: String!
+  playerId: String!
+  roundId: String!
+  roundName: String!
 }
 
-input PlayerCardRequest {
-  PlayerId: String!
-  CardId: String!
+input PlayCardEvent {
+  gameId: string!
+  playerId: String!
+  cardId: String!
 }
 
-input SelectCardRequest {
-  GameId: String!
-  PlayerCard: PlayerCardRequest!
-}
-
-input EndRoundRequest {
-  GameId: String!
-  ResultCardId: String!
+input EndRoundEvent {
+  gameId: string!
+  playerId: String!
+  resultCardId: String!
 }
 
 type Mutation {
   CreateUser(request: CreateUserRequest!): VoidResponse!
-  NewGame(request: NewGameRequest!): GameResponse!
-  AddPlayer(request: AddPlayerRequest!): GameResponse!
-  NewRound(request: NewRoundRequest!): GameResponse!
-  SelectCard(request: SelectCardRequest!): GameResponse!
-  EndRound(request: EndRoundRequest!): GameResponse!
+  NewGame(request: NewGameEvent!): GameResponse!
+  AddPlayer(request: AddPlayerEvent!): GameResponse!
+  NewRound(request: NewRoundEvent!): GameResponse!
+  SelectCard(request: PlayCardEvent!): GameResponse!
+  EndRound(request: EndRoundEvent!): GameResponse!
 }
 
 type Query {
