@@ -59,10 +59,10 @@ export class ApiConstruct extends Construct {
       code: Code.fromAsset(
         path.resolve(
           __dirname,
-          "../../../../backend/Api/bin/Release/netcoreapp3.1/Api.zip",
+          "../../../../packages/api/out/index.js",
         ),
       ),
-      runtime: Runtime.DOTNET_CORE_3_1,
+      runtime: Runtime.,
       handler: "Api::Api.Function::FunctionHandler",
       memorySize: 512,
       timeout: Duration.seconds(20),
