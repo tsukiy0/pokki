@@ -6,3 +6,5 @@ export * from "./Api/AddPlayerHandler";
 export * from "./Api/NewRoundHandler";
 export * from "./Api/PlayCardHandler";
 export * from "./Api/EndRoundHandler";
+export * from "./Api/CreateUserHandler";
+export * from "./Api/GetUserHandler";

@@ -1,8 +1,11 @@
 import { BaseError, SystemConfig } from "@tsukiy0/tscore";
 import {
   AddPlayerHandler,
+  CreateUserHandler,
   DynamoEventRepository,
+  DynamoUserRepository,
   EndRoundHandler,
+  GetUserHandler,
   NewGameHandler,
   NewRoundHandler,
   PlayCardHandler,
@@ -26,9 +29,22 @@ export class AppSyncRuntime {
     const eventRepository = DynamoEventRepository.default(
       config.get("EVENT_TABLE_NAME"),
     );
+    const userRepository = DynamoUserRepository.default(
+      config.get("USER_TABLE_NAME"),
+    );
     const gameService = new GameService(eventRepository);
 
     const item = [
+      {
+        type: GraphQlType.MUTATION,
+        field: "CreateUser",
+        handler: new CreateUserHandler(userRepository),
+      },
+      {
+        type: GraphQlType.QUERY,
+        field: "GetUser",
+        handler: new GetUserHandler(userRepository),
+      },
       {
         type: GraphQlType.MUTATION,
         field: "NewGame",

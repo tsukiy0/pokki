@@ -9,6 +9,10 @@ export class DynamoUserRepository implements UserRepository {
     private readonly tableName: string,
   ) {}
 
+  static default = (tableName: string): UserRepository => {
+    return new DynamoUserRepository(new DynamoDB(), tableName);
+  };
+
   async createUser(user: User): Promise<void> {
     await this.dynamoClient
       .putItem({
