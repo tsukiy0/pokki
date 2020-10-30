@@ -57,7 +57,7 @@ export class ApiConstruct extends Construct {
 
     const fn = new LambdaFunction(this, "ApiFunction", {
       code: Code.fromAsset(
-        path.resolve(__dirname, "../../../../packages/api/out/index.js"),
+        path.resolve(__dirname, "../../../../packages/api/out"),
       ),
       runtime: Runtime.NODEJS_12_X,
       handler: "index.handler",
