@@ -1,5 +1,7 @@
 export * from "./User/User";
+export * from "./User/GetUserRequest";
 export * from "./User/UserRepository";
+export * from "./User/UserService";
 export * from "./Game/Game";
 export * from "./Game/Card";
 export * from "./Game/CardSet";
