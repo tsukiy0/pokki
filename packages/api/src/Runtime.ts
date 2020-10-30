@@ -1,38 +1,34 @@
-import { GameService } from "@pokki/core";
-import { SystemConfig } from "@tsukiy0/tscore";
+import { BaseError, SystemConfig } from "@tsukiy0/tscore";
 import {
-  AppSyncRuntime,
-  GraphQlType,
-  HandlerMapItem,
-} from "../Aws/AppSyncRuntime";
-import { DynamoEventRepository } from "../Game/DynamoEventRepository";
-import { AddPlayerHandler } from "./AddPlayerHandler";
-import { EndRoundHandler } from "./EndRoundHandler";
-import { NewGameHandler } from "./NewGameHandler";
-import { NewRoundHandler } from "./NewRoundHandler";
-import { PlayCardHandler } from "./PlayCardHandler";
+  AddPlayerHandler,
+  DynamoEventRepository,
+  EndRoundHandler,
+  NewGameHandler,
+  NewRoundHandler,
+  PlayCardHandler,
+} from "@pokki/backend";
+import { GameService } from "@pokki/core";
 
-type Dependencies = {
-  gameService: GameService;
-};
+export enum GraphQlType {
+  MUTATION = "Mutation",
+  QUERY = "Query",
+}
 
-export class ApiRuntime extends AppSyncRuntime<Dependencies> {
-  async getDependencies(): Promise<Dependencies> {
+class HandlerNotFoundError extends BaseError {}
+
+export class AppSyncRuntime {
+  async run(
+    event: AWSLambda.AppSyncResolverEvent<{
+      request: unknown;
+    }>,
+  ): Promise<unknown> {
     const config = new SystemConfig();
     const eventRepository = DynamoEventRepository.default(
       config.get("EVENT_TABLE_NAME"),
     );
     const gameService = new GameService(eventRepository);
 
-    return {
-      gameService,
-    };
-  }
-
-  getHandlerMap({
-    gameService,
-  }: Dependencies): HandlerMapItem<unknown, unknown>[] {
-    return [
+    const item = [
       {
         type: GraphQlType.MUTATION,
         field: "NewGame",
@@ -58,6 +54,16 @@ export class ApiRuntime extends AppSyncRuntime<Dependencies> {
         field: "EndRound",
         handler: new EndRoundHandler(gameService),
       },
-    ];
+    ].find(
+      (_) =>
+        _.type === event.info.parentTypeName &&
+        _.field === event.info.fieldName,
+    );
+
+    if (!item) {
+      throw new HandlerNotFoundError();
+    }
+
+    return item.handler.run(event.arguments.request);
   }
 }

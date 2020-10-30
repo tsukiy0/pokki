@@ -5,7 +5,7 @@ import {
   NewRoundEvent,
   NewRoundEventSerializer,
 } from "@pokki/core";
-import { Handler } from "../Aws/Handler";
+import { Handler } from "./Handler";
 
 export class NewRoundHandler extends Handler<NewRoundEvent, Game> {
   constructor(public readonly gameService: GameService) {

@@ -6,7 +6,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "devDependencies": {
-    "@pokki/tools": "*"
+    "@pokki/tools": "*",
+    "@types/aws-lambda": "8.10.64"
   },
   "dependencies": {
     "@pokki/backend": "*",

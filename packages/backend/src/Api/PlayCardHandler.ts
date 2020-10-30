@@ -5,7 +5,7 @@ import {
   PlayCardEvent,
   PlayCardEventSerializer,
 } from "@pokki/core";
-import { Handler } from "../Aws/Handler";
+import { Handler } from "./Handler";
 
 export class PlayCardHandler extends Handler<PlayCardEvent, Game> {
   constructor(public readonly gameService: GameService) {

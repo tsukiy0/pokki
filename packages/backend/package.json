@@ -7,7 +7,6 @@
   "types": "dist/index.d.ts",
   "devDependencies": {
     "@pokki/tools": "*",
-    "@types/aws-lambda": "8.10.64",
     "dotenv": "8.2.0"
   },
   "dependencies": {
