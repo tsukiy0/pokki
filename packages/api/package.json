@@ -7,7 +7,10 @@
   "types": "dist/index.d.ts",
   "devDependencies": {
     "@pokki/tools": "*",
-    "@types/aws-lambda": "8.10.64"
+    "@types/aws-lambda": "8.10.64",
+    "ts-loader": "8.0.7",
+    "webpack": "5.3.2",
+    "webpack-cli": "4.1.0"
   },
   "dependencies": {
     "@pokki/backend": "*",
@@ -18,7 +21,7 @@
     "typecheck": "tsc --build .",
     "lint": "eslint \"./src/**/*.{ts,tsx}\"",
     "lint:fix": "yarn lint --fix",
-    "clean": "rm -rf dist tsconfig.tsbuildinfo",
-    "build": "tsc --build ."
+    "clean": "rm -rf dist out tsconfig.tsbuildinfo",
+    "build": "webpack"
   }
 }
