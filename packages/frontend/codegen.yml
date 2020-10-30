@@ -4,3 +4,6 @@ generates:
   src/generated/graphql.ts:
     plugins:
       - "typescript"
+hooks:
+  afterAllFileWrite:
+    - yarn lint:fix
