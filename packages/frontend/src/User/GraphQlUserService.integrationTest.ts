@@ -2,6 +2,8 @@ import { GetUserRequest, User, UserIdRandomizer } from "@pokki/core";
 import { SystemConfig } from "@tsukiy0/tscore";
 import AWSAppSyncClient, { AUTH_TYPE } from "aws-appsync";
 import { GraphQlUserService } from "./GraphQlUserService";
+// eslint-disable-next-line import/no-extraneous-dependencies
+import "isomorphic-fetch";
 
 describe("UserClient", () => {
   it("creates user", async () => {

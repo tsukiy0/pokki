@@ -12,7 +12,9 @@
     "@graphql-codegen/typescript-document-nodes": "1.17.8",
     "@graphql-codegen/typescript-operations": "1.17.8",
     "@pokki/tools": "*",
-    "dotenv": "8.2.0"
+    "@types/isomorphic-fetch": "0.0.35",
+    "dotenv": "8.2.0",
+    "isomorphic-fetch": "^3.0.0"
   },
   "dependencies": {
     "@pokki/core": "*",
