@@ -23,7 +23,7 @@ export class WebConstruct extends Construct {
       sources: [Source.asset(path.resolve(__dirname, "../../../web/out"))],
     });
 
-    this.url = bucket.bucketWebsiteUrl;
+    this.url = bucket.urlForObject("index.html");
     this.bucket = bucket;
   }
 }
