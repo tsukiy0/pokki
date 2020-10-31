@@ -1,0 +1,12 @@
+mutation CreateUser($request: CreateUserRequest!) {
+  CreateUser(request: $request) {
+    void
+  }
+}
+
+query GetUser($request: GetUserRequest!) {
+  GetUser(request: $request) {
+    id
+    name
+  }
+}
