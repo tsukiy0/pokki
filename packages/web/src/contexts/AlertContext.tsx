@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useRef } from "react";
-import { Toaster, Position, Intent, IToaster } from "@blueprintjs/core";
+import React, { useContext } from "react";
+import { Toaster, Position, Intent } from "@blueprintjs/core";
 
 type Value = {
   onSuccess: (message: string) => void;
