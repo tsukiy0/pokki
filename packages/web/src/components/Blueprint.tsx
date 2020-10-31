@@ -1,5 +1,6 @@
 import React from "react";
-import classNames from "classnames";
+import { css, cx } from "emotion";
+import { Colors } from "@blueprintjs/core";
 import "normalize.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
 
@@ -8,9 +9,16 @@ export const Blueprint: React.FC<{
 }> = ({ children, isDark }) => {
   return (
     <div
-      className={classNames({
-        "bp3-dark": isDark,
-      })}
+      className={cx(
+        css({
+          background: Colors.DARK_GRAY4,
+          height: "100vh",
+          width: "100vw",
+        }),
+        {
+          "bp3-dark": isDark,
+        },
+      )}
     >
       {children}
     </div>

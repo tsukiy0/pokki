@@ -14,7 +14,7 @@
     "@pokki/core": "*",
     "@pokki/frontend": "*",
     "@tsukiy0/tscore": "1.5.0",
-    "classnames": "2.2.6",
+    "emotion": "10.0.27",
     "next": "10.0.0",
     "normalize.css": "8.0.1",
     "react": "17.0.1",
