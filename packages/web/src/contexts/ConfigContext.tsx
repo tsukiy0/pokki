@@ -1,13 +1,9 @@
 import { Config } from "@tsukiy0/tscore";
 import { FrontendConfig } from "@pokki/frontend";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { LoadingPage } from "../components/LoadingPage";
 
-type Value = {
-  config: Config;
-};
-
-const ConfigContext = React.createContext<Value>({} as any);
+const ConfigContext = React.createContext<Config>({} as any);
 
 export const ConfigContextProvider: React.FC = ({ children }) => {
   const [config, setConfig] = useState<Config | undefined>(undefined);
@@ -32,12 +28,10 @@ export const ConfigContextProvider: React.FC = ({ children }) => {
   }
 
   return (
-    <ConfigContext.Provider
-      value={{
-        config,
-      }}
-    >
-      {children}
-    </ConfigContext.Provider>
+    <ConfigContext.Provider value={config}>{children}</ConfigContext.Provider>
   );
+};
+
+export const useConfigContext = () => {
+  return useContext(ConfigContext);
 };

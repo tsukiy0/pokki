@@ -14,6 +14,7 @@
     "@pokki/core": "*",
     "@pokki/frontend": "*",
     "@tsukiy0/tscore": "1.5.0",
+    "aws-appsync": "^4.0.1",
     "emotion": "10.0.27",
     "next": "10.0.0",
     "normalize.css": "8.0.1",

@@ -4343,7 +4343,7 @@ aws-appsync-subscription-link@^2.2.1:
     debug "2.6.9"
     url "^0.11.0"
 
-aws-appsync@4.0.1:
+aws-appsync@4.0.1, aws-appsync@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/aws-appsync/-/aws-appsync-4.0.1.tgz#4797c9403fe88249a9651bd4ba975647adac211f"
   integrity sha512-rgYMKrV0VWd4Tm8+DIhnDLZE7vUWFHCStEb7WrIELpQBOwFF6IVJtUWwcJoMgbi+ajp6r/5ou9s4PBA81SpYlg==
