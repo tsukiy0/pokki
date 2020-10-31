@@ -11,7 +11,8 @@
     "@graphql-codegen/typescript": "1.17.11",
     "@graphql-codegen/typescript-document-nodes": "1.17.8",
     "@graphql-codegen/typescript-operations": "1.17.8",
-    "@pokki/tools": "*"
+    "@pokki/tools": "*",
+    "dotenv": "8.2.0"
   },
   "dependencies": {
     "@pokki/core": "*",
@@ -27,6 +28,7 @@
     "lint:fix": "yarn lint --fix",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "build": "tsc --build .",
-    "codegen": "graphql-codegen --config codegen.yml"
+    "codegen": "graphql-codegen --config codegen.yml",
+    "test:integration": "jest --config jest.integration.config.js"
   }
 }
