@@ -20,7 +20,7 @@
     "@pokki/core": "*",
     "@tsukiy0/tscore": "1.5.0",
     "aws-appsync": "4.0.1",
-    "aws-sdk": "2.780.0",
+    "aws-sdk": "2.783.0",
     "graphql": "15.4.0",
     "graphql-tag": "2.11.0"
   },
