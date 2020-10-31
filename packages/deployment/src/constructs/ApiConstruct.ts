@@ -51,14 +51,12 @@ export class ApiConstruct extends Construct {
         },
       },
       schema: Schema.fromAsset(
-        path.resolve(__dirname, "../../../../schema.graphql"),
+        path.resolve(__dirname, "../../../frontend/graphql/schema.graphql"),
       ),
     });
 
     const fn = new LambdaFunction(this, "ApiFunction", {
-      code: Code.fromAsset(
-        path.resolve(__dirname, "../../../../packages/api/out"),
-      ),
+      code: Code.fromAsset(path.resolve(__dirname, "../../../api/out")),
       runtime: Runtime.NODEJS_12_X,
       handler: "index.handler",
       memorySize: 512,
