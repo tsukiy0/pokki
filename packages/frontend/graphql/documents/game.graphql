@@ -1,0 +1,50 @@
+fragment GameResponseFragment on GameResponse {
+  id
+  status
+  cards {
+    id
+    name
+  }
+  players {
+    playerId
+    role
+  }
+  round {
+    id
+    name
+    playerCards {
+      playerId
+      cardId
+    }
+  }
+}
+
+mutation NewGame($request: NewGameRequest!) {
+  NewGame(request: $request) {
+    ...GameResponseFragment
+  }
+}
+
+mutation AddPlayer($request: AddPlayerRequest!) {
+  AddPlayer(request: $request) {
+    ...GameResponseFragment
+  }
+}
+
+mutation NewRound($request: NewRoundRequest!) {
+  NewRound(request: $request) {
+    ...GameResponseFragment
+  }
+}
+
+mutation PlayCard($request: PlayCardRequest!) {
+  PlayCard(request: $request) {
+    ...GameResponseFragment
+  }
+}
+
+mutation EndRound($request: EndRoundRequest!) {
+  EndRound(request: $request) {
+    ...GameResponseFragment
+  }
+}
