@@ -56,7 +56,7 @@ exports.handler = async (event) => {
       code: Code.fromInline(`
 exports.handler = async () => {
   return {
-    isComplete: true
+    IsComplete: true
   }; 
 }
       `),
