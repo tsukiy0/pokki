@@ -11,7 +11,9 @@ export class RootStack extends Stack {
     const api = new ApiConstruct(this, "Api", {
       database,
     });
-    const web = new WebConstruct(this, "Web");
+    const web = new WebConstruct(this, "Web", {
+      api,
+    });
 
     new CfnOutput(this, "ApiKey", {
       value: api.graphQlApi.apiKey as string,
