@@ -35,17 +35,13 @@ export class CardSet implements Comparable {
   }
 }
 
-export type CardSetJson = {
-  items: CardJson[];
-};
+export type CardSetJson = CardJson[];
 
 export const CardSetSerializer: Serializer<CardSet, CardSetJson> = {
   serialize: (input: CardSet): CardSetJson => {
-    return {
-      items: input.items.map(CardSerializer.serialize),
-    };
+    return input.items.map(CardSerializer.serialize);
   },
   deserialize: (input: CardSetJson): CardSet => {
-    return new CardSet(input.items.map(CardSerializer.deserialize));
+    return new CardSet(input.map(CardSerializer.deserialize));
   },
 };

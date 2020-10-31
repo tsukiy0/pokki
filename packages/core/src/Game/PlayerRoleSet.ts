@@ -41,20 +41,16 @@ export class PlayerRoleSet implements Comparable {
   }
 }
 
-export type PlayerRoleSetJson = {
-  items: PlayerRoleJson[];
-};
+export type PlayerRoleSetJson = PlayerRoleJson[];
 
 export const PlayerRoleSetSerializer: Serializer<
   PlayerRoleSet,
   PlayerRoleSetJson
 > = {
   serialize: (input: PlayerRoleSet): PlayerRoleSetJson => {
-    return {
-      items: input.items.map(PlayerRoleSerializer.serialize),
-    };
+    return input.items.map(PlayerRoleSerializer.serialize);
   },
   deserialize: (input: PlayerRoleSetJson): PlayerRoleSet => {
-    return new PlayerRoleSet(input.items.map(PlayerRoleSerializer.deserialize));
+    return new PlayerRoleSet(input.map(PlayerRoleSerializer.deserialize));
   },
 };
