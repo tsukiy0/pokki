@@ -14,12 +14,10 @@ export const UserContextProvider: React.FC = ({ children }) => {
   const localStorageKey = "user";
 
   useEffect(() => {
-    if (process.browser) {
-      const value = localStorage.getItem(localStorageKey);
+    const value = localStorage.getItem(localStorageKey);
 
-      if (value) {
-        setUser(UserSerializer.deserialize(JSON.parse(value)));
-      }
+    if (value) {
+      setUser(UserSerializer.deserialize(JSON.parse(value)));
     }
   }, []);
 
