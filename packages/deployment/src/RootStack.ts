@@ -1,6 +1,7 @@
 import { Stack, Construct, StackProps, CfnOutput, Aws } from "@aws-cdk/core";
 import { ApiConstruct } from "./constructs/ApiConstruct";
 import { DatabaseConstruct } from "./constructs/DatabaseConstruct";
+import { WebConstruct } from "./constructs/WebConstruct";
 
 export class RootStack extends Stack {
   constructor(scope: Construct, id: string, props: StackProps) {
@@ -10,6 +11,7 @@ export class RootStack extends Stack {
     const api = new ApiConstruct(this, "Api", {
       database,
     });
+    new WebConstruct(this, "Web");
 
     new CfnOutput(this, "ApiKey", {
       value: api.graphQlApi.apiKey as string,
