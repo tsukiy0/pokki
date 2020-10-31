@@ -6,8 +6,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, "out"),
     filename: "index.js",
-    library: "index",
-    libraryTarget: "commonjs2",
+    libraryTarget: "commonjs",
   },
   target: "node",
   plugins: [
