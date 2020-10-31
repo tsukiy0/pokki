@@ -13,8 +13,7 @@
     "@graphql-codegen/typescript-operations": "1.17.8",
     "@pokki/tools": "*",
     "@types/isomorphic-fetch": "0.0.35",
-    "dotenv": "8.2.0",
-    "isomorphic-fetch": "^3.0.0"
+    "dotenv": "8.2.0"
   },
   "dependencies": {
     "@pokki/core": "*",
@@ -22,7 +21,8 @@
     "aws-appsync": "4.0.1",
     "aws-sdk": "2.783.0",
     "graphql": "15.4.0",
-    "graphql-tag": "2.11.0"
+    "graphql-tag": "2.11.0",
+    "isomorphic-fetch": "3.0.0"
   },
   "scripts": {
     "typecheck": "tsc --build .",
