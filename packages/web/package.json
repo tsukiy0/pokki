@@ -1,0 +1,27 @@
+{
+  "name": "@pokki/web",
+  "private": true,
+  "version": "0.0.0",
+  "license": "MIT",
+  "devDependencies": {
+    "@pokki/tools": "*",
+    "@types/react": "16.9.51",
+    "@types/react-dom": "16.9.8"
+  },
+  "dependencies": {
+    "@pokki/core": "*",
+    "@pokki/frontend": "*",
+    "@tsukiy0/tscore": "1.5.0",
+    "next": "9.5.4",
+    "react": "16.13.1",
+    "react-dom": "16.13.1"
+  },
+  "scripts": {
+    "start": "next",
+    "typecheck": "tsc --build .",
+    "lint": "eslint \"./src/**/*.{ts,tsx}\"",
+    "lint:fix": "yarn lint --fix",
+    "clean": "rm -rf dist .next out tsconfig.tsbuildinfo",
+    "build": "next build && next export"
+  }
+}
