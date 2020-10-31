@@ -56,7 +56,7 @@ describe("GraphQlUserService", () => {
       new PlayCardEvent(gameId, playerId, cards.items[1].id),
     );
     const actual = await service.endRound(
-      new EndRoundEvent(gameId, playerId, cards.items[1].id),
+      new EndRoundEvent(gameId, adminId, cards.items[1].id),
     );
 
     expect(
