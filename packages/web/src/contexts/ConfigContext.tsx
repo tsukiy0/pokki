@@ -32,6 +32,6 @@ export const ConfigContextProvider: React.FC = ({ children }) => {
   );
 };
 
-export const useConfigContext = () => {
+export const useConfigContext = (): Config => {
   return useContext(ConfigContext);
 };

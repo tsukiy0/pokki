@@ -33,7 +33,7 @@ export const ServiceContextProvider: React.FC = ({ children }) => {
       userService,
       gameService,
     });
-  });
+  }, []);
 
   if (!services) {
     return <LoadingPage />;
@@ -46,6 +46,6 @@ export const ServiceContextProvider: React.FC = ({ children }) => {
   );
 };
 
-export const useServiceContext = () => {
+export const useServiceContext = (): Services => {
   return useContext(ServiceContext);
 };
