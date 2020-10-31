@@ -73,6 +73,11 @@ export class ApiConstruct extends Construct {
     addResolver(graphQlApi, fn, TypeName.Query, "HealthCheck");
     addResolver(graphQlApi, fn, TypeName.Mutation, "CreateUser");
     addResolver(graphQlApi, fn, TypeName.Query, "GetUser");
+    addResolver(graphQlApi, fn, TypeName.Mutation, "NewGame");
+    addResolver(graphQlApi, fn, TypeName.Mutation, "AddPlayer");
+    addResolver(graphQlApi, fn, TypeName.Mutation, "NewRound");
+    addResolver(graphQlApi, fn, TypeName.Mutation, "PlayCard");
+    addResolver(graphQlApi, fn, TypeName.Mutation, "EndRound");
 
     this.graphQlApi = graphQlApi;
   }
