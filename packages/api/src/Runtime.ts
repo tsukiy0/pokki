@@ -25,7 +25,7 @@ export class Runtime {
   ): Promise<unknown> {
     const config = new SystemConfig();
     const eventRepository = DynamoEventRepository.default(
-      config.get("EVENT_TABLE_NAME"),
+      config.get("GAME_TABLE_NAME"),
     );
     const userRepository = DynamoUserRepository.default(
       config.get("USER_TABLE_NAME"),
