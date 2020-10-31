@@ -11,7 +11,7 @@ export class RootStack extends Stack {
     const api = new ApiConstruct(this, "Api", {
       database,
     });
-    new WebConstruct(this, "Web");
+    const web = new WebConstruct(this, "Web");
 
     new CfnOutput(this, "ApiKey", {
       value: api.graphQlApi.apiKey as string,
@@ -21,6 +21,9 @@ export class RootStack extends Stack {
     });
     new CfnOutput(this, "ApiRegion", {
       value: Aws.REGION,
+    });
+    new CfnOutput(this, "WebUrl", {
+      value: web.url,
     });
   }
 }
