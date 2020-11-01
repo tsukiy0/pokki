@@ -1,6 +1,10 @@
 import { testComparable } from "@tsukiy0/tscore/dist/index.testTemplate";
 import { Card, CardIdRandomizer } from "./Card";
-import { CardSet, DuplicateCardIdException } from "./CardSet";
+import {
+  CardSet,
+  DuplicateCardIdException,
+  DuplicateCardNameException,
+} from "./CardSet";
 
 describe("CardSet", () => {
   testComparable(
@@ -25,7 +29,7 @@ describe("CardSet", () => {
           new Card(CardIdRandomizer.random(), "1234"),
           new Card(CardIdRandomizer.random(), "1234"),
         ]),
-    ).toThrow(DuplicateCardIdException);
+    ).toThrow(DuplicateCardNameException);
   });
 
   describe("hasCard", () => {
@@ -50,6 +54,26 @@ describe("CardSet", () => {
       const actual = cards.hasCard(CardIdRandomizer.random());
 
       expect(actual).toBeFalsy();
+    });
+  });
+
+  describe("addCard", () => {
+    it("adds card", () => {
+      const card = new Card(CardIdRandomizer.random(), "card1");
+
+      const actual = new CardSet([]).addCard(card);
+
+      expect(actual.equals(new CardSet([card]))).toBeTruthy();
+    });
+  });
+
+  describe("removeCard", () => {
+    it("adds card", () => {
+      const card = new Card(CardIdRandomizer.random(), "card1");
+
+      const actual = new CardSet([card]).removeCard(card.id);
+
+      expect(actual.equals(new CardSet([]))).toBeTruthy();
     });
   });
 });

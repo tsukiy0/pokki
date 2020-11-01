@@ -22,12 +22,20 @@ export class CardSet implements Comparable {
     }
 
     if (hasDuplicateCardName) {
-      throw new DuplicateCardIdException();
+      throw new DuplicateCardNameException();
     }
   }
 
   hasCard(id: CardId): boolean {
     return this.items.find((_) => _.id.equals(id)) !== undefined;
+  }
+
+  addCard(card: Card): CardSet {
+    return new CardSet([...this.items, card]);
+  }
+
+  removeCard(id: CardId): CardSet {
+    return new CardSet(this.items.filter((_) => !_.id.equals(id)));
   }
 
   equals(input: this): boolean {
