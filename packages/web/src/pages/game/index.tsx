@@ -2,6 +2,7 @@ import { GameId } from "@pokki/core";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { GamePage } from "../../components/GamePage";
+import { NotFoundPage } from "../../components/NotFoundPage";
 
 const Game: React.FC = () => {
   const router = useRouter();
@@ -15,9 +16,8 @@ const Game: React.FC = () => {
     }
   }, [router]);
 
-  // @TODO make error case prettier
   if (!gameId) {
-    return <>no game id</>;
+    return <NotFoundPage />;
   }
 
   return <GamePage id={gameId} />;
