@@ -1,21 +1,23 @@
 import {
   Button,
   Card,
-  ControlGroup,
   FormGroup,
   InputGroup,
   Spinner,
 } from "@blueprintjs/core";
 import { AddPlayerEvent, GameId } from "@pokki/core";
 import { css } from "emotion";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { useAlertContext } from "../contexts/AlertContext";
 import { useServiceContext } from "../contexts/ServiceContext";
 import { useUserContext } from "../contexts/UserContext";
+import { BaseProps } from "./BaseProps";
 
 export const JoinGameForm: React.FC<BaseProps> = ({ className }) => {
-  const { onError } = useAlertContext();
+  const { onError, onSuccess } = useAlertContext();
   const { gameService } = useServiceContext();
+  const router = useRouter();
   const user = useUserContext();
   const [gameIdStr, setGameIdStr] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -25,6 +27,13 @@ export const JoinGameForm: React.FC<BaseProps> = ({ className }) => {
       setIsLoading(true);
       const gameId = new GameId(gameIdStr);
       await gameService.addPlayer(new AddPlayerEvent(gameId, user.id));
+      onSuccess("game joined");
+      router.push({
+        pathname: "/game",
+        query: {
+          id: gameId.toString(),
+        },
+      });
       setGameIdStr("");
     } catch (err) {
       onError(err);
