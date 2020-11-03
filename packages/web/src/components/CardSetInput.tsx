@@ -1,34 +1,30 @@
 import {
   Button,
-  Card as BlueprintCard,
   ControlGroup,
   FormGroup,
   InputGroup,
+  Tag,
 } from "@blueprintjs/core";
 import { CardSet, Card, CardIdRandomizer, CardId } from "@pokki/core";
+import { css } from "emotion";
 import React, { useState } from "react";
+import { useAlertContext } from "../contexts/AlertContext";
 import { BaseProps } from "./BaseProps";
-
-const CardItem: React.FC<BaseProps<{
-  value: Card;
-  onClick: (id: CardId) => void;
-}>> = ({ value, onClick }) => {
-  return (
-    <BlueprintCard onClick={() => onClick(value.id)}>
-      {value.name}
-    </BlueprintCard>
-  );
-};
 
 export const CardSetInput: React.FC<BaseProps<{
   value: CardSet;
   onChange: (value: CardSet) => void;
 }>> = ({ className, value, onChange }) => {
+  const { onError } = useAlertContext();
   const [name, setName] = useState("");
 
   const onAdd = () => {
-    onChange(value.addCard(new Card(CardIdRandomizer.random(), name)));
-    setName("");
+    try {
+      onChange(value.addCard(new Card(CardIdRandomizer.random(), name)));
+      setName("");
+    } catch (e) {
+      onError(e);
+    }
   };
 
   const onRemove = (id: CardId) => {
@@ -36,20 +32,44 @@ export const CardSetInput: React.FC<BaseProps<{
   };
 
   return (
-    <>
-      <FormGroup label="Cards" labelFor="cardName">
+    <FormGroup className={className} label="Cards" labelFor="cardName">
+      <form>
         <ControlGroup>
           <InputGroup
             id="cardName"
             value={name}
             onChange={(e: any) => setName(e.target.value)}
           />
-          <Button onClick={onAdd} icon="plus" />
+          <Button
+            type="submit"
+            onClick={(e: any) => {
+              e.preventDefault();
+              onAdd();
+            }}
+            icon="plus"
+            aria-label="add card"
+          />
         </ControlGroup>
-        {value.items.map((item) => {
-          return <CardItem value={item} onClick={onRemove} />;
+      </form>
+      <div
+        className={css({
+          marginTop: "1rem",
         })}
-      </FormGroup>
-    </>
+      >
+        {value.items.map((item) => {
+          return (
+            <Tag
+              className={css({
+                marginRight: "1rem",
+              })}
+              onRemove={() => onRemove(item.id)}
+              large
+            >
+              {item.name}
+            </Tag>
+          );
+        })}
+      </div>
+    </FormGroup>
   );
 };
