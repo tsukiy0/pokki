@@ -46,9 +46,7 @@ export class GraphQlGameService {
       NewGameMutationVariables
     >({
       mutation: NewGame,
-      variables: {
-        request: NewGameEventSerializer.serialize(request),
-      },
+      variables: NewGameEventSerializer.serialize(request),
     });
 
     return GameSerializer.deserialize(res.data?.NewGame as GameJson);
@@ -60,9 +58,7 @@ export class GraphQlGameService {
       AddPlayerMutationVariables
     >({
       mutation: AddPlayer,
-      variables: {
-        request: AddPlayerEventSerializer.serialize(request),
-      },
+      variables: AddPlayerEventSerializer.serialize(request),
     });
 
     return GameSerializer.deserialize(res.data?.AddPlayer as GameJson);
@@ -74,9 +70,7 @@ export class GraphQlGameService {
       NewRoundMutationVariables
     >({
       mutation: NewRound,
-      variables: {
-        request: NewRoundEventSerializer.serialize(request),
-      },
+      variables: NewRoundEventSerializer.serialize(request),
     });
 
     return GameSerializer.deserialize(res.data?.NewRound as GameJson);
@@ -88,9 +82,7 @@ export class GraphQlGameService {
       PlayCardMutationVariables
     >({
       mutation: PlayCard,
-      variables: {
-        request: PlayCardEventSerializer.serialize(request),
-      },
+      variables: PlayCardEventSerializer.serialize(request),
     });
 
     return GameSerializer.deserialize(res.data?.PlayCard as GameJson);
@@ -102,9 +94,7 @@ export class GraphQlGameService {
       EndRoundMutationVariables
     >({
       mutation: EndRound,
-      variables: {
-        request: EndRoundEventSerializer.serialize(request),
-      },
+      variables: EndRoundEventSerializer.serialize(request),
     });
 
     return GameSerializer.deserialize(res.data?.EndRound as GameJson);
@@ -113,9 +103,7 @@ export class GraphQlGameService {
   async getGame(request: GetGameRequest): Promise<Game> {
     const res = await this.client.query<GetGameQuery, GetGameQueryVariables>({
       query: GetGame,
-      variables: {
-        request: GetGameRequestSerializer.serialize(request),
-      },
+      variables: GetGameRequestSerializer.serialize(request),
     });
 
     return GameSerializer.deserialize(res.data?.GetGame as GameJson);

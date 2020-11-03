@@ -19,11 +19,7 @@ export enum GraphQlType {
 class HandlerNotFoundError extends BaseError {}
 
 export class Runtime {
-  async run(
-    event: AWSLambda.AppSyncResolverEvent<{
-      request: unknown;
-    }>,
-  ): Promise<unknown> {
+  async run(event: AWSLambda.AppSyncResolverEvent<unknown>): Promise<unknown> {
     const config = new SystemConfig();
     const eventRepository = DynamoEventRepository.default(
       config.get("GAME_TABLE_NAME"),
@@ -90,6 +86,6 @@ export class Runtime {
       throw new HandlerNotFoundError();
     }
 
-    return item.handler.run(event.arguments.request);
+    return item.handler.run(event.arguments);
   }
 }

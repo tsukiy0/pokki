@@ -1,11 +1,11 @@
-mutation CreateUser($request: CreateUserRequest!) {
-  CreateUser(request: $request) {
+mutation CreateUser($id: String!, $name: String!) {
+  CreateUser(id: $id, name: $name) {
     void
   }
 }
 
-query GetUser($request: GetUserRequest!) {
-  GetUser(request: $request) {
+query GetUser($id: String!) {
+  GetUser(id: $id) {
     id
     name
   }

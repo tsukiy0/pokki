@@ -19,38 +19,38 @@ fragment GameResponseFragment on GameResponse {
   }
 }
 
-mutation NewGame($request: NewGameRequest!) {
-  NewGame(request: $request) {
+mutation NewGame($gameId: String!, $playerId: String!, $cards: [CardRequest!]!) {
+  NewGame(gameId: $gameId, playerId: $playerId, cards: $cards) {
     ...GameResponseFragment
   }
 }
 
-mutation AddPlayer($request: AddPlayerRequest!) {
-  AddPlayer(request: $request) {
+mutation AddPlayer($gameId: String!, $playerId: String!) {
+  AddPlayer(gameId: $gameId, playerId: $playerId) {
     ...GameResponseFragment
   }
 }
 
-mutation NewRound($request: NewRoundRequest!) {
-  NewRound(request: $request) {
+mutation NewRound($gameId: String!, $playerId: String!, $roundId: String!, $roundName: String!) {
+  NewRound(gameId: $gameId, playerId: $playerId, roundId: $roundId, roundName: $roundName) {
     ...GameResponseFragment
   }
 }
 
-mutation PlayCard($request: PlayCardRequest!) {
-  PlayCard(request: $request) {
+mutation PlayCard($gameId: String!, $playerId: String!, $cardId: String!) {
+  PlayCard(gameId: $gameId, playerId: $playerId, cardId: $cardId) {
     ...GameResponseFragment
   }
 }
 
-mutation EndRound($request: EndRoundRequest!) {
-  EndRound(request: $request) {
+mutation EndRound($gameId: String!, $playerId: String!, $resultCardId: String!) {
+  EndRound(gameId: $gameId, playerId: $playerId, resultCardId: $resultCardId) {
     ...GameResponseFragment
   }
 }
 
-query GetGame($request: GetGameRequest!) {
-  GetGame(request: $request) {
+query GetGame($id: String!) {
+  GetGame(id: $id) {
     ...GameResponseFragment
   }
 }

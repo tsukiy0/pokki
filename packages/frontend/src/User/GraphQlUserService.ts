@@ -20,9 +20,7 @@ export class GraphQlUserService {
   async createUser(request: User): Promise<void> {
     await this.client.mutate<CreateUserMutation, CreateUserMutationVariables>({
       mutation: CreateUser,
-      variables: {
-        request: UserSerializer.serialize(request),
-      },
+      variables: UserSerializer.serialize(request),
     });
   }
 
@@ -30,9 +28,7 @@ export class GraphQlUserService {
     const result = await this.client.query<GetUserQuery, GetUserQueryVariables>(
       {
         query: GetUser,
-        variables: {
-          request: GetUserRequestSerializer.serialize(request),
-        },
+        variables: GetUserRequestSerializer.serialize(request),
       },
     );
 

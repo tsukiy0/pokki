@@ -11,15 +11,6 @@ type VoidResponse {
   void: Boolean
 }
 
-input CreateUserRequest {
-  id: String!
-  name: String!
-}
-
-input GetUserRequest {
-  id: String!
-}
-
 type GetUserResponse {
   id: String!
   name: String!
@@ -59,51 +50,17 @@ input CardRequest {
   name: String!
 }
 
-input NewGameRequest {
-  gameId: String!
-  playerId: String!
-  cards: [CardRequest!]!
-}
-
-input AddPlayerRequest {
-  gameId: String!
-  playerId: String!
-}
-
-input NewRoundRequest {
-  gameId: String!
-  playerId: String!
-  roundId: String!
-  roundName: String!
-}
-
-input PlayCardRequest {
-  gameId: String!
-  playerId: String!
-  cardId: String!
-}
-
-input EndRoundRequest {
-  gameId: String!
-  playerId: String!
-  resultCardId: String!
-}
-
-input GetGameRequest {
-  id: String!
-}
-
 type Mutation {
-  CreateUser(request: CreateUserRequest!): VoidResponse!
-  NewGame(request: NewGameRequest!): GameResponse!
-  AddPlayer(request: AddPlayerRequest!): GameResponse!
-  NewRound(request: NewRoundRequest!): GameResponse!
-  PlayCard(request: PlayCardRequest!): GameResponse!
-  EndRound(request: EndRoundRequest!): GameResponse!
+  CreateUser(id: String!, name: String!): VoidResponse!
+  NewGame(gameId: String!, playerId: String! cards: [CardRequest!]!): GameResponse!
+  AddPlayer(gameId: String!, playerId: String!): GameResponse!
+  NewRound(gameId: String!, playerId: String!, roundId: String!, roundName: String!): GameResponse!
+  PlayCard(gameId: String!, playerId: String!, cardId: String!): GameResponse!
+  EndRound(gameId: String!, playerId: String!, resultCardId: String!): GameResponse!
 }
 
 type Query {
   HealthCheck(request: VoidRequest!): VoidResponse!
-  GetUser(request: GetUserRequest!): GetUserResponse!
-  GetGame(request: GetGameRequest!): GameResponse!
+  GetUser(id: String!): GetUserResponse!
+  GetGame(id: String!): GameResponse!
 }
