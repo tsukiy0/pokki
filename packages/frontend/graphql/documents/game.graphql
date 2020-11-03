@@ -48,3 +48,9 @@ mutation EndRound($request: EndRoundRequest!) {
     ...GameResponseFragment
   }
 }
+
+query GetGame($request: GetGameRequest!) {
+  GetGame(request: $request) {
+    ...GameResponseFragment
+  }
+}

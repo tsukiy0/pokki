@@ -27,6 +27,7 @@ import { Role } from "./Role";
 import { Round, RoundIdRandomizer } from "./Round";
 import { DuplicatePlayerCardError, PlayerCardSet } from "./PlayerCardSet";
 import { PlayerCard } from "./PlayerCard";
+import { GetGameRequest } from "./GetGameRequest";
 
 describe("GameService", () => {
   const gameId = GameIdRandomizer.random();
@@ -285,6 +286,37 @@ describe("GameService", () => {
       await expect(service.endRound(event)).rejects.toThrow(
         NotAllPlayersPlayedError,
       );
+    });
+  });
+
+  describe("getGame", () => {
+    it("renders game from events", async () => {
+      const eventRepository = getEventRepository(withAllPlayersPlayed());
+      const service = new GameService(eventRepository);
+
+      const actual = await service.getGame(new GetGameRequest(gameId));
+
+      expect(
+        actual.equals(
+          new Game(
+            gameId,
+            GameStatus.ACTIVE,
+            cards,
+            new PlayerRoleSet([
+              new PlayerRole(adminId, Role.ADMIN),
+              new PlayerRole(playerId, Role.PLAYER),
+            ]),
+            new Round(
+              roundId,
+              "round1",
+              new PlayerCardSet([
+                new PlayerCard(adminId, cards.items[0].id),
+                new PlayerCard(playerId, cards.items[1].id),
+              ]),
+            ),
+          ),
+        ),
+      ).toBeTruthy();
     });
   });
 });

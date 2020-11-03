@@ -8,7 +8,8 @@ import {
   PlayCardEvent,
 } from "./Event";
 import { EventRepository } from "./EventRepository";
-import { Game, GameStatus } from "./Game";
+import { Game, GameId, GameStatus } from "./Game";
+import { GetGameRequest } from "./GetGameRequest";
 import { PlayerCard } from "./PlayerCard";
 import { PlayerCardSet } from "./PlayerCardSet";
 import { PlayerRole } from "./PlayerRole";
@@ -62,7 +63,12 @@ export class GameService {
     return game;
   }
 
-  private eventsToGame(events: Event[]): Game {
+  async getGame(request: GetGameRequest): Promise<Game> {
+    const events = await this.eventRepository.listEvents(request.id);
+    return this.eventsToGame(events);
+  }
+
+  private eventsToGame(events: readonly Event[]): Game {
     const [newGameEvent, ...restOfEvents] = events;
 
     if (!(newGameEvent instanceof NewGameEvent)) {

@@ -7,6 +7,7 @@ import {
   Game,
   GameIdRandomizer,
   GameStatus,
+  GetGameRequest,
   NewGameEvent,
   NewRoundEvent,
   PlayCardEvent,
@@ -72,5 +73,8 @@ describe("GraphQlUserService", () => {
         ),
       ),
     ).toBeTruthy();
+
+    const actual2 = await service.getGame(new GetGameRequest(gameId));
+    expect(actual.equals(actual2)).toBeTruthy();
   });
 });

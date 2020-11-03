@@ -6,16 +6,14 @@ import {
   Game,
   GameJson,
   GameSerializer,
-  GetUserRequest,
-  GetUserRequestSerializer,
+  GetGameRequest,
+  GetGameRequestSerializer,
   NewGameEvent,
   NewGameEventSerializer,
   NewRoundEvent,
   NewRoundEventSerializer,
   PlayCardEvent,
   PlayCardEventSerializer,
-  User,
-  UserSerializer,
 } from "@pokki/core";
 import AWSAppSyncClient from "aws-appsync";
 import {
@@ -25,9 +23,8 @@ import {
   EndRound,
   EndRoundMutation,
   EndRoundMutationVariables,
-  GetUser,
-  GetUserQuery,
-  GetUserQueryVariables,
+  GetGameQuery,
+  GetGameQueryVariables,
   NewGame,
   NewGameMutation,
   NewGameMutationVariables,
@@ -112,16 +109,14 @@ export class GraphQlGameService {
     return GameSerializer.deserialize(res.data?.EndRound as GameJson);
   }
 
-  async getUser(request: GetUserRequest): Promise<User> {
-    const result = await this.client.query<GetUserQuery, GetUserQueryVariables>(
-      {
-        query: GetUser,
-        variables: {
-          request: GetUserRequestSerializer.serialize(request),
-        },
+  async getGame(request: GetGameRequest): Promise<Game> {
+    const res = await this.client.mutate<GetGameQuery, GetGameQueryVariables>({
+      mutation: EndRound,
+      variables: {
+        request: GetGameRequestSerializer.serialize(request),
       },
-    );
+    });
 
-    return UserSerializer.deserialize(result.data.GetUser);
+    return GameSerializer.deserialize(res.data?.GetGame as GameJson);
   }
 }

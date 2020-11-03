@@ -89,6 +89,10 @@ input EndRoundRequest {
   resultCardId: String!
 }
 
+input GetGameRequest {
+  id: String!
+}
+
 type Mutation {
   CreateUser(request: CreateUserRequest!): VoidResponse!
   NewGame(request: NewGameRequest!): GameResponse!
@@ -101,4 +105,5 @@ type Mutation {
 type Query {
   HealthCheck(request: VoidRequest!): VoidResponse!
   GetUser(request: GetUserRequest!): GetUserResponse!
+  GetGame(request: GetGameRequest!): GameResponse!
 }

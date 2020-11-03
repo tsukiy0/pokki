@@ -9,6 +9,7 @@ import { NewRoundHandler } from "./handlers/NewRoundHandler";
 import { PlayCardHandler } from "./handlers/PlayCardHandler";
 import { EndRoundHandler } from "./handlers/EndRoundHandler";
 import { HealthCheckHandler } from "./handlers/HealthCheckHandler";
+import { GetGameHandler } from "./handlers/GetGameHandler";
 
 export enum GraphQlType {
   MUTATION = "Mutation",
@@ -73,6 +74,11 @@ export class Runtime {
         type: GraphQlType.MUTATION,
         field: "EndRound",
         handler: new EndRoundHandler(gameService),
+      },
+      {
+        type: GraphQlType.QUERY,
+        field: "GetGame",
+        handler: new GetGameHandler(gameService),
       },
     ].find(
       (_) =>
