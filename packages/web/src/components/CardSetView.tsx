@@ -1,6 +1,6 @@
 import { Card } from "@blueprintjs/core";
 import { CardId, CardSet } from "@pokki/core";
-import { css, cx } from "emotion";
+import { css } from "emotion";
 import React from "react";
 import { BaseProps } from "./BaseProps";
 
