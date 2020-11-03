@@ -36,20 +36,20 @@ export const CardSetInput: React.FC<BaseProps<{
   };
 
   return (
-    <BlueprintCard className={className}>
-      <FormGroup label="Name" labelFor="name">
+    <>
+      <FormGroup label="Cards" labelFor="cardName">
         <ControlGroup>
           <InputGroup
-            id="name"
+            id="cardName"
             value={name}
             onChange={(e: any) => setName(e.target.value)}
           />
           <Button onClick={onAdd} icon="plus" />
         </ControlGroup>
+        {value.items.map((item) => {
+          return <CardItem value={item} onClick={onRemove} />;
+        })}
       </FormGroup>
-      {value.items.map((item) => {
-        return <CardItem value={item} onClick={onRemove} />;
-      })}
-    </BlueprintCard>
+    </>
   );
 };

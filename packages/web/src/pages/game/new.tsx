@@ -1,13 +1,10 @@
-import { CardSet } from "@pokki/core";
-import React, { useState } from "react";
-import { CardSetInput } from "../../components/CardSetInput";
+import React from "react";
+import { NewGameForm } from "../../components/NewGameForm";
 
 const NewGame: React.FC = () => {
-  const [cardSet, setCardSet] = useState(new CardSet([]));
-
   return (
     <div>
-      <CardSetInput value={cardSet} onChange={setCardSet} />
+      <NewGameForm />
     </div>
   );
 };

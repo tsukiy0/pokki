@@ -1,5 +1,5 @@
 import { User, UserIdRandomizer, UserSerializer } from "@pokki/core";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Card, FormGroup, InputGroup, Button } from "@blueprintjs/core";
 import { useServiceContext } from "./ServiceContext";
 import { useAlertContext } from "./AlertContext";
@@ -57,4 +57,8 @@ export const UserContextProvider: React.FC = ({ children }) => {
   }
 
   return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
+};
+
+export const useUserContext = (): User => {
+  return useContext(UserContext);
 };
