@@ -8,7 +8,7 @@ import {
   PlayCardEvent,
 } from "./Event";
 import { EventRepository } from "./EventRepository";
-import { Game, GameId, GameStatus } from "./Game";
+import { Game, GameStatus } from "./Game";
 import { GetGameRequest } from "./GetGameRequest";
 import { PlayerCard } from "./PlayerCard";
 import { PlayerCardSet } from "./PlayerCardSet";

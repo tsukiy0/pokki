@@ -23,6 +23,7 @@ import {
   EndRound,
   EndRoundMutation,
   EndRoundMutationVariables,
+  GetGame,
   GetGameQuery,
   GetGameQueryVariables,
   NewGame,
@@ -110,8 +111,8 @@ export class GraphQlGameService {
   }
 
   async getGame(request: GetGameRequest): Promise<Game> {
-    const res = await this.client.mutate<GetGameQuery, GetGameQueryVariables>({
-      mutation: EndRound,
+    const res = await this.client.query<GetGameQuery, GetGameQueryVariables>({
+      query: GetGame,
       variables: {
         request: GetGameRequestSerializer.serialize(request),
       },
