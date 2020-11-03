@@ -54,3 +54,9 @@ query GetGame($id: String!) {
     ...GameResponseFragment
   }
 }
+
+subscription OnGame($gameId: String!) {
+  OnGame(gameId: $gameId) {
+    ...GameResponseFragment
+  }
+}

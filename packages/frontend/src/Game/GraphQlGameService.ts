@@ -32,10 +32,14 @@ import {
   NewRound,
   NewRoundMutation,
   NewRoundMutationVariables,
+  OnGame,
+  OnGameSubscription,
+  OnGameSubscriptionVariables,
   PlayCard,
   PlayCardMutation,
   PlayCardMutationVariables,
 } from "../generated/graphql";
+import { OnGameRequest, OnGameRequestSerializer } from "./OnGameRequest";
 
 export class GraphQlGameService {
   constructor(private readonly client: AWSAppSyncClient<any>) {}
@@ -107,5 +111,21 @@ export class GraphQlGameService {
     });
 
     return GameSerializer.deserialize(res.data?.GetGame as GameJson);
+  }
+
+  onGame(
+    request: OnGameRequest,
+    callback: (response: Game) => void,
+  ): () => void {
+    const subscription = this.client
+      .subscribe<OnGameSubscription, OnGameSubscriptionVariables>({
+        query: OnGame,
+        variables: OnGameRequestSerializer.serialize(request),
+      })
+      .subscribe((value) => {
+        callback(GameSerializer.deserialize(value.OnGame as GameJson));
+      });
+
+    return subscription.unsubscribe;
   }
 }
