@@ -1,9 +1,10 @@
 import { Card } from "@blueprintjs/core";
-import { Game, GameId, GetGameRequest } from "@pokki/core";
+import { Game, GameId, GameStatus, GetGameRequest } from "@pokki/core";
 import React, { useEffect, useState } from "react";
 import { useAlertContext } from "../contexts/AlertContext";
 import { useServiceContext } from "../contexts/ServiceContext";
 import { BaseProps } from "./BaseProps";
+import { InactiveGameView } from "./InactiveGameView";
 import { LoadingPage } from "./LoadingPage";
 
 export const GamePage: React.FC<BaseProps<{
@@ -25,6 +26,10 @@ export const GamePage: React.FC<BaseProps<{
 
   if (!game) {
     return <LoadingPage />;
+  }
+
+  if (game.status === GameStatus.INACTIVE) {
+    return <InactiveGameView game={game} />;
   }
 
   return <Card className={className}>{game.id.toString()}</Card>;
