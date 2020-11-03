@@ -51,25 +51,27 @@ export const CardSetInput: React.FC<BaseProps<{
           />
         </ControlGroup>
       </form>
-      <div
-        className={css({
-          marginTop: "1rem",
-        })}
-      >
-        {value.items.map((item) => {
-          return (
-            <Tag
-              className={css({
-                marginRight: "1rem",
-              })}
-              onRemove={() => onRemove(item.id)}
-              large
-            >
-              {item.name}
-            </Tag>
-          );
-        })}
-      </div>
+      {value.items.length > 0 && (
+        <div
+          className={css({
+            marginTop: "1rem",
+          })}
+        >
+          {value.items.map((item) => {
+            return (
+              <Tag
+                className={css({
+                  marginRight: "1rem",
+                })}
+                onRemove={() => onRemove(item.id)}
+                large
+              >
+                {item.name}
+              </Tag>
+            );
+          })}
+        </div>
+      )}
     </FormGroup>
   );
 };
