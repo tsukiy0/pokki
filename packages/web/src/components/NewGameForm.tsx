@@ -1,6 +1,8 @@
-import { Button, Card } from "@blueprintjs/core";
+import { Button, Card, Spinner } from "@blueprintjs/core";
 import { CardSet, GameId, GameIdRandomizer, NewGameEvent } from "@pokki/core";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
+import { useAlertContext } from "../contexts/AlertContext";
 import { useServiceContext } from "../contexts/ServiceContext";
 import { useUserContext } from "../contexts/UserContext";
 import { BaseProps } from "./BaseProps";
@@ -8,24 +10,49 @@ import { CardSetInput } from "./CardSetInput";
 
 export const NewGameForm: React.FC<BaseProps> = ({ className }) => {
   const { gameService } = useServiceContext();
+  const { onError, onSuccess } = useAlertContext();
+  const router = useRouter();
   const user = useUserContext();
   const [cardSet, setCardSet] = useState(new CardSet([]));
-  const [gameId, setGameId] = useState<GameId | undefined>();
+  const [isLoading, setIsLoading] = useState(false);
 
   const onNewGame = async () => {
-    const newGameId = GameIdRandomizer.random();
-    await gameService.newGame(new NewGameEvent(newGameId, user.id, cardSet));
-    setGameId(newGameId);
+    setIsLoading(true);
+    try {
+      const newGameId = GameIdRandomizer.random();
+      await gameService.newGame(new NewGameEvent(newGameId, user.id, cardSet));
+      onSuccess("game created");
+      router.push({
+        pathname: "/game",
+        query: {
+          id: newGameId.toString(),
+        },
+      });
+    } catch (err) {
+      onError(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  if (gameId) {
-    return <div>{gameId.toString()}</div>;
-  }
+  const formView = (
+    <form>
+      <CardSetInput value={cardSet} onChange={setCardSet} />
+      <Button
+        type="submit"
+        onClick={(e: any) => {
+          e.preventDefault();
+          onNewGame();
+        }}
+      >
+        Submit
+      </Button>
+    </form>
+  );
+
+  const loadingView = <Spinner />;
 
   return (
-    <Card className={className}>
-      <CardSetInput value={cardSet} onChange={setCardSet} />
-      <Button onClick={onNewGame}>Submit</Button>
-    </Card>
+    <Card className={className}>{isLoading ? loadingView : formView}</Card>
   );
 };
