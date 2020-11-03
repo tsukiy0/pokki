@@ -32,9 +32,17 @@ export const CardSetInput: React.FC<BaseProps<{
   };
 
   return (
-    <FormGroup className={className} label="Cards" labelFor="cardName">
+    <FormGroup
+      className={className}
+      label="Cards"
+      labelFor="cardName"
+      inline
+      contentClassName={css({
+        width: "100%",
+      })}
+    >
       <form>
-        <ControlGroup>
+        <ControlGroup fill>
           <InputGroup
             id="cardName"
             value={name}
@@ -62,6 +70,7 @@ export const CardSetInput: React.FC<BaseProps<{
               <Tag
                 className={css({
                   marginRight: "1rem",
+                  marginBottom: "1rem",
                 })}
                 onRemove={() => onRemove(item.id)}
                 large

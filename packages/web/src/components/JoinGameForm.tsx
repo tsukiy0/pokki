@@ -20,7 +20,7 @@ export const JoinGameForm: React.FC<BaseProps> = ({ className }) => {
   const [gameIdStr, setGameIdStr] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const onJoin = async () => {
+  const onSubmit = async () => {
     try {
       setIsLoading(true);
       const gameId = new GameId(gameIdStr);
@@ -37,7 +37,14 @@ export const JoinGameForm: React.FC<BaseProps> = ({ className }) => {
 
   const formView = (
     <form>
-      <FormGroup label="ID" labelFor="gameId" inline>
+      <FormGroup
+        label="ID"
+        labelFor="gameId"
+        inline
+        contentClassName={css({
+          width: "100%",
+        })}
+      >
         <InputGroup
           id="gameId"
           value={gameIdStr}
@@ -51,9 +58,8 @@ export const JoinGameForm: React.FC<BaseProps> = ({ className }) => {
         type="submit"
         onClick={(e: any) => {
           e.preventDefault();
-          onJoin();
+          onSubmit();
         }}
-        large
         intent="primary"
       >
         Join

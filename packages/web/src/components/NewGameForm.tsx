@@ -1,5 +1,6 @@
 import { Button, Card, Spinner } from "@blueprintjs/core";
-import { CardSet, GameId, GameIdRandomizer, NewGameEvent } from "@pokki/core";
+import { CardSet, GameIdRandomizer, NewGameEvent } from "@pokki/core";
+import { css } from "emotion";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { useAlertContext } from "../contexts/AlertContext";
@@ -16,9 +17,9 @@ export const NewGameForm: React.FC<BaseProps> = ({ className }) => {
   const [cardSet, setCardSet] = useState(new CardSet([]));
   const [isLoading, setIsLoading] = useState(false);
 
-  const onNewGame = async () => {
-    setIsLoading(true);
+  const onSubmit = async () => {
     try {
+      setIsLoading(true);
       const newGameId = GameIdRandomizer.random();
       await gameService.newGame(new NewGameEvent(newGameId, user.id, cardSet));
       onSuccess("game created");
@@ -39,13 +40,17 @@ export const NewGameForm: React.FC<BaseProps> = ({ className }) => {
     <form>
       <CardSetInput value={cardSet} onChange={setCardSet} />
       <Button
+        className={css({
+          width: "100%",
+        })}
         type="submit"
         onClick={(e: any) => {
           e.preventDefault();
-          onNewGame();
+          onSubmit();
         }}
+        intent="success"
       >
-        Submit
+        Create
       </Button>
     </form>
   );

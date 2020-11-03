@@ -1,19 +1,10 @@
 import React from "react";
 import { css, cx } from "emotion";
-import { Button, Card, ControlGroup } from "@blueprintjs/core";
-import { useRouter } from "next/router";
 import { BaseProps } from "./BaseProps";
 import { JoinGameForm } from "./JoinGameForm";
+import { NewGameForm } from "./NewGameForm";
 
 export const HomePage: React.FC<BaseProps> = ({ className }) => {
-  const router = useRouter();
-
-  const goToNew = () => {
-    router.push({
-      pathname: "/game/new",
-    });
-  };
-
   return (
     <div
       className={cx(
@@ -29,27 +20,14 @@ export const HomePage: React.FC<BaseProps> = ({ className }) => {
     >
       <div
         className={css({
-          display: "flex",
-          flexDirection: "column",
+          display: "grid",
+          gridTemplateColumns: "1fr",
+          columnGap: "1rem",
+          rowGap: "1rem",
+          width: "25rem",
         })}
       >
-        <Card
-          className={css({
-            marginBottom: "1rem",
-          })}
-        >
-          <Button
-            className={css({
-              marginBottom: "1rem",
-              width: "10rem",
-            })}
-            onClick={goToNew}
-            intent="success"
-            large
-          >
-            Create
-          </Button>
-        </Card>
+        <NewGameForm />
         <JoinGameForm />
       </div>
     </div>
