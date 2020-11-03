@@ -1,6 +1,7 @@
 schema {
   query: Query
   mutation: Mutation
+  subscription: Subscription
 }
 
 input VoidRequest {
@@ -63,4 +64,9 @@ type Query {
   HealthCheck(request: VoidRequest!): VoidResponse!
   GetUser(id: String!): GetUserResponse!
   GetGame(id: String!): GameResponse!
+}
+
+type Subscription {
+  OnGame(gameId: String!): GameResponse!
+  @aws_subscribe(mutations: ["NewGame", "AddPlayer", "NewRound", "PlayCard", "EndRound"])
 }
