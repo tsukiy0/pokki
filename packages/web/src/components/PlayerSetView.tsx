@@ -1,16 +1,15 @@
 import { Card } from "@blueprintjs/core";
-import { CardId, CardSet } from "@pokki/core";
-import { css, cx } from "emotion";
+import { PlayerRoleSet } from "@pokki/core";
+import { css } from "emotion";
 import React from "react";
 import { BaseProps } from "./BaseProps";
 
-export const CardSetView: React.FC<BaseProps<{
-  value: CardSet;
-  onClick?: (cardId: CardId) => void;
-}>> = ({ className, value, onClick }) => {
+export const PlayerSetView: React.FC<BaseProps<{
+  value: PlayerRoleSet;
+}>> = ({ className, value }) => {
   return (
     <Card className={className}>
-      <h1>Cards</h1>
+      <h1>Players</h1>
       <div
         className={css({
           display: "grid",
@@ -20,9 +19,7 @@ export const CardSetView: React.FC<BaseProps<{
         })}
       >
         {value.items.map((item) => {
-          return (
-            <Card onClick={() => onClick && onClick(item.id)}>{item.name}</Card>
-          );
+          return <Card>{item.playerId.toString()}</Card>;
         })}
       </div>
     </Card>
