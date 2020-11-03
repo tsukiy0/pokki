@@ -1,7 +1,8 @@
 import React from "react";
+import { NotFoundPage } from "../components/NotFoundPage";
 
 const NotFound: React.FC = () => {
-  return <>404</>;
+  return <NotFoundPage />;
 };
 
 export default NotFound;
