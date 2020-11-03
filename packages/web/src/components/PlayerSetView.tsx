@@ -1,27 +1,55 @@
-import { Card } from "@blueprintjs/core";
-import { PlayerRoleSet } from "@pokki/core";
+import { Card, Spinner } from "@blueprintjs/core";
+import { GetUserRequest, PlayerRoleSet, User } from "@pokki/core";
 import { css } from "emotion";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useAlertContext } from "../contexts/AlertContext";
+import { useServiceContext } from "../contexts/ServiceContext";
 import { BaseProps } from "./BaseProps";
 
 export const PlayerSetView: React.FC<BaseProps<{
   value: PlayerRoleSet;
 }>> = ({ className, value }) => {
+  const { onError } = useAlertContext();
+  const { userService } = useServiceContext();
+  const [players, setPlayers] = useState<User[] | undefined>();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setPlayers(
+          await Promise.all(
+            value.items.map((item) => {
+              return userService.getUser(new GetUserRequest(item.playerId));
+            }),
+          ),
+        );
+      } catch (err) {
+        onError(err);
+      }
+    })();
+  }, [onError, userService]);
+
   return (
     <Card className={className}>
-      <h1>Players</h1>
-      <div
-        className={css({
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          rowGap: "1rem",
-          columnGap: "1rem",
-        })}
-      >
-        {value.items.map((item) => {
-          return <Card>{item.playerId.toString()}</Card>;
-        })}
-      </div>
+      {players ? (
+        <>
+          <h1>Players</h1>
+          <div
+            className={css({
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 1fr",
+              rowGap: "1rem",
+              columnGap: "1rem",
+            })}
+          >
+            {players.map((player) => {
+              return <Card>{player.name}</Card>;
+            })}
+          </div>
+        </>
+      ) : (
+        <Spinner />
+      )}
     </Card>
   );
 };
