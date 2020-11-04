@@ -52,7 +52,7 @@ export const GameContextProvider: React.FC<{
   }, [id, gameService, onError]);
 
   useEffect(() => {
-    return gameService.onGame(new OnGameRequest(id), async (game) => {
+    gameService.onGame(new OnGameRequest(id), async (game) => {
       if (state) {
         const isSameUsers = isArrayEqual(
           game.players.items.map((_) => _.playerId),

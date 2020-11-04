@@ -14,7 +14,7 @@ export const CardSetView: React.FC<BaseProps<{
       <div
         className={css({
           display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
+          gridTemplateColumns: "1fr",
           rowGap: "1rem",
           columnGap: "1rem",
         })}
