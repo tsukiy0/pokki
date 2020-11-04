@@ -1,5 +1,5 @@
 fragment GameResponseFragment on GameResponse {
-  id
+  gameId
   status
   cards {
     id

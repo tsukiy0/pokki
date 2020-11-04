@@ -39,7 +39,7 @@ type Round {
 }
 
 type GameResponse {
-  id: String!
+  gameId: String!
   status: String!
   cards: [Card!]!
   players: [PlayerRole!]!

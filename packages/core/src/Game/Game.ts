@@ -51,7 +51,7 @@ export class Game implements Comparable {
 }
 
 export type GameJson = {
-  id: string;
+  gameId: string;
   status: string;
   cards: CardSetJson;
   players: PlayerRoleSetJson;
@@ -61,7 +61,7 @@ export type GameJson = {
 export const GameSerializer: Serializer<Game, GameJson> = {
   serialize: (input: Game): GameJson => {
     return {
-      id: input.id.toString(),
+      gameId: input.id.toString(),
       status: input.status,
       cards: CardSetSerializer.serialize(input.cards),
       players: PlayerRoleSetSerializer.serialize(input.players),
@@ -70,7 +70,7 @@ export const GameSerializer: Serializer<Game, GameJson> = {
   },
   deserialize: (input: GameJson): Game => {
     return new Game(
-      new GameId(input.id),
+      new GameId(input.gameId),
       GameStatusEnumHelper.fromString(input.status),
       CardSetSerializer.deserialize(input.cards),
       PlayerRoleSetSerializer.deserialize(input.players),
