@@ -67,6 +67,6 @@ type Query {
 }
 
 type Subscription {
-  OnGame(gameId: String!): GameResponse!
+  OnGame(gameId: String!): GameResponse
   @aws_subscribe(mutations: ["NewGame", "AddPlayer", "NewRound", "PlayCard", "EndRound"])
 }
