@@ -8,7 +8,7 @@ import {
 } from "@pokki/core";
 import { OnGameRequest } from "@pokki/frontend";
 import { isArrayEqual } from "@tsukiy0/tscore";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { LoadingPage } from "../components/LoadingPage";
 import { useAlertContext } from "./AlertContext";
 import { useServiceContext } from "./ServiceContext";
@@ -52,20 +52,13 @@ export const GameContextProvider: React.FC<{
   }, [id, gameService, onError]);
 
   useEffect(() => {
-    gameService.onGame(new OnGameRequest(id), async (game) => {
-      if (state) {
-        const isSameUsers = isArrayEqual(
-          game.players.items.map((_) => _.playerId),
-          state.users.map((_) => _.id),
-          (a, b) => a.equals(b),
-        );
-        const users = isSameUsers ? state.users : await getUsers(game.players);
+    return gameService.onGame(new OnGameRequest(id), async (game) => {
+      const users = await getUsers(game.players);
 
-        setState({
-          game,
-          users,
-        });
-      }
+      setState({
+        game,
+        users,
+      });
     });
   }, [id]);
 

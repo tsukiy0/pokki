@@ -118,14 +118,14 @@ export class GraphQlGameService {
     callback: (response: Game) => void,
   ): () => void {
     const subscription = this.client
-      .subscribe<OnGameSubscription, OnGameSubscriptionVariables>({
+      .subscribe<{ data: OnGameSubscription }, OnGameSubscriptionVariables>({
         query: OnGame,
         variables: OnGameRequestSerializer.serialize(request),
       })
       .subscribe((value) => {
-        callback(GameSerializer.deserialize(value.OnGame as GameJson));
+        callback(GameSerializer.deserialize(value.data.OnGame as GameJson));
       });
 
-    return subscription.unsubscribe;
+    return () => subscription.unsubscribe();
   }
 }
